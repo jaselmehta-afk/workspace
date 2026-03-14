@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { Search, MapPin, SlidersHorizontal, X, Star, ArrowRight, Grid3X3, List, Map, Wifi, Coffee, Bike, Zap, Dog, Mic } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Search, MapPin, SlidersHorizontal, X, Star, ArrowRight, Grid3X3, List, Wifi, Coffee, Bike, Zap, Dog, Mic } from "lucide-react";
 import { spaces, Space, Area, amenityOptions } from "@/data/spaces";
 
 const areaOptions: { value: Area | ""; label: string }[] = [
@@ -38,15 +39,24 @@ const amenityIcons: Record<string, React.ReactNode> = {
   "Podcast studio": <Mic size={12} />,
 };
 
-export default function SpacesClient() {
-  const [search, setSearch] = useState("");
-  const [area, setArea] = useState<Area | "">("");
-  const [type, setType] = useState("");
-  const [size, setSize] = useState("");
+function SpacesInner() {
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("location") || "");
+  const [area, setArea] = useState<Area | "">((searchParams.get("area") as Area) || "");
+  const [type, setType] = useState(searchParams.get("type") || "");
+  const [size, setSize] = useState(searchParams.get("size") || "");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("recommended");
+
+  // Re-sync if URL changes (e.g. natural language search redirects)
+  useEffect(() => {
+    setSearch(searchParams.get("location") || "");
+    setArea((searchParams.get("area") as Area) || "");
+    setType(searchParams.get("type") || "");
+    setSize(searchParams.get("size") || "");
+  }, [searchParams]);
 
   const toggleAmenity = (amenity: string) => {
     setSelectedAmenities((prev) =>
@@ -260,6 +270,14 @@ export default function SpacesClient() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SpacesClient() {
+  return (
+    <Suspense>
+      <SpacesInner />
+    </Suspense>
   );
 }
 

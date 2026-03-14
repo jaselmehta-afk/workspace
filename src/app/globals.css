@@ -1,25 +1,86 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-charcoal: #1C1C2E;
+  --color-brand-charcoal: #0E0E1A;
   --color-brand-cream: #FAF8F4;
   --color-brand-orange: #E8622A;
   --color-brand-sage: #7B9E87;
   --color-brand-gold: #C9A84C;
-  --color-brand-dark: #111118;
+  --color-brand-dark: #080810;
   --font-display: 'Fraunces', serif;
   --font-sans: 'Inter', sans-serif;
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-
+  html { scroll-behavior: smooth; }
   body {
     background-color: #FAF8F4;
-    color: #1C1C2E;
+    color: #0E0E1A;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .glass-light {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid rgba(255,255,255,0.55);
+  }
+  .glass-dark {
+    background: rgba(14,14,26,0.55);
+    backdrop-filter: blur(32px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .glow-orange {
+    box-shadow: 0 0 40px rgba(232,98,42,0.3), 0 0 80px rgba(232,98,42,0.12);
+  }
+  .glow-orange-sm {
+    box-shadow: 0 0 20px rgba(232,98,42,0.35);
+  }
+  .mesh-dark {
+    background:
+      radial-gradient(ellipse at 15% 60%, rgba(232,98,42,0.14) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 15%, rgba(123,158,135,0.1) 0%, transparent 40%),
+      radial-gradient(ellipse at 55% 85%, rgba(201,168,76,0.08) 0%, transparent 40%),
+      #080810;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0; }
+  }
+  @keyframes spin-slow {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0px); }
+    50%     { transform: translateY(-8px); }
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(232,98,42,0.5) 50%, transparent 100%);
+    background-size: 200% auto;
+    animation: shimmer 1.4s linear infinite;
+  }
+  .animate-fade-up { animation: fadeUp 0.45s ease forwards; }
+  .cursor-blink   { animation: blink 1s step-end infinite; }
+  .animate-spin-slow { animation: spin-slow 3s linear infinite; }
+  .animate-float  { animation: float 3s ease-in-out infinite; }
 }
