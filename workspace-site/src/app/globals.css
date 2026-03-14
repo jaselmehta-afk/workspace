@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-brand-charcoal: #1C1C2E;
+  --color-brand-cream: #FAF8F4;
+  --color-brand-orange: #E8622A;
+  --color-brand-sage: #7B9E87;
+  --color-brand-gold: #C9A84C;
+  --color-brand-dark: #111118;
+  --font-display: 'Fraunces', serif;
+  --font-sans: 'Inter', sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #FAF8F4;
+    color: #1C1C2E;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
