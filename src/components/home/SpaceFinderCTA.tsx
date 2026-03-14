@@ -1,14 +1,13 @@
 import Link from "next/link";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function SpaceFinderCTA() {
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F4F1EA]">
       <div className="max-w-4xl mx-auto text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#E8622A]/10 rounded-full text-[#E8622A] text-sm font-semibold mb-6">
-          <Sparkles size={15} />
+        <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-6">
           AI Space Finder
-        </div>
+        </p>
         <h2
           className="text-4xl sm:text-5xl text-[#09090F] leading-tight mb-6"
           style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}

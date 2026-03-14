@@ -40,18 +40,19 @@ const navLinks = [
 function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2.5 group">
-      {/* Geometric W logomark */}
-      <svg width="32" height="28" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Workspace logomark: orange rounded square + thin W */}
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="32" height="32" rx="7" fill="#E8622A"/>
         <path
-          d="M2 3L9 25L16 11L23 25L30 3"
-          stroke="#E8622A"
-          strokeWidth="2.8"
+          d="M7 10L11.5 22L16 14L20.5 22L25 10"
+          stroke="white"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       </svg>
       <span
-        className="text-white font-semibold text-[17px] tracking-[-0.02em] leading-none"
+        className="text-white font-medium text-[17px] tracking-[-0.02em] leading-none"
         style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
       >
         Workspace

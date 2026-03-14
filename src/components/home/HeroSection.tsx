@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Sparkles, MapPin, Users, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, ChevronDown } from "lucide-react";
 
 const EXAMPLES = [
   "A creative studio for 12 people in East London…",
@@ -69,9 +69,11 @@ export default function HeroSection() {
     if (!q.trim()) return;
     setStatus("thinking");
     const p = parse(q);
-    setTimeout(() => {
-      router.push(`/spaces?${new URLSearchParams(p)}`);
-    }, 1300);
+    setTimeout(() => { router.push(`/spaces?${new URLSearchParams(p)}`); }, 1300);
+  };
+
+  const scrollDown = () => {
+    window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
   };
 
   return (
@@ -80,7 +82,6 @@ export default function HeroSection() {
       <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
         <div className="absolute top-1/4 left-1/5 w-[500px] h-[500px] rounded-full bg-[#E8622A]/10 blur-[120px] animate-float" />
         <div className="absolute bottom-1/4 right-1/5 w-[400px] h-[400px] rounded-full bg-[#7B9E87]/8 blur-[100px] animate-float" style={{ animationDelay: "1.5s" }} />
-        {/* Subtle grid */}
         <div className="absolute inset-0 opacity-[0.025]" style={{
           backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)",
           backgroundSize: "80px 80px"
@@ -88,14 +89,11 @@ export default function HeroSection() {
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-28 text-center">
-        {/* Label — plain text, not interactive */}
-        <p className="text-white/35 text-xs font-medium tracking-widest uppercase mb-10 flex items-center justify-center gap-2">
-          <span className="w-1 h-1 bg-[#E8622A] rounded-full inline-block" />
+        {/* Plain label — no card treatment */}
+        <p className="text-white/30 text-xs font-medium tracking-widest uppercase mb-10">
           60+ inspiring buildings across London
-          <span className="w-1 h-1 bg-[#E8622A] rounded-full inline-block" />
         </p>
 
-        {/* Headline */}
         <h1
           className="text-6xl sm:text-7xl lg:text-[88px] text-white mb-6 leading-[1.0] tracking-[-0.03em]"
           style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
@@ -117,7 +115,7 @@ export default function HeroSection() {
           Describe what you need in plain English and we&apos;ll find your perfect London workspace.
         </p>
 
-        {/* NL Search bar */}
+        {/* Search bar */}
         <div className="max-w-2xl mx-auto mb-5">
           <div className={`relative glass rounded-2xl transition-all duration-300 ${focused ? "glow-orange border-[#E8622A]/25" : ""}`}>
             <div className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
@@ -126,7 +124,6 @@ export default function HeroSection() {
                 : <Sparkles size={17} className={`transition-colors duration-200 ${focused || query ? "text-[#E8622A]" : "text-white/20"}`} />
               }
             </div>
-
             <input
               ref={inputRef}
               value={query}
@@ -138,7 +135,6 @@ export default function HeroSection() {
               disabled={status === "thinking"}
               className="w-full bg-transparent text-white placeholder-white/25 text-base sm:text-lg py-[18px] pl-14 pr-36 focus:outline-none rounded-2xl disabled:opacity-60"
             />
-
             <button
               onClick={() => go()}
               disabled={status === "thinking" || !query.trim()}
@@ -155,7 +151,6 @@ export default function HeroSection() {
               )}
             </button>
           </div>
-
           {status === "thinking" && (
             <p className="text-[#E8622A]/70 text-sm mt-3 animate-fade-up text-left pl-1">
               ✦ Understanding your query and matching spaces…
@@ -163,39 +158,52 @@ export default function HeroSection() {
           )}
         </div>
 
-        {/* Quick links */}
+        {/* Quick links — clearly interactive with underline hover */}
         <div className="flex flex-wrap justify-center gap-2 mb-16">
           <span className="text-white/20 text-sm self-center">Try:</span>
           {QUICK.map(({ label, q }) => (
             <button
               key={label}
               onClick={() => { setQuery(q); go(q); }}
-              className="glass px-3.5 py-1.5 rounded-full text-white/45 text-sm hover:text-white hover:border-white/20 transition-all duration-200"
+              className="text-white/45 text-sm hover:text-white underline-offset-2 hover:underline transition-all duration-200"
             >
               {label}
             </button>
           ))}
         </div>
 
-        {/* Floating stat cards */}
-        <div className="flex flex-wrap justify-center gap-3">
-          {[
-            { icon: MapPin,  value: "60+",      label: "London buildings" },
-            { icon: Users,   value: "4,000+",   label: "Businesses growing" },
-            { icon: Zap,     value: "Monthly",  label: "Rolling contracts" },
-          ].map(({ icon: Icon, value, label }) => (
-            <div key={label} className="glass rounded-2xl px-5 py-3.5 flex items-center gap-3 hover:border-white/15 transition-all">
-              <div className="w-8 h-8 rounded-lg bg-[#E8622A]/12 flex items-center justify-center">
-                <Icon size={15} className="text-[#E8622A]" />
-              </div>
-              <div className="text-left">
-                <div className="text-white font-semibold text-sm leading-tight">{value}</div>
-                <div className="text-white/30 text-xs">{label}</div>
-              </div>
-            </div>
-          ))}
+        {/* Inline stats — pure text, clearly non-interactive */}
+        <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-10 text-white/35">
+          <div className="text-center">
+            <div className="text-2xl font-semibold text-white" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>60+</div>
+            <div className="text-xs tracking-wide mt-0.5">London buildings</div>
+          </div>
+          <div className="w-px h-8 bg-white/10 hidden sm:block" />
+          <div className="text-center">
+            <div className="text-2xl font-semibold text-white" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>4,000+</div>
+            <div className="text-xs tracking-wide mt-0.5">Businesses growing</div>
+          </div>
+          <div className="w-px h-8 bg-white/10 hidden sm:block" />
+          <div className="text-center">
+            <div className="text-2xl font-semibold text-white" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>Monthly</div>
+            <div className="text-xs tracking-wide mt-0.5">Rolling contracts</div>
+          </div>
         </div>
       </div>
+
+      {/* Scroll down arrow */}
+      <button
+        onClick={scrollDown}
+        aria-label="Scroll down to explore spaces"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-white/30 hover:text-white/60 transition-colors duration-300 group"
+      >
+        <span className="text-[10px] tracking-widest uppercase font-medium">Explore</span>
+        <ChevronDown
+          size={20}
+          className="animate-bounce"
+          style={{ animationDuration: "1.8s" }}
+        />
+      </button>
     </section>
   );
 }

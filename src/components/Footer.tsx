@@ -75,8 +75,9 @@ export default function Footer() {
           {/* Brand column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <svg width="28" height="24" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 3L9 25L16 11L23 25L30 3" stroke="#E8622A" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
+              <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="7" fill="#E8622A"/>
+                <path d="M7 10L11.5 22L16 14L20.5 22L25 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="text-white font-semibold text-[17px] tracking-[-0.02em]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
                 Workspace

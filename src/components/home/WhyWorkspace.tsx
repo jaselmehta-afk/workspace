@@ -41,7 +41,7 @@ export default function WhyWorkspace() {
           >
             Not just an office.
             <br />
-            A <span className="italic">home</span> for your business.
+            A home for your business.
           </h2>
         </div>
 
@@ -51,7 +51,7 @@ export default function WhyWorkspace() {
             return (
               <div
                 key={reason.title}
-                className={`rounded-2xl p-8 flex gap-6 transition-all hover:shadow-md ${
+                className={`rounded-2xl p-8 flex gap-6 ${
                   i === 3 ? "bg-[#09090F] text-white" : "bg-white"
                 }`}
               >

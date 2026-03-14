@@ -2,43 +2,99 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MapPin, Star, Users, Maximize2, ArrowRight, Check, ChevronLeft, Train, Bus, ArrowUpRight, Wifi, Coffee, Bike, Zap, Shield, Clock, Calendar } from "lucide-react";
+import {
+  MapPin, Star, Maximize2, ArrowRight, ChevronLeft,
+  Train, Bus, ArrowUpRight,
+  Wifi, Coffee, Bike, Zap, Clock, Users, Shield,
+  Sunset, PawPrint, Wind, Mic, CalendarDays, ConciergeBell,
+  Dumbbell, TreePine, Car, Phone, BatteryCharging
+} from "lucide-react";
 import { Space } from "@/data/spaces";
 
+// Representative icons for each amenity — specific and meaningful
 const amenityIconMap: Record<string, React.ReactNode> = {
-  "High-speed Wi-Fi": <Wifi size={16} />,
-  "Café on-site": <Coffee size={16} />,
-  "Bike storage": <Bike size={16} />,
-  "EV charging": <Zap size={16} />,
-  "24/7 access": <Clock size={16} />,
-  "Meeting rooms": <Users size={16} />,
-  "Showers": <Shield size={16} />,
+  "High-speed Wi-Fi":     <Wifi size={18} />,
+  "Gigabit Wi-Fi":        <Wifi size={18} />,
+  "Café on-site":         <Coffee size={18} />,
+  "Bike storage":         <Bike size={18} />,
+  "EV charging":          <BatteryCharging size={18} />,
+  "24/7 access":          <Clock size={18} />,
+  "Meeting rooms":        <Users size={18} />,
+  "Showers":              <Shield size={18} />,   // using shower-like symbol
+  "Roof terrace":         <Sunset size={18} />,
+  "Rooftop terrace":      <Sunset size={18} />,
+  "Rooftop garden":       <Sunset size={18} />,
+  "Rooftop bar":          <Sunset size={18} />,
+  "Courtyard":            <TreePine size={18} />,
+  "Courtyard garden":     <TreePine size={18} />,
+  "Terrace with park views": <TreePine size={18} />,
+  "Pet-friendly":         <PawPrint size={18} />,
+  "Dog-friendly":         <PawPrint size={18} />,
+  "Air conditioning":     <Wind size={18} />,
+  "Podcast studio":       <Mic size={18} />,
+  "Event space":          <CalendarDays size={18} />,
+  "Reception team":       <ConciergeBell size={18} />,
+  "Gym":                  <Dumbbell size={18} />,
+  "Fitness centre":       <Dumbbell size={18} />,
+  "Parking":              <Car size={18} />,
+  "Phone booths":         <Phone size={18} />,
+  "Kitchen facilities":   <Coffee size={18} />,
 };
 
 export default function SpaceDetailClient({ space, similar }: { space: Space; similar: Space[] }) {
   const [activeImage, setActiveImage] = useState(0);
   const [showEnquiry, setShowEnquiry] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", teamSize: "", moveIn: "", message: "" });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("Thank you! Our team will be in touch within 24 hours.");
-    setShowEnquiry(false);
-  };
 
   const allImages = [space.image, ...space.gallery.slice(1)];
 
   return (
     <div className="min-h-screen bg-[#F4F1EA]">
-      {/* Breadcrumb */}
-      <div className="bg-[#09090F] pt-24 pb-6 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 text-white/40 text-sm">
+      {/* Dark header with breadcrumb — full nav width */}
+      <div className="bg-[#09090F]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-white/40 text-sm mb-8">
             <Link href="/" className="hover:text-white/70 transition-colors">Home</Link>
-            <span>/</span>
-            <Link href="/spaces" className="hover:text-white/70 transition-colors">Spaces</Link>
-            <span>/</span>
-            <span className="text-white/80">{space.name}</span>
+            <ChevronLeft size={12} className="rotate-180 opacity-50" />
+            <Link href="/spaces" className="hover:text-white/70 transition-colors">Find a space</Link>
+            <ChevronLeft size={12} className="rotate-180 opacity-50" />
+            <span className="text-white/80" aria-current="page">{space.name}</span>
+          </nav>
+
+          {/* Hero headline in dark header */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+            <div>
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <span className="inline-flex items-center gap-1.5 text-[#E8622A] text-sm font-medium">
+                  <MapPin size={13} />
+                  {space.neighbourhood}, {space.postcode}
+                </span>
+                {space.type.map((t) => (
+                  <span key={t} className="px-2.5 py-0.5 bg-white/10 text-white/60 text-xs rounded-full font-medium capitalize border border-white/[0.08]">
+                    {t}
+                  </span>
+                ))}
+                {space.isNew && (
+                  <span className="px-2.5 py-0.5 bg-[#E8622A] text-white text-xs rounded-full font-semibold">New</span>
+                )}
+                {space.grade && (
+                  <span className="px-2.5 py-0.5 bg-white/10 text-white/60 text-xs rounded-full font-medium border border-white/[0.08]">{space.grade}</span>
+                )}
+              </div>
+              <h1
+                className="text-3xl sm:text-4xl text-white leading-tight"
+                style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
+              >
+                {space.name}
+              </h1>
+              <p className="text-white/45 mt-2 text-base">{space.headline}</p>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <div className="flex items-center gap-1 px-3 py-1.5 bg-white/[0.06] rounded-xl border border-white/[0.08]">
+                <Star size={13} className="text-[#E8622A] fill-[#E8622A]" aria-hidden="true" />
+                <span className="text-white font-semibold text-sm">{space.rating}</span>
+                <span className="text-white/40 text-xs">({space.reviewCount})</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -46,44 +102,33 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main content */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             {/* Gallery */}
-            <div className="relative rounded-2xl overflow-hidden mb-4 group">
+            <div className="relative rounded-3xl overflow-hidden bg-[#09090F]">
               <img
                 src={allImages[activeImage] || space.image}
-                alt={space.name}
-                className="w-full h-[420px] object-cover"
+                alt={`${space.name} — interior view`}
+                className="w-full h-[420px] sm:h-[500px] object-cover"
               />
-              {space.isNew && (
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1.5 bg-[#E8622A] text-white text-sm font-semibold rounded-lg">New</span>
-                </div>
-              )}
-              {space.grade && (
-                <div className="absolute top-4 left-4 mt-10">
-                  <span className="px-3 py-1.5 bg-[#C9A84C] text-white text-sm font-semibold rounded-lg">{space.grade}</span>
-                </div>
-              )}
-              <div className="absolute bottom-4 left-4 flex items-center gap-1.5 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-lg">
-                <Star size={13} className="text-[#C9A84C] fill-[#C9A84C]" />
-                <span className="text-white text-sm font-semibold">{space.rating}</span>
-                <span className="text-white/60 text-xs">({space.reviewCount} reviews)</span>
-              </div>
-              <button className="absolute bottom-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-lg text-white text-xs hover:bg-black/70 transition-colors">
+              <button
+                className="absolute bottom-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-sm rounded-xl text-white text-xs font-medium hover:bg-black/80 transition-colors"
+                aria-label="View full gallery"
+              >
                 <Maximize2 size={12} />
-                View gallery
+                All photos
               </button>
             </div>
 
-            {/* Thumbnail strip */}
             {allImages.length > 1 && (
-              <div className="flex gap-2 mb-8">
+              <div className="flex gap-2 overflow-x-auto pb-1">
                 {allImages.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setActiveImage(i)}
-                    className={`w-20 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
-                      i === activeImage ? "border-[#E8622A]" : "border-transparent"
+                    aria-label={`Photo ${i + 1}`}
+                    aria-pressed={i === activeImage}
+                    className={`shrink-0 w-20 h-14 rounded-xl overflow-hidden border-2 transition-all ${
+                      i === activeImage ? "border-[#E8622A] opacity-100" : "border-transparent opacity-55 hover:opacity-80"
                     }`}
                   >
                     <img src={img} alt="" className="w-full h-full object-cover" />
@@ -92,80 +137,82 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
               </div>
             )}
 
-            {/* Overview */}
-            <div className="bg-white rounded-2xl p-8 mb-6">
-              <div className="flex items-start justify-between gap-4 mb-6">
-                <div>
-                  <div className="flex items-center gap-1.5 text-[#E8622A] text-sm font-medium mb-2">
-                    <MapPin size={14} />
-                    {space.neighbourhood}, {space.postcode}
-                  </div>
-                  <h1 className="text-3xl text-[#09090F] mb-2" style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 400 }}>
-                    {space.name}
-                  </h1>
-                  <div className="flex flex-wrap gap-2">
-                    {space.type.map((t) => (
-                      <span key={t} className="px-3 py-1 bg-[#F4F1EA] text-[#09090F] text-xs rounded-full font-semibold capitalize">{t}</span>
-                    ))}
-                  </div>
+            {/* Key specs bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: "Team size", value: `${space.capacity.min}–${space.capacity.max} people` },
+                { label: "Floor area", value: `${space.sqft.min.toLocaleString()}–${space.sqft.max.toLocaleString()} sq ft` },
+                { label: "Contract", value: "Monthly rolling" },
+                { label: "Availability", value: "Now", highlight: true },
+              ].map(({ label, value, highlight }) => (
+                <div key={label} className="bg-white rounded-2xl p-4">
+                  <div className="text-[11px] font-medium tracking-wider uppercase text-[#09090F]/35 mb-1">{label}</div>
+                  <div className={`font-semibold text-sm ${highlight ? "text-[#7B9E87]" : "text-[#09090F]"}`}>{value}</div>
                 </div>
-              </div>
+              ))}
+            </div>
 
-              {/* Key specs */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 p-4 bg-[#F4F1EA] rounded-xl">
-                <div className="text-center">
-                  <div className="text-xs text-gray-400 mb-1">Team size</div>
-                  <div className="font-semibold text-[#09090F] text-sm">{space.capacity.min}–{space.capacity.max} people</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xs text-gray-400 mb-1">Area</div>
-                  <div className="font-semibold text-[#09090F] text-sm">{space.sqft.min.toLocaleString()}–{space.sqft.max.toLocaleString()} sq ft</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xs text-gray-400 mb-1">Contract</div>
-                  <div className="font-semibold text-[#09090F] text-sm">Monthly rolling</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xs text-gray-400 mb-1">Available</div>
-                  <div className="font-semibold text-[#7B9E87] text-sm">Now</div>
-                </div>
-              </div>
-
-              <p className="text-gray-600 leading-relaxed text-base mb-0">{space.description}</p>
+            {/* About */}
+            <div className="bg-white rounded-3xl p-8">
+              <h2
+                className="text-xl text-[#09090F] mb-4"
+                style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500 }}
+              >
+                About this space
+              </h2>
+              <p className="text-[#09090F]/60 leading-relaxed text-base">{space.description}</p>
             </div>
 
             {/* Amenities */}
-            <div className="bg-white rounded-2xl p-8 mb-6">
-              <h2 className="text-xl font-semibold text-[#09090F] mb-6">What&apos;s included</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="bg-white rounded-3xl p-8">
+              <h2
+                className="text-xl text-[#09090F] mb-6"
+                style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500 }}
+              >
+                What&apos;s included
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {space.amenities.map((a) => (
-                  <div key={a} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#E8622A]/10 flex items-center justify-center text-[#E8622A] shrink-0">
-                      {amenityIconMap[a] || <Check size={14} />}
+                  <div key={a} className="flex items-center gap-3 py-2">
+                    <div
+                      className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[#E8622A]"
+                      style={{ background: "rgba(232,98,42,0.08)" }}
+                      aria-hidden="true"
+                    >
+                      {amenityIconMap[a] ?? <ArrowRight size={16} />}
                     </div>
-                    <span className="text-sm text-gray-600">{a}</span>
+                    <span className="text-sm font-medium text-[#09090F]">{a}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Transport */}
-            <div className="bg-white rounded-2xl p-8 mb-6">
-              <h2 className="text-xl font-semibold text-[#09090F] mb-6">Getting here</h2>
-              <div className="space-y-3">
+            {/* Getting here */}
+            <div className="bg-white rounded-3xl p-8">
+              <h2
+                className="text-xl text-[#09090F] mb-6"
+                style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500 }}
+              >
+                Getting here
+              </h2>
+              <div className="space-y-2">
                 {space.transport.map((t) => (
-                  <div key={t.name} className="flex items-center gap-4 py-3 border-b border-gray-50 last:border-0">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                      t.type === "tube" ? "bg-[#E32017]/10 text-[#E32017]" :
-                      t.type === "rail" ? "bg-[#1F7A1F]/10 text-[#1F7A1F]" : "bg-blue-50 text-blue-600"
-                    }`}>
-                      {t.type === "bus" ? <Bus size={14} /> : <Train size={14} />}
+                  <div key={t.name} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-[#F4F1EA] transition-colors">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                        t.type === "tube" ? "bg-[#E32017]/10 text-[#E32017]" :
+                        t.type === "rail" ? "bg-emerald-50 text-emerald-700" :
+                        "bg-blue-50 text-blue-600"
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {t.type === "bus" ? <Bus size={16} /> : <Train size={16} />}
                     </div>
                     <div className="flex-1">
                       <div className="font-medium text-[#09090F] text-sm">{t.name}</div>
-                      <div className="text-xs text-gray-400 capitalize">{t.type} station</div>
+                      <div className="text-xs text-[#09090F]/40 capitalize mt-0.5">{t.type}</div>
                     </div>
-                    <div className="text-sm font-semibold text-gray-500">{t.time} walk</div>
+                    <div className="text-sm font-semibold text-[#09090F]/50">{t.time} walk</div>
                   </div>
                 ))}
               </div>
@@ -174,21 +221,30 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
             {/* Similar spaces */}
             {similar.length > 0 && (
               <div>
-                <h2 className="text-xl font-semibold text-[#09090F] mb-6">You might also like</h2>
+                <h2
+                  className="text-xl text-[#09090F] mb-6"
+                  style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500 }}
+                >
+                  You might also like
+                </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {similar.map((s) => (
                     <Link
                       key={s.id}
                       href={`/spaces/${s.slug}`}
-                      className="group bg-white rounded-xl overflow-hidden hover:shadow-md transition-all"
+                      className="group bg-white rounded-2xl overflow-hidden hover:shadow-md transition-all"
                     >
-                      <div className="h-32 overflow-hidden">
+                      <div className="h-36 overflow-hidden relative">
                         <img src={s.image} alt={s.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                       </div>
                       <div className="p-4">
                         <div className="text-xs text-[#E8622A] font-medium mb-1">{s.neighbourhood}</div>
                         <div className="font-semibold text-[#09090F] text-sm">{s.name}</div>
-                        <div className="text-xs text-gray-400 mt-1">From £{s.priceFrom.toLocaleString()}/{s.priceUnit}</div>
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="text-xs text-[#09090F]/40">From £{s.priceFrom.toLocaleString()}/{s.priceUnit}</div>
+                          <ArrowRight size={14} className="text-[#E8622A] group-hover:translate-x-1 transition-transform" />
+                        </div>
                       </div>
                     </Link>
                   ))}
@@ -199,88 +255,113 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24">
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4">
-                <div className="mb-4">
-                  <span className="text-gray-400 text-xs">Starting from</span>
-                  <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-4xl font-bold text-[#09090F]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+            <div className="sticky top-24 space-y-3">
+              {/* Pricing card */}
+              <div className="bg-white rounded-3xl p-6 border border-[#09090F]/[0.06]">
+                <div className="mb-5">
+                  <p className="text-[#09090F]/40 text-xs font-medium tracking-wider uppercase mb-1">Starting from</p>
+                  <div className="flex items-baseline gap-1">
+                    <span
+                      className="text-4xl font-bold text-[#09090F]"
+                      style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+                    >
                       £{space.priceFrom.toLocaleString()}
                     </span>
-                    <span className="text-gray-400 text-sm">/{space.priceUnit}</span>
+                    <span className="text-[#09090F]/40 text-sm">/{space.priceUnit}</span>
                   </div>
-                  <span className="text-xs text-[#7B9E87] font-medium">✓ No hidden fees · Flexible contracts</span>
+                  <div className="flex items-center gap-1.5 mt-2 text-[#7B9E87] text-xs font-medium">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#7B9E87]" />
+                    No hidden fees · Monthly rolling
+                  </div>
                 </div>
 
+                <Link
+                  href={`/book-viewing?space=${space.slug}`}
+                  className="block w-full py-3.5 bg-[#E8622A] text-white font-semibold rounded-2xl hover:bg-[#d4561e] transition-colors text-center text-sm mb-3"
+                >
+                  Book a viewing
+                </Link>
                 <button
                   onClick={() => setShowEnquiry(!showEnquiry)}
-                  className="w-full py-3.5 bg-[#E8622A] text-white font-semibold rounded-xl hover:bg-[#d4561e] transition-colors mb-3"
+                  className="w-full py-3.5 bg-[#F4F1EA] text-[#09090F] font-semibold rounded-2xl hover:bg-[#ebe8e1] transition-colors text-sm"
+                  aria-expanded={showEnquiry}
                 >
-                  Enquire about this space
-                </button>
-                <button className="w-full py-3.5 bg-[#F4F1EA] text-[#09090F] font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
-                  <Calendar size={16} />
-                  Book a viewing
+                  {showEnquiry ? "Hide enquiry form" : "Send an enquiry"}
                 </button>
               </div>
 
               {/* Enquiry form */}
               {showEnquiry && (
-                <div className="bg-white rounded-2xl p-6 border border-gray-100">
-                  <h3 className="font-semibold text-[#09090F] mb-4">Send an enquiry</h3>
-                  <form onSubmit={handleSubmit} className="space-y-3">
+                <div className="bg-white rounded-3xl p-6 border border-[#09090F]/[0.06]">
+                  <h3
+                    className="font-semibold text-[#09090F] mb-5"
+                    style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+                  >
+                    Tell us about your needs
+                  </h3>
+                  <form
+                    onSubmit={(e) => { e.preventDefault(); setShowEnquiry(false); }}
+                    className="space-y-3"
+                  >
                     {[
                       { key: "name", label: "Full name", type: "text" },
                       { key: "email", label: "Email address", type: "email" },
-                      { key: "phone", label: "Phone number", type: "tel" },
+                      { key: "phone", label: "Phone (optional)", type: "tel" },
                     ].map((f) => (
-                      <input
-                        key={f.key}
-                        type={f.type}
-                        placeholder={f.label}
-                        value={formData[f.key as keyof typeof formData]}
-                        onChange={(e) => setFormData({ ...formData, [f.key]: e.target.value })}
-                        className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-[#09090F] placeholder-gray-400 focus:outline-none focus:border-[#E8622A]"
-                        required
-                      />
+                      <div key={f.key}>
+                        <label htmlFor={`enquiry-${f.key}`} className="text-xs font-medium text-[#09090F]/50 block mb-1">{f.label}</label>
+                        <input
+                          id={`enquiry-${f.key}`}
+                          type={f.type}
+                          required={f.type !== "tel"}
+                          className="w-full px-3.5 py-2.5 border border-[#09090F]/10 rounded-xl text-sm text-[#09090F] placeholder-[#09090F]/30 focus:outline-none focus:border-[#E8622A] bg-[#F4F1EA]/50 transition-colors"
+                        />
+                      </div>
                     ))}
-                    <select
-                      value={formData.teamSize}
-                      onChange={(e) => setFormData({ ...formData, teamSize: e.target.value })}
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] bg-white"
-                    >
-                      <option value="">Team size</option>
-                      <option>1–5 people</option>
-                      <option>6–15 people</option>
-                      <option>16–50 people</option>
-                      <option>51+ people</option>
-                    </select>
-                    <textarea
-                      placeholder="Tell us about your requirements..."
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      rows={3}
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-[#09090F] placeholder-gray-400 focus:outline-none focus:border-[#E8622A] resize-none"
-                    />
+                    <div>
+                      <label htmlFor="enquiry-teamsize" className="text-xs font-medium text-[#09090F]/50 block mb-1">Team size</label>
+                      <select
+                        id="enquiry-teamsize"
+                        className="w-full px-3.5 py-2.5 border border-[#09090F]/10 rounded-xl text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] bg-[#F4F1EA]/50 transition-colors"
+                      >
+                        <option value="">Select team size</option>
+                        <option>1–5 people</option>
+                        <option>6–15 people</option>
+                        <option>16–50 people</option>
+                        <option>51+ people</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="enquiry-message" className="text-xs font-medium text-[#09090F]/50 block mb-1">Any requirements</label>
+                      <textarea
+                        id="enquiry-message"
+                        placeholder="Tell us anything that would help…"
+                        rows={3}
+                        className="w-full px-3.5 py-2.5 border border-[#09090F]/10 rounded-xl text-sm text-[#09090F] placeholder-[#09090F]/30 focus:outline-none focus:border-[#E8622A] bg-[#F4F1EA]/50 transition-colors resize-none"
+                      />
+                    </div>
                     <button
                       type="submit"
-                      className="w-full py-3 bg-[#09090F] text-white font-semibold rounded-xl hover:bg-black transition-colors"
+                      className="w-full py-3 bg-[#09090F] text-white font-semibold rounded-xl hover:bg-black transition-colors text-sm"
                     >
                       Send enquiry
                     </button>
-                    <p className="text-xs text-gray-400 text-center">We respond within 24 hours</p>
+                    <p className="text-xs text-[#09090F]/30 text-center">We respond within 24 hours</p>
                   </form>
                 </div>
               )}
 
-              {/* Quick contact */}
-              <div className="bg-[#09090F] rounded-2xl p-6 mt-4">
-                <p className="text-white/80 text-sm mb-3">Prefer to talk?</p>
-                <a href="tel:02071383307" className="flex items-center gap-2 text-white font-semibold hover:text-[#E8622A] transition-colors">
-                  <ArrowUpRight size={16} className="text-[#E8622A]" />
+              {/* Talk to us */}
+              <div className="bg-[#09090F] rounded-3xl p-6">
+                <p className="text-white/50 text-xs font-medium tracking-wider uppercase mb-3">Prefer to talk?</p>
+                <a
+                  href="tel:02071383307"
+                  className="flex items-center gap-2 text-white font-semibold text-lg hover:text-[#E8622A] transition-colors"
+                >
+                  <ArrowUpRight size={16} className="text-[#E8622A] shrink-0" />
                   020 7138 3307
                 </a>
-                <p className="text-white/40 text-xs mt-1">Mon–Fri, 9am–6pm</p>
+                <p className="text-white/25 text-xs mt-1">Mon–Fri, 9am–6pm</p>
               </div>
             </div>
           </div>

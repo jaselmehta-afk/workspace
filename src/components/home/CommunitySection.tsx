@@ -79,7 +79,7 @@ export default function CommunitySection() {
               {events.map((event) => (
                 <div
                   key={event.title}
-                  className="bg-white rounded-xl p-5 flex gap-4 hover:shadow-md transition-shadow cursor-pointer group"
+                  className="bg-white rounded-xl p-5 flex gap-4 transition-shadow"
                 >
                   <div className="text-center min-w-[3rem]">
                     <div className="text-xs text-gray-400 font-medium">
@@ -96,7 +96,7 @@ export default function CommunitySection() {
                       </span>
                       <span className="text-xs text-gray-400">{event.attendees} attending</span>
                     </div>
-                    <h4 className="font-semibold text-[#09090F] text-sm group-hover:text-[#E8622A] transition-colors">
+                    <h4 className="font-semibold text-[#09090F] text-sm transition-colors">
                       {event.title}
                     </h4>
                     <p className="text-xs text-gray-400 mt-1">{event.location}</p>
@@ -123,7 +123,7 @@ export default function CommunitySection() {
                 return (
                   <div
                     key={article.title}
-                    className="bg-white rounded-xl p-5 flex gap-4 hover:shadow-md transition-shadow cursor-pointer group"
+                    className="bg-white rounded-xl p-5 flex gap-4 transition-shadow"
                   >
                     <div className="w-10 h-10 rounded-lg bg-[#F4F1EA] flex items-center justify-center shrink-0">
                       <Icon size={16} className="text-[#E8622A]" />
@@ -135,7 +135,7 @@ export default function CommunitySection() {
                         </span>
                         <span className="text-xs text-gray-400">{article.readTime}</span>
                       </div>
-                      <h4 className="font-semibold text-[#09090F] text-sm leading-snug group-hover:text-[#E8622A] transition-colors">
+                      <h4 className="font-semibold text-[#09090F] text-sm leading-snug transition-colors">
                         {article.title}
                       </h4>
                     </div>
