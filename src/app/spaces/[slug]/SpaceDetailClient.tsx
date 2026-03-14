@@ -29,9 +29,9 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
   const allImages = [space.image, ...space.gallery.slice(1)];
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4]">
+    <div className="min-h-screen bg-[#F4F1EA]">
       {/* Breadcrumb */}
-      <div className="bg-[#1C1C2E] pt-24 pb-6 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[#09090F] pt-24 pb-6 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-2 text-white/40 text-sm">
             <Link href="/" className="hover:text-white/70 transition-colors">Home</Link>
@@ -100,30 +100,30 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                     <MapPin size={14} />
                     {space.neighbourhood}, {space.postcode}
                   </div>
-                  <h1 className="text-3xl text-[#1C1C2E] mb-2" style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}>
+                  <h1 className="text-3xl text-[#09090F] mb-2" style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 400 }}>
                     {space.name}
                   </h1>
                   <div className="flex flex-wrap gap-2">
                     {space.type.map((t) => (
-                      <span key={t} className="px-3 py-1 bg-[#FAF8F4] text-[#1C1C2E] text-xs rounded-full font-semibold capitalize">{t}</span>
+                      <span key={t} className="px-3 py-1 bg-[#F4F1EA] text-[#09090F] text-xs rounded-full font-semibold capitalize">{t}</span>
                     ))}
                   </div>
                 </div>
               </div>
 
               {/* Key specs */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 p-4 bg-[#FAF8F4] rounded-xl">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 p-4 bg-[#F4F1EA] rounded-xl">
                 <div className="text-center">
                   <div className="text-xs text-gray-400 mb-1">Team size</div>
-                  <div className="font-semibold text-[#1C1C2E] text-sm">{space.capacity.min}–{space.capacity.max} people</div>
+                  <div className="font-semibold text-[#09090F] text-sm">{space.capacity.min}–{space.capacity.max} people</div>
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-gray-400 mb-1">Area</div>
-                  <div className="font-semibold text-[#1C1C2E] text-sm">{space.sqft.min.toLocaleString()}–{space.sqft.max.toLocaleString()} sq ft</div>
+                  <div className="font-semibold text-[#09090F] text-sm">{space.sqft.min.toLocaleString()}–{space.sqft.max.toLocaleString()} sq ft</div>
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-gray-400 mb-1">Contract</div>
-                  <div className="font-semibold text-[#1C1C2E] text-sm">Monthly rolling</div>
+                  <div className="font-semibold text-[#09090F] text-sm">Monthly rolling</div>
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-gray-400 mb-1">Available</div>
@@ -136,7 +136,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
             {/* Amenities */}
             <div className="bg-white rounded-2xl p-8 mb-6">
-              <h2 className="text-xl font-semibold text-[#1C1C2E] mb-6">What&apos;s included</h2>
+              <h2 className="text-xl font-semibold text-[#09090F] mb-6">What&apos;s included</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {space.amenities.map((a) => (
                   <div key={a} className="flex items-center gap-3">
@@ -151,7 +151,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
             {/* Transport */}
             <div className="bg-white rounded-2xl p-8 mb-6">
-              <h2 className="text-xl font-semibold text-[#1C1C2E] mb-6">Getting here</h2>
+              <h2 className="text-xl font-semibold text-[#09090F] mb-6">Getting here</h2>
               <div className="space-y-3">
                 {space.transport.map((t) => (
                   <div key={t.name} className="flex items-center gap-4 py-3 border-b border-gray-50 last:border-0">
@@ -162,7 +162,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                       {t.type === "bus" ? <Bus size={14} /> : <Train size={14} />}
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-[#1C1C2E] text-sm">{t.name}</div>
+                      <div className="font-medium text-[#09090F] text-sm">{t.name}</div>
                       <div className="text-xs text-gray-400 capitalize">{t.type} station</div>
                     </div>
                     <div className="text-sm font-semibold text-gray-500">{t.time} walk</div>
@@ -174,7 +174,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
             {/* Similar spaces */}
             {similar.length > 0 && (
               <div>
-                <h2 className="text-xl font-semibold text-[#1C1C2E] mb-6">You might also like</h2>
+                <h2 className="text-xl font-semibold text-[#09090F] mb-6">You might also like</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {similar.map((s) => (
                     <Link
@@ -187,7 +187,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                       </div>
                       <div className="p-4">
                         <div className="text-xs text-[#E8622A] font-medium mb-1">{s.neighbourhood}</div>
-                        <div className="font-semibold text-[#1C1C2E] text-sm">{s.name}</div>
+                        <div className="font-semibold text-[#09090F] text-sm">{s.name}</div>
                         <div className="text-xs text-gray-400 mt-1">From £{s.priceFrom.toLocaleString()}/{s.priceUnit}</div>
                       </div>
                     </Link>
@@ -204,7 +204,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                 <div className="mb-4">
                   <span className="text-gray-400 text-xs">Starting from</span>
                   <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-4xl font-bold text-[#1C1C2E]" style={{ fontFamily: "'Fraunces', serif" }}>
+                    <span className="text-4xl font-bold text-[#09090F]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
                       £{space.priceFrom.toLocaleString()}
                     </span>
                     <span className="text-gray-400 text-sm">/{space.priceUnit}</span>
@@ -218,7 +218,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                 >
                   Enquire about this space
                 </button>
-                <button className="w-full py-3.5 bg-[#FAF8F4] text-[#1C1C2E] font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
+                <button className="w-full py-3.5 bg-[#F4F1EA] text-[#09090F] font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
                   <Calendar size={16} />
                   Book a viewing
                 </button>
@@ -227,7 +227,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
               {/* Enquiry form */}
               {showEnquiry && (
                 <div className="bg-white rounded-2xl p-6 border border-gray-100">
-                  <h3 className="font-semibold text-[#1C1C2E] mb-4">Send an enquiry</h3>
+                  <h3 className="font-semibold text-[#09090F] mb-4">Send an enquiry</h3>
                   <form onSubmit={handleSubmit} className="space-y-3">
                     {[
                       { key: "name", label: "Full name", type: "text" },
@@ -240,14 +240,14 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                         placeholder={f.label}
                         value={formData[f.key as keyof typeof formData]}
                         onChange={(e) => setFormData({ ...formData, [f.key]: e.target.value })}
-                        className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-[#1C1C2E] placeholder-gray-400 focus:outline-none focus:border-[#E8622A]"
+                        className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-[#09090F] placeholder-gray-400 focus:outline-none focus:border-[#E8622A]"
                         required
                       />
                     ))}
                     <select
                       value={formData.teamSize}
                       onChange={(e) => setFormData({ ...formData, teamSize: e.target.value })}
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-[#1C1C2E] focus:outline-none focus:border-[#E8622A] bg-white"
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] bg-white"
                     >
                       <option value="">Team size</option>
                       <option>1–5 people</option>
@@ -260,11 +260,11 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       rows={3}
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-[#1C1C2E] placeholder-gray-400 focus:outline-none focus:border-[#E8622A] resize-none"
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-[#09090F] placeholder-gray-400 focus:outline-none focus:border-[#E8622A] resize-none"
                     />
                     <button
                       type="submit"
-                      className="w-full py-3 bg-[#1C1C2E] text-white font-semibold rounded-xl hover:bg-black transition-colors"
+                      className="w-full py-3 bg-[#09090F] text-white font-semibold rounded-xl hover:bg-black transition-colors"
                     >
                       Send enquiry
                     </button>
@@ -274,7 +274,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
               )}
 
               {/* Quick contact */}
-              <div className="bg-[#1C1C2E] rounded-2xl p-6 mt-4">
+              <div className="bg-[#09090F] rounded-2xl p-6 mt-4">
                 <p className="text-white/80 text-sm mb-3">Prefer to talk?</p>
                 <a href="tel:02071383307" className="flex items-center gap-2 text-white font-semibold hover:text-[#E8622A] transition-colors">
                   <ArrowUpRight size={16} className="text-[#E8622A]" />

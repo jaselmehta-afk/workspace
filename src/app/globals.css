@@ -1,62 +1,72 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-charcoal: #0E0E1A;
-  --color-brand-cream: #FAF8F4;
-  --color-brand-orange: #E8622A;
-  --color-brand-sage: #7B9E87;
-  --color-brand-gold: #C9A84C;
-  --color-brand-dark: #080810;
-  --font-display: 'Fraunces', serif;
-  --font-sans: 'Inter', sans-serif;
+  --color-brand-dark:    #09090F;
+  --color-brand-ink:     #0E0C1A;
+  --color-brand-cream:   #F4F1EA;
+  --color-brand-orange:  #E8622A;
+  --color-brand-sage:    #7B9E87;
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-sans:    'Inter', sans-serif;
 }
 
 @layer base {
   html { scroll-behavior: smooth; }
   body {
-    background-color: #FAF8F4;
-    color: #0E0E1A;
+    background-color: #F4F1EA;
+    color: #09090F;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer utilities {
+  /* Glass — for dark surfaces */
   .glass {
-    background: rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.06);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.10);
   }
+  /* Glass — for light surfaces */
   .glass-light {
-    background: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.72);
     backdrop-filter: blur(24px) saturate(200%);
     -webkit-backdrop-filter: blur(24px) saturate(200%);
-    border: 1px solid rgba(255,255,255,0.55);
+    border: 1px solid rgba(255,255,255,0.50);
   }
+  /* Glass — explicit dark variant */
   .glass-dark {
-    background: rgba(14,14,26,0.55);
+    background: rgba(9,9,15,0.55);
     backdrop-filter: blur(32px) saturate(180%);
     -webkit-backdrop-filter: blur(32px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.07);
   }
+
   .glow-orange {
-    box-shadow: 0 0 40px rgba(232,98,42,0.3), 0 0 80px rgba(232,98,42,0.12);
+    box-shadow: 0 0 40px rgba(232,98,42,0.28), 0 0 80px rgba(232,98,42,0.10);
   }
   .glow-orange-sm {
-    box-shadow: 0 0 20px rgba(232,98,42,0.35);
+    box-shadow: 0 0 20px rgba(232,98,42,0.32);
   }
+
+  /* Hero dark mesh — single consistent dark */
   .mesh-dark {
     background:
-      radial-gradient(ellipse at 15% 60%, rgba(232,98,42,0.14) 0%, transparent 50%),
-      radial-gradient(ellipse at 85% 15%, rgba(123,158,135,0.1) 0%, transparent 40%),
-      radial-gradient(ellipse at 55% 85%, rgba(201,168,76,0.08) 0%, transparent 40%),
-      #080810;
+      radial-gradient(ellipse at 15% 60%, rgba(232,98,42,0.13) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 15%, rgba(123,158,135,0.09) 0%, transparent 40%),
+      radial-gradient(ellipse at 55% 85%, rgba(232,98,42,0.05) 0%, transparent 40%),
+      #09090F;
+  }
+
+  /* Section dark — same base as hero so nav bleeds seamlessly */
+  .section-dark {
+    background: #09090F;
   }
 
   @keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
   }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(14px); }
@@ -79,8 +89,8 @@
     background-size: 200% auto;
     animation: shimmer 1.4s linear infinite;
   }
-  .animate-fade-up { animation: fadeUp 0.45s ease forwards; }
-  .cursor-blink   { animation: blink 1s step-end infinite; }
+  .animate-fade-up  { animation: fadeUp 0.45s ease forwards; }
+  .cursor-blink     { animation: blink 1s step-end infinite; }
   .animate-spin-slow { animation: spin-slow 3s linear infinite; }
-  .animate-float  { animation: float 3s ease-in-out infinite; }
+  .animate-float    { animation: float 3s ease-in-out infinite; }
 }

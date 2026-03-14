@@ -22,14 +22,14 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4]">
+    <div className="min-h-screen bg-[#F4F1EA]">
       {/* Header */}
-      <div className="bg-[#1C1C2E] pt-28 pb-16 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[#09090F] pt-28 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">Get in touch</p>
           <h1
             className="text-4xl sm:text-5xl text-white mb-4 font-light"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
           >
             We&apos;d love to hear
             <br />
@@ -47,7 +47,7 @@ export default function ContactPage() {
           <div className="lg:col-span-1">
             <div className="space-y-6">
               <div className="bg-white rounded-2xl p-6">
-                <h3 className="font-semibold text-[#1C1C2E] mb-4">Contact us directly</h3>
+                <h3 className="font-semibold text-[#09090F] mb-4">Contact us directly</h3>
                 <div className="space-y-4">
                   <a href="tel:02071383307" className="flex items-start gap-3 group">
                     <div className="w-9 h-9 bg-[#E8622A]/10 rounded-lg flex items-center justify-center text-[#E8622A] shrink-0 mt-0.5">
@@ -55,7 +55,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <div className="text-xs text-gray-400 mb-0.5">Phone</div>
-                      <div className="font-semibold text-[#1C1C2E] group-hover:text-[#E8622A] transition-colors">020 7138 3307</div>
+                      <div className="font-semibold text-[#09090F] group-hover:text-[#E8622A] transition-colors">020 7138 3307</div>
                       <div className="text-xs text-gray-400">Mon–Fri, 9am–6pm</div>
                     </div>
                   </a>
@@ -65,7 +65,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <div className="text-xs text-gray-400 mb-0.5">Email</div>
-                      <div className="font-semibold text-[#1C1C2E] group-hover:text-[#E8622A] transition-colors text-sm">hello@workspace.co.uk</div>
+                      <div className="font-semibold text-[#09090F] group-hover:text-[#E8622A] transition-colors text-sm">hello@workspace.co.uk</div>
                     </div>
                   </a>
                   <div className="flex items-start gap-3">
@@ -74,13 +74,13 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <div className="text-xs text-gray-400 mb-0.5">Head office</div>
-                      <div className="text-sm text-[#1C1C2E]">Canterbury Court<br />1–3 Brixton Road<br />London SW9 6DE</div>
+                      <div className="text-sm text-[#09090F]">Canterbury Court<br />1–3 Brixton Road<br />London SW9 6DE</div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-[#1C1C2E] rounded-2xl p-6">
+              <div className="bg-[#09090F] rounded-2xl p-6">
                 <h3 className="font-semibold text-white mb-3">Need a space urgently?</h3>
                 <p className="text-white/60 text-sm mb-4">
                   Our team can usually show you around within 24 hours and get you set up within a week.
@@ -103,7 +103,7 @@ export default function ContactPage() {
                 <div className="w-16 h-16 bg-[#7B9E87]/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <span className="text-3xl">✓</span>
                 </div>
-                <h2 className="text-2xl text-[#1C1C2E] mb-3" style={{ fontFamily: "'Fraunces', serif" }}>Message received!</h2>
+                <h2 className="text-2xl text-[#09090F] mb-3" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>Message received!</h2>
                 <p className="text-gray-500 mb-6">Our team will be in touch within 24 hours. In the meantime, feel free to browse our available spaces.</p>
                 <a href="/spaces" className="inline-flex items-center gap-2 px-6 py-3 bg-[#E8622A] text-white font-semibold rounded-xl hover:bg-[#d4561e] transition-colors">
                   Browse spaces
@@ -111,7 +111,7 @@ export default function ContactPage() {
               </div>
             ) : (
               <div className="bg-white rounded-2xl p-8">
-                <h2 className="text-2xl text-[#1C1C2E] mb-6 font-semibold">Send a message</h2>
+                <h2 className="text-2xl text-[#09090F] mb-6 font-semibold">Send a message</h2>
 
                 {/* Enquiry type */}
                 <div className="mb-6">
@@ -146,7 +146,7 @@ export default function ContactPage() {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#1C1C2E] focus:outline-none focus:border-[#E8622A] transition-colors"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] transition-colors"
                         placeholder="Jane Smith"
                       />
                     </div>
@@ -156,7 +156,7 @@ export default function ContactPage() {
                         type="text"
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#1C1C2E] focus:outline-none focus:border-[#E8622A] transition-colors"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] transition-colors"
                         placeholder="Acme Ltd"
                       />
                     </div>
@@ -169,7 +169,7 @@ export default function ContactPage() {
                         required
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#1C1C2E] focus:outline-none focus:border-[#E8622A] transition-colors"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] transition-colors"
                         placeholder="jane@acme.com"
                       />
                     </div>
@@ -179,7 +179,7 @@ export default function ContactPage() {
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#1C1C2E] focus:outline-none focus:border-[#E8622A] transition-colors"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] transition-colors"
                         placeholder="07700 000000"
                       />
                     </div>
@@ -191,7 +191,7 @@ export default function ContactPage() {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       rows={5}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#1C1C2E] focus:outline-none focus:border-[#E8622A] transition-colors resize-none"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] transition-colors resize-none"
                       placeholder="Tell us about what you're looking for — team size, preferred area, move-in date, any specific requirements..."
                     />
                   </div>

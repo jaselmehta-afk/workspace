@@ -92,13 +92,13 @@ function SpacesInner() {
   const activeFilterCount = [area, type, size].filter(Boolean).length + selectedAmenities.length;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4]">
+    <div className="min-h-screen bg-[#F4F1EA]">
       {/* Header */}
-      <div className="bg-[#1C1C2E] pt-28 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[#09090F] pt-28 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <h1
             className="text-4xl sm:text-5xl text-white mb-4 font-light"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
           >
             Find your perfect space
           </h1>
@@ -115,7 +115,7 @@ function SpacesInner() {
                 placeholder="Search by name, area or postcode..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="flex-1 text-sm text-[#1C1C2E] placeholder-gray-400 focus:outline-none"
+                className="flex-1 text-sm text-[#09090F] placeholder-gray-400 focus:outline-none"
               />
               {search && (
                 <button onClick={() => setSearch("")} className="text-gray-400 hover:text-gray-600">
@@ -128,7 +128,7 @@ function SpacesInner() {
               className={`flex items-center gap-2 px-4 py-3 rounded-xl font-medium text-sm transition-colors ${
                 showFilters || activeFilterCount > 0
                   ? "bg-[#E8622A] text-white"
-                  : "bg-white text-[#1C1C2E] hover:bg-gray-50"
+                  : "bg-white text-[#09090F] hover:bg-gray-50"
               }`}
             >
               <SlidersHorizontal size={16} />
@@ -153,7 +153,7 @@ function SpacesInner() {
                 <select
                   value={area}
                   onChange={(e) => setArea(e.target.value as Area | "")}
-                  className="w-full text-sm text-[#1C1C2E] border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A] bg-white"
+                  className="w-full text-sm text-[#09090F] border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A] bg-white"
                 >
                   {areaOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
@@ -163,7 +163,7 @@ function SpacesInner() {
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="w-full text-sm text-[#1C1C2E] border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A] bg-white"
+                  className="w-full text-sm text-[#09090F] border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A] bg-white"
                 >
                   {typeOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
@@ -173,7 +173,7 @@ function SpacesInner() {
                 <select
                   value={size}
                   onChange={(e) => setSize(e.target.value)}
-                  className="w-full text-sm text-[#1C1C2E] border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A] bg-white"
+                  className="w-full text-sm text-[#09090F] border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A] bg-white"
                 >
                   {sizeOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
@@ -212,13 +212,13 @@ function SpacesInner() {
         {/* Results bar */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-sm text-gray-500">
-            Showing <span className="font-semibold text-[#1C1C2E]">{filtered.length}</span> of {spaces.length} spaces
+            Showing <span className="font-semibold text-[#09090F]">{filtered.length}</span> of {spaces.length} spaces
           </p>
           <div className="flex items-center gap-3">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="text-sm text-[#1C1C2E] border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#E8622A] bg-white"
+              className="text-sm text-[#09090F] border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#E8622A] bg-white"
             >
               <option value="recommended">Recommended</option>
               <option value="price-asc">Price: Low to high</option>
@@ -228,13 +228,13 @@ function SpacesInner() {
             <div className="flex gap-1 border border-gray-200 rounded-lg overflow-hidden">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 transition-colors ${viewMode === "grid" ? "bg-[#1C1C2E] text-white" : "bg-white text-gray-400 hover:text-gray-600"}`}
+                className={`p-2 transition-colors ${viewMode === "grid" ? "bg-[#09090F] text-white" : "bg-white text-gray-400 hover:text-gray-600"}`}
               >
                 <Grid3X3 size={15} />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 transition-colors ${viewMode === "list" ? "bg-[#1C1C2E] text-white" : "bg-white text-gray-400 hover:text-gray-600"}`}
+                className={`p-2 transition-colors ${viewMode === "list" ? "bg-[#09090F] text-white" : "bg-white text-gray-400 hover:text-gray-600"}`}
               >
                 <List size={15} />
               </button>
@@ -248,7 +248,7 @@ function SpacesInner() {
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search size={24} className="text-gray-300" />
             </div>
-            <h3 className="text-lg font-semibold text-[#1C1C2E] mb-2">No spaces found</h3>
+            <h3 className="text-lg font-semibold text-[#09090F] mb-2">No spaces found</h3>
             <p className="text-gray-500 text-sm mb-6">Try adjusting your filters or search term</p>
             <button
               onClick={() => { setSearch(""); setArea(""); setType(""); setSize(""); setSelectedAmenities([]); }}
@@ -308,17 +308,17 @@ function SpaceCardGrid({ space }: { space: Space }) {
         <div className="flex items-center gap-1 text-[#E8622A] text-xs font-medium mb-1">
           <MapPin size={11} />{space.neighbourhood}, {space.postcode}
         </div>
-        <h3 className="font-semibold text-[#1C1C2E] mb-1">{space.name}</h3>
+        <h3 className="font-semibold text-[#09090F] mb-1">{space.name}</h3>
         <p className="text-gray-500 text-sm mb-3 line-clamp-2">{space.headline}</p>
         <div className="flex flex-wrap gap-1.5 mb-4">
           {space.type.map((t) => (
-            <span key={t} className="px-2 py-0.5 bg-[#FAF8F4] text-[#1C1C2E] text-xs rounded-md font-medium capitalize">{t}</span>
+            <span key={t} className="px-2 py-0.5 bg-[#F4F1EA] text-[#09090F] text-xs rounded-md font-medium capitalize">{t}</span>
           ))}
         </div>
         <div className="flex items-center justify-between pt-3 border-t border-gray-100">
           <div>
             <span className="text-gray-400 text-xs">From </span>
-            <span className="font-bold text-[#1C1C2E]">£{space.priceFrom.toLocaleString()}</span>
+            <span className="font-bold text-[#09090F]">£{space.priceFrom.toLocaleString()}</span>
             <span className="text-gray-400 text-xs">/{space.priceUnit}</span>
           </div>
           <span className="flex items-center gap-1 text-[#E8622A] text-xs font-semibold group-hover:gap-2 transition-all">
@@ -353,17 +353,17 @@ function SpaceCardList({ space }: { space: Space }) {
               <div className="flex items-center gap-1 text-[#E8622A] text-xs font-medium mb-1">
                 <MapPin size={11} />{space.neighbourhood}, {space.postcode}
               </div>
-              <h3 className="font-semibold text-[#1C1C2E] text-lg">{space.name}</h3>
+              <h3 className="font-semibold text-[#09090F] text-lg">{space.name}</h3>
             </div>
             <div className="flex items-center gap-1 shrink-0">
               <Star size={12} className="text-[#C9A84C] fill-[#C9A84C]" />
-              <span className="text-sm font-semibold text-[#1C1C2E]">{space.rating}</span>
+              <span className="text-sm font-semibold text-[#09090F]">{space.rating}</span>
             </div>
           </div>
           <p className="text-gray-500 text-sm mb-3">{space.headline}</p>
           <div className="flex flex-wrap gap-1.5">
             {space.amenities.slice(0, 4).map((a) => (
-              <span key={a} className="flex items-center gap-1 px-2 py-1 bg-[#FAF8F4] text-gray-500 text-xs rounded-md">
+              <span key={a} className="flex items-center gap-1 px-2 py-1 bg-[#F4F1EA] text-gray-500 text-xs rounded-md">
                 {amenityIcons[a] || null}{a}
               </span>
             ))}
@@ -372,7 +372,7 @@ function SpaceCardList({ space }: { space: Space }) {
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
           <div>
             <span className="text-gray-400 text-xs">From </span>
-            <span className="font-bold text-[#1C1C2E] text-lg">£{space.priceFrom.toLocaleString()}</span>
+            <span className="font-bold text-[#09090F] text-lg">£{space.priceFrom.toLocaleString()}</span>
             <span className="text-gray-400 text-xs">/{space.priceUnit}</span>
           </div>
           <span className="flex items-center gap-2 px-4 py-2 bg-[#E8622A] text-white text-sm font-semibold rounded-lg group-hover:bg-[#d4561e] transition-colors">

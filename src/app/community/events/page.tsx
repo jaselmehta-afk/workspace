@@ -89,11 +89,11 @@ export default function EventsPage() {
   const filtered = filter === "all" ? events : events.filter((e) => e.category.toLowerCase() === filter);
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4]">
-      <div className="bg-[#1C1C2E] pt-28 pb-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F4F1EA]">
+      <div className="bg-[#09090F] pt-28 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">Community events</p>
-          <h1 className="text-4xl sm:text-5xl text-white mb-4 font-light" style={{ fontFamily: "'Fraunces', serif" }}>
+          <h1 className="text-4xl sm:text-5xl text-white mb-4 font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
             What&apos;s on at Workspace
           </h1>
           <p className="text-white/60 text-lg">Workshops, talks, networking and community moments — happening across our buildings every week.</p>
@@ -138,7 +138,7 @@ export default function EventsPage() {
                     </span>
                   </div>
                   <div className="absolute top-4 right-4 bg-white rounded-xl px-3 py-2 text-center shadow">
-                    <div className="text-xl font-bold text-[#1C1C2E] leading-none">{day}</div>
+                    <div className="text-xl font-bold text-[#09090F] leading-none">{day}</div>
                     <div className="text-xs text-gray-400 uppercase">{month}</div>
                   </div>
                   <div className="absolute bottom-4 left-4">
@@ -149,7 +149,7 @@ export default function EventsPage() {
                 </div>
 
                 <div className="p-5">
-                  <h3 className="font-semibold text-[#1C1C2E] text-lg mb-2 group-hover:text-[#E8622A] transition-colors" style={{ fontFamily: "'Fraunces', serif" }}>
+                  <h3 className="font-semibold text-[#09090F] text-lg mb-2 group-hover:text-[#E8622A] transition-colors" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
                     {event.title}
                   </h3>
                   <p className="text-sm text-gray-500 mb-4 line-clamp-2">{event.description}</p>

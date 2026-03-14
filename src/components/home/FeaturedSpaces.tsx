@@ -12,7 +12,7 @@ export default function FeaturedSpaces() {
   const featured = spaces.filter((s) => s.isFeatured).slice(0, 3);
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#1C1C2E]">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 section-dark">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
           <div>
@@ -21,11 +21,11 @@ export default function FeaturedSpaces() {
             </p>
             <h2
               className="text-4xl sm:text-5xl text-white leading-tight"
-              style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
+              style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
             >
               London&apos;s most
               <br />
-              <span className="italic">characterful</span> buildings.
+              characterful buildings.
             </h2>
           </div>
           <Link

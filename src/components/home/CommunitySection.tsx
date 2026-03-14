@@ -48,18 +48,18 @@ const articles = [
 
 export default function CommunitySection() {
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#FAF8F4]">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F4F1EA]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-14">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">
             Community & content
           </p>
           <h2
-            className="text-4xl sm:text-5xl text-[#1C1C2E] leading-tight"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
+            className="text-4xl sm:text-5xl text-[#09090F] leading-tight"
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
           >
             More than a desk.
-            <br />A <span className="italic">community.</span>
+            <br />A community.
           </h2>
         </div>
 
@@ -67,7 +67,7 @@ export default function CommunitySection() {
           {/* Events */}
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-[#1C1C2E] text-lg flex items-center gap-2">
+              <h3 className="font-semibold text-[#09090F] text-lg flex items-center gap-2">
                 <Calendar size={18} className="text-[#E8622A]" />
                 Upcoming events
               </h3>
@@ -85,7 +85,7 @@ export default function CommunitySection() {
                     <div className="text-xs text-gray-400 font-medium">
                       {event.date.split(" ")[1]}
                     </div>
-                    <div className="text-2xl font-bold text-[#1C1C2E]" style={{ fontFamily: "'Fraunces', serif" }}>
+                    <div className="text-2xl font-bold text-[#09090F]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
                       {event.date.split(" ")[0]}
                     </div>
                   </div>
@@ -96,7 +96,7 @@ export default function CommunitySection() {
                       </span>
                       <span className="text-xs text-gray-400">{event.attendees} attending</span>
                     </div>
-                    <h4 className="font-semibold text-[#1C1C2E] text-sm group-hover:text-[#E8622A] transition-colors">
+                    <h4 className="font-semibold text-[#09090F] text-sm group-hover:text-[#E8622A] transition-colors">
                       {event.title}
                     </h4>
                     <p className="text-xs text-gray-400 mt-1">{event.location}</p>
@@ -109,7 +109,7 @@ export default function CommunitySection() {
           {/* Articles */}
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-[#1C1C2E] text-lg flex items-center gap-2">
+              <h3 className="font-semibold text-[#09090F] text-lg flex items-center gap-2">
                 <BookOpen size={18} className="text-[#E8622A]" />
                 From the content hub
               </h3>
@@ -125,17 +125,17 @@ export default function CommunitySection() {
                     key={article.title}
                     className="bg-white rounded-xl p-5 flex gap-4 hover:shadow-md transition-shadow cursor-pointer group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-[#FAF8F4] flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-[#F4F1EA] flex items-center justify-center shrink-0">
                       <Icon size={16} className="text-[#E8622A]" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-xs px-2 py-0.5 bg-[#1C1C2E]/5 text-[#1C1C2E]/60 rounded-full font-medium">
+                        <span className="text-xs px-2 py-0.5 bg-[#09090F]/5 text-[#09090F]/60 rounded-full font-medium">
                           {article.category}
                         </span>
                         <span className="text-xs text-gray-400">{article.readTime}</span>
                       </div>
-                      <h4 className="font-semibold text-[#1C1C2E] text-sm leading-snug group-hover:text-[#E8622A] transition-colors">
+                      <h4 className="font-semibold text-[#09090F] text-sm leading-snug group-hover:text-[#E8622A] transition-colors">
                         {article.title}
                       </h4>
                     </div>

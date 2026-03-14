@@ -98,14 +98,14 @@ export default function ContentHubPage() {
   const rest = filtered.filter((a) => !a.featured);
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4]">
+    <div className="min-h-screen bg-[#F4F1EA]">
       {/* Header */}
-      <div className="bg-[#1C1C2E] pt-28 pb-16 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[#09090F] pt-28 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">Content hub</p>
           <h1
             className="text-4xl sm:text-5xl text-white mb-4 font-light"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
           >
             Stories, insights and ideas
             <br />
@@ -156,8 +156,8 @@ export default function ContentHubPage() {
                   <span className="text-xs text-gray-400">{featured.date}</span>
                 </div>
                 <h2
-                  className="text-2xl sm:text-3xl text-[#1C1C2E] mb-4 leading-snug font-light"
-                  style={{ fontFamily: "'Fraunces', serif" }}
+                  className="text-2xl sm:text-3xl text-[#09090F] mb-4 leading-snug font-light"
+                  style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
                 >
                   {featured.title}
                 </h2>
@@ -165,7 +165,7 @@ export default function ContentHubPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <img src={featured.author.avatar} alt="" className="w-8 h-8 rounded-full object-cover" />
-                    <span className="text-sm font-medium text-[#1C1C2E]">{featured.author.name}</span>
+                    <span className="text-sm font-medium text-[#09090F]">{featured.author.name}</span>
                   </div>
                   <span className="flex items-center gap-1.5 text-[#E8622A] font-semibold text-sm group-hover:gap-2 transition-all">
                     Read more <ArrowRight size={14} />
@@ -189,7 +189,7 @@ export default function ContentHubPage() {
               </div>
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="flex items-center gap-1 px-2 py-0.5 bg-[#FAF8F4] text-gray-500 text-xs rounded-full font-medium capitalize">
+                  <span className="flex items-center gap-1 px-2 py-0.5 bg-[#F4F1EA] text-gray-500 text-xs rounded-full font-medium capitalize">
                     {categoryIconMap[article.category]}
                     {article.category}
                   </span>
@@ -198,8 +198,8 @@ export default function ContentHubPage() {
                   </span>
                 </div>
                 <h3
-                  className="font-semibold text-[#1C1C2E] leading-snug mb-2 group-hover:text-[#E8622A] transition-colors"
-                  style={{ fontFamily: "'Fraunces', serif" }}
+                  className="font-semibold text-[#09090F] leading-snug mb-2 group-hover:text-[#E8622A] transition-colors"
+                  style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
                 >
                   {article.title}
                 </h3>

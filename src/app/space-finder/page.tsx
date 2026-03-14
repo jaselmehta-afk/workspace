@@ -82,9 +82,9 @@ export default function SpaceFinderPage() {
   const recommendations = step === 4 ? getRecommendations(teamSize, area, priorities) : [];
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4]">
+    <div className="min-h-screen bg-[#F4F1EA]">
       {/* Header */}
-      <div className="bg-[#1C1C2E] pt-28 pb-12 px-4">
+      <div className="bg-[#09090F] pt-28 pb-12 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#E8622A]/20 rounded-full text-[#E8622A] text-xs font-semibold mb-4">
             <Sparkles size={13} />
@@ -92,7 +92,7 @@ export default function SpaceFinderPage() {
           </div>
           <h1
             className="text-3xl sm:text-4xl text-white mb-3 font-light"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
           >
             Find your perfect workspace
           </h1>
@@ -126,7 +126,7 @@ export default function SpaceFinderPage() {
         {/* Step 1: Team size */}
         {step === 1 && (
           <div>
-            <h2 className="text-2xl font-semibold text-[#1C1C2E] mb-2 text-center" style={{ fontFamily: "'Fraunces', serif" }}>
+            <h2 className="text-2xl font-semibold text-[#09090F] mb-2 text-center" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
               How big is your team?
             </h2>
             <p className="text-gray-500 text-center mb-8">This helps us find spaces with the right capacity.</p>
@@ -141,7 +141,7 @@ export default function SpaceFinderPage() {
                 >
                   <span className="text-3xl">{opt.emoji}</span>
                   <div className="flex-1">
-                    <div className="font-semibold text-[#1C1C2E]">{opt.label}</div>
+                    <div className="font-semibold text-[#09090F]">{opt.label}</div>
                     <div className="text-sm text-gray-500">{opt.sub}</div>
                   </div>
                   {teamSize === opt.value && <Check size={18} className="text-[#E8622A]" />}
@@ -155,7 +155,7 @@ export default function SpaceFinderPage() {
         {/* Step 2: Location */}
         {step === 2 && (
           <div>
-            <h2 className="text-2xl font-semibold text-[#1C1C2E] mb-2 text-center" style={{ fontFamily: "'Fraunces', serif" }}>
+            <h2 className="text-2xl font-semibold text-[#09090F] mb-2 text-center" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
               Which part of London?
             </h2>
             <p className="text-gray-500 text-center mb-8">Pick the area that works best for your team.</p>
@@ -169,7 +169,7 @@ export default function SpaceFinderPage() {
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-[#1C1C2E]">{opt.label}</span>
+                    <span className="font-semibold text-[#09090F]">{opt.label}</span>
                     {area === opt.value && <Check size={16} className="text-[#E8622A]" />}
                   </div>
                   <div className="text-xs text-gray-400">{opt.desc}</div>
@@ -194,7 +194,7 @@ export default function SpaceFinderPage() {
         {/* Step 3: Priorities */}
         {step === 3 && (
           <div>
-            <h2 className="text-2xl font-semibold text-[#1C1C2E] mb-2 text-center" style={{ fontFamily: "'Fraunces', serif" }}>
+            <h2 className="text-2xl font-semibold text-[#09090F] mb-2 text-center" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
               What matters most to you?
             </h2>
             <p className="text-gray-500 text-center mb-8">Pick up to 3 priorities. We&apos;ll weight your recommendations accordingly.</p>
@@ -209,7 +209,7 @@ export default function SpaceFinderPage() {
                 >
                   <span className="text-2xl mb-2 block">{opt.emoji}</span>
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-[#1C1C2E] text-sm">{opt.label}</span>
+                    <span className="font-medium text-[#09090F] text-sm">{opt.label}</span>
                     {priorities.includes(opt.value) && <Check size={14} className="text-[#E8622A]" />}
                   </div>
                 </button>
@@ -241,7 +241,7 @@ export default function SpaceFinderPage() {
               <div className="w-16 h-16 bg-[#E8622A]/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Sparkles size={28} className="text-[#E8622A]" />
               </div>
-              <h2 className="text-2xl font-semibold text-[#1C1C2E] mb-2" style={{ fontFamily: "'Fraunces', serif" }}>
+              <h2 className="text-2xl font-semibold text-[#09090F] mb-2" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
                 Your top matches
               </h2>
               <p className="text-gray-500 text-sm">Based on your preferences, here are your ideal Workspace buildings.</p>
@@ -269,7 +269,7 @@ export default function SpaceFinderPage() {
                           <div className="flex items-center gap-1 text-[#E8622A] text-xs font-medium mb-1">
                             <MapPin size={11} />{space.neighbourhood}
                           </div>
-                          <h3 className="font-semibold text-[#1C1C2E]">{space.name}</h3>
+                          <h3 className="font-semibold text-[#09090F]">{space.name}</h3>
                         </div>
                         <div className="text-center shrink-0">
                           <div className="text-2xl font-bold text-[#E8622A]">{match}%</div>
@@ -302,7 +302,7 @@ export default function SpaceFinderPage() {
               </button>
               <Link
                 href="/spaces"
-                className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-[#1C1C2E] text-white font-semibold rounded-xl hover:bg-black transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-[#09090F] text-white font-semibold rounded-xl hover:bg-black transition-colors"
               >
                 Browse all spaces <ArrowRight size={16} />
               </Link>

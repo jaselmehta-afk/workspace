@@ -23,21 +23,21 @@ const reasons = [
     icon: Users2,
     title: "A thriving community",
     desc: "Join 4,000+ businesses, connect at events, collaborate in communal spaces, and tap into a network of London's best.",
-    color: "#1C1C2E",
+    color: "#09090F",
   },
 ];
 
 export default function WhyWorkspace() {
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#FAF8F4]">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F4F1EA]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">
             Why Workspace
           </p>
           <h2
-            className="text-4xl sm:text-5xl text-[#1C1C2E] leading-tight"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
+            className="text-4xl sm:text-5xl text-[#09090F] leading-tight"
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
           >
             Not just an office.
             <br />
@@ -52,7 +52,7 @@ export default function WhyWorkspace() {
               <div
                 key={reason.title}
                 className={`rounded-2xl p-8 flex gap-6 transition-all hover:shadow-md ${
-                  i === 3 ? "bg-[#1C1C2E] text-white" : "bg-white"
+                  i === 3 ? "bg-[#09090F] text-white" : "bg-white"
                 }`}
               >
                 <div
@@ -65,8 +65,8 @@ export default function WhyWorkspace() {
                 </div>
                 <div>
                   <h3
-                    className={`font-semibold text-xl mb-3 ${i === 3 ? "text-white" : "text-[#1C1C2E]"}`}
-                    style={{ fontFamily: "'Fraunces', serif" }}
+                    className={`font-semibold text-xl mb-3 ${i === 3 ? "text-white" : "text-[#09090F]"}`}
+                    style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
                   >
                     {reason.title}
                   </h3>

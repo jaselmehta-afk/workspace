@@ -11,7 +11,7 @@ export default function SustainabilitySection() {
   return (
     <section
       className="py-24 px-4 sm:px-6 lg:px-8"
-      style={{ backgroundColor: "#1a2e1f" }}
+      style={{ background: "linear-gradient(135deg, #09090F 0%, #0d1a10 100%)" }}
     >
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-16 items-center">
@@ -21,11 +21,11 @@ export default function SustainabilitySection() {
             </p>
             <h2
               className="text-4xl sm:text-5xl text-white leading-tight mb-6"
-              style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
+              style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
             >
-              Good for your
+              Good for your business.
               <br />
-              business. <span className="italic text-[#7B9E87]">Good for the planet.</span>
+              <span className="text-[#7B9E87]">Good for the planet.</span>
             </h2>
             <p className="text-white/60 leading-relaxed mb-8 text-lg">
               We&apos;re committed to making Workspace the most sustainable portfolio of office buildings in London — from renewable energy and waste reduction to active travel and biodiversity.
@@ -52,7 +52,7 @@ export default function SustainabilitySection() {
                   </div>
                   <div
                     className="text-3xl text-white mb-1"
-                    style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
+                    style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
                   >
                     {c.label}
                   </div>

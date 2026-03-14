@@ -55,15 +55,15 @@ export default function TestimonialsSection() {
   const t = testimonials[active];
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F4F1EA]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-14">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">
             Member stories
           </p>
           <h2
-            className="text-4xl sm:text-5xl text-[#1C1C2E] leading-tight"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 300 }}
+            className="text-4xl sm:text-5xl text-[#09090F] leading-tight"
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
           >
             Real businesses.
             <br />
@@ -72,7 +72,7 @@ export default function TestimonialsSection() {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="relative bg-[#FAF8F4] rounded-3xl p-8 sm:p-12">
+          <div className="relative bg-[#F4F1EA] rounded-3xl p-8 sm:p-12">
             {/* Quote icon */}
             <Quote size={48} className="text-[#E8622A]/20 mb-6" />
 
@@ -85,8 +85,8 @@ export default function TestimonialsSection() {
 
             {/* Quote */}
             <blockquote
-              className="text-xl sm:text-2xl text-[#1C1C2E] leading-relaxed mb-8 font-light"
-              style={{ fontFamily: "'Fraunces', serif" }}
+              className="text-xl sm:text-2xl text-[#09090F] leading-relaxed mb-8 font-light"
+              style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
             >
               &ldquo;{t.quote}&rdquo;
             </blockquote>
@@ -99,7 +99,7 @@ export default function TestimonialsSection() {
                 className="w-12 h-12 rounded-full object-cover"
               />
               <div>
-                <div className="font-semibold text-[#1C1C2E] text-sm">{t.name}</div>
+                <div className="font-semibold text-[#09090F] text-sm">{t.name}</div>
                 <div className="text-gray-500 text-xs">{t.role}, {t.company}</div>
                 <div className="text-[#E8622A] text-xs mt-0.5">{t.location} · {t.teamSize}</div>
               </div>

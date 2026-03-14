@@ -8,7 +8,6 @@ const types = [
     desc: "Your floor, your culture. Fully customisable suites for teams of 2 to 200.",
     href: "/spaces?type=private",
     from: "From £550/desk/month",
-    accent: "#E8622A",
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80",
   },
   {
@@ -17,7 +16,6 @@ const types = [
     desc: "Hot desks and dedicated desks in buzzing shared spaces. Month-to-month.",
     href: "/spaces?type=coworking",
     from: "From £250/month",
-    accent: "#7B9E87",
     image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&q=80",
   },
   {
@@ -26,7 +24,6 @@ const types = [
     desc: "Purpose-built creative spaces for photographers, designers and makers.",
     href: "/spaces?type=studio",
     from: "From £400/month",
-    accent: "#C9A84C",
     image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&q=80",
   },
   {
@@ -35,19 +32,21 @@ const types = [
     desc: "Tech-equipped rooms bookable by the hour. Available to members and guests.",
     href: "/meeting-rooms",
     from: "From £25/hour",
-    accent: "#E8622A",
     image: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&q=80",
   },
 ];
 
 export default function SpaceTypesSection() {
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#FAF8F4]">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F4F1EA]">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">Space types</p>
-            <h2 className="text-4xl sm:text-5xl text-[#0E0E1A] leading-tight font-light" style={{ fontFamily: "'Fraunces', serif" }}>
+            <h2
+              className="text-4xl sm:text-5xl text-[#09090F] leading-tight"
+              style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
+            >
               Find the space<br />that fits.
             </h2>
           </div>
@@ -71,16 +70,16 @@ export default function SpaceTypesSection() {
                     alt={type.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-600"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent" />
                   <div className="absolute top-3 right-3 w-9 h-9 glass rounded-xl flex items-center justify-center">
-                    <Icon size={16} style={{ color: type.accent }} />
+                    <Icon size={16} className="text-[#E8622A]" />
                   </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="font-semibold text-[#0E0E1A] mb-1.5 group-hover:text-[#E8622A] transition-colors">{type.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed mb-4">{type.desc}</p>
+                  <h3 className="font-semibold text-[#09090F] mb-1.5 group-hover:text-[#E8622A] transition-colors">{type.title}</h3>
+                  <p className="text-sm text-[#09090F]/45 leading-relaxed mb-4">{type.desc}</p>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold" style={{ color: type.accent }}>{type.from}</span>
+                    <span className="text-xs font-semibold text-[#E8622A]">{type.from}</span>
                     <ArrowRight size={14} className="text-gray-200 group-hover:text-[#E8622A] group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>

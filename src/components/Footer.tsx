@@ -36,7 +36,7 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="bg-[#1C1C2E] text-white">
+    <footer className="bg-[#09090F] text-white">
       {/* Newsletter strip */}
       <div className="border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -44,7 +44,7 @@ export default function Footer() {
             <div>
               <h3
                 className="text-2xl font-light text-white mb-2"
-                style={{ fontFamily: "'Fraunces', serif" }}
+                style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
               >
                 Stay in the loop
               </h3>
@@ -74,11 +74,11 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
           {/* Brand column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-[#E8622A] rounded-sm flex items-center justify-center">
-                <span className="text-white font-bold text-sm">W</span>
-              </div>
-              <span className="text-white font-semibold text-lg" style={{ fontFamily: "'Fraunces', serif" }}>
+            <Link href="/" className="flex items-center gap-2.5 mb-4">
+              <svg width="28" height="24" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 3L9 25L16 11L23 25L30 3" stroke="#E8622A" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="text-white font-semibold text-[17px] tracking-[-0.02em]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
                 Workspace
               </span>
             </Link>

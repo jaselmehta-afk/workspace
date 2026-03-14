@@ -90,12 +90,12 @@ function MeetingRoomsInner() {
   });
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4]">
+    <div className="min-h-screen bg-[#F4F1EA]">
       {/* Dark header */}
       <div className="relative overflow-hidden pt-28 pb-16 px-4 sm:px-6 lg:px-8 mesh-dark">
         <div className="max-w-7xl mx-auto">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">Meeting rooms</p>
-          <h1 className="text-4xl sm:text-5xl text-white mb-4 font-light" style={{ fontFamily: "'Fraunces', serif" }}>
+          <h1 className="text-4xl sm:text-5xl text-white mb-4 font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
             Every kind of room.<br /><span className="italic">Every kind of meeting.</span>
           </h1>
           <p className="text-white/50 text-lg max-w-xl mb-10">From intimate four-person focus rooms to 120-person event halls — tech-equipped and hassle-free.</p>
@@ -159,12 +159,12 @@ function MeetingRoomsInner() {
                 <h3 className="font-semibold text-[#0E0E1A] text-lg mb-3">{room.name}</h3>
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {room.amenities.slice(0, 4).map(a => (
-                    <span key={a} className="flex items-center gap-1 text-xs px-2 py-1 bg-[#FAF8F4] text-gray-500 rounded-md">
+                    <span key={a} className="flex items-center gap-1 text-xs px-2 py-1 bg-[#F4F1EA] text-gray-500 rounded-md">
                       <Check size={9} className="text-[#7B9E87]" />{a}
                     </span>
                   ))}
                 </div>
-                <div className="grid grid-cols-3 gap-2 mb-4 p-3 bg-[#FAF8F4] rounded-xl text-center">
+                <div className="grid grid-cols-3 gap-2 mb-4 p-3 bg-[#F4F1EA] rounded-xl text-center">
                   {[["Per hour", room.priceHour], ["Half day", room.priceHalfDay], ["Full day", room.priceFullDay]].map(([l, p]) => (
                     <div key={l as string}>
                       <div className="font-bold text-[#0E0E1A] text-sm">£{p}</div>
@@ -195,7 +195,7 @@ function MeetingRoomsInner() {
         {/* Member upsell */}
         <div className="mt-16 rounded-3xl p-8 sm:p-12 flex flex-col sm:flex-row items-center gap-8 mesh-dark">
           <div className="flex-1">
-            <h2 className="text-2xl sm:text-3xl text-white mb-3 font-light" style={{ fontFamily: "'Fraunces', serif" }}>
+            <h2 className="text-2xl sm:text-3xl text-white mb-3 font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
               Member? Get <span className="text-[#E8622A]">30% off</span> every room.
             </h2>
             <p className="text-white/50 leading-relaxed">Members enjoy discounted rates on all rooms across every building, plus priority booking.</p>

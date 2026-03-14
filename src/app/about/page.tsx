@@ -48,9 +48,9 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[#FAF8F4]">
+    <div className="min-h-screen bg-[#F4F1EA]">
       {/* Hero */}
-      <div className="relative bg-[#1C1C2E] pt-28 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="relative bg-[#09090F] pt-28 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="absolute top-0 right-0 w-1/2 h-full opacity-5">
           <div className="w-full h-full bg-gradient-to-br from-[#E8622A] to-transparent rounded-bl-[200px]" />
         </div>
@@ -58,7 +58,7 @@ export default function AboutPage() {
           <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">Our story</p>
           <h1
             className="text-5xl sm:text-6xl text-white mb-6 max-w-3xl font-light leading-tight"
-            style={{ fontFamily: "'Fraunces', serif" }}
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
           >
             We give London&apos;s best
             <br />
@@ -75,7 +75,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">What we believe</p>
-            <h2 className="text-4xl sm:text-5xl text-[#1C1C2E] font-light" style={{ fontFamily: "'Fraunces', serif" }}>
+            <h2 className="text-4xl sm:text-5xl text-[#09090F] font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
               Our values
             </h2>
           </div>
@@ -83,12 +83,12 @@ export default function AboutPage() {
             {values.map((v) => {
               const Icon = v.icon;
               return (
-                <div key={v.title} className="flex gap-5 p-6 bg-[#FAF8F4] rounded-2xl">
+                <div key={v.title} className="flex gap-5 p-6 bg-[#F4F1EA] rounded-2xl">
                   <div className="w-12 h-12 bg-[#E8622A]/10 rounded-xl flex items-center justify-center text-[#E8622A] shrink-0">
                     <Icon size={22} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#1C1C2E] text-lg mb-2" style={{ fontFamily: "'Fraunces', serif" }}>{v.title}</h3>
+                    <h3 className="font-semibold text-[#09090F] text-lg mb-2" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>{v.title}</h3>
                     <p className="text-gray-500 text-sm leading-relaxed">{v.desc}</p>
                   </div>
                 </div>
@@ -99,11 +99,11 @@ export default function AboutPage() {
       </div>
 
       {/* Timeline */}
-      <div className="py-24 px-4 sm:px-6 lg:px-8 bg-[#FAF8F4]">
+      <div className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F4F1EA]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">Our history</p>
-            <h2 className="text-4xl sm:text-5xl text-[#1C1C2E] font-light" style={{ fontFamily: "'Fraunces', serif" }}>
+            <h2 className="text-4xl sm:text-5xl text-[#09090F] font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
               35+ years in London
             </h2>
           </div>
@@ -133,7 +133,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">Leadership</p>
-            <h2 className="text-4xl sm:text-5xl text-[#1C1C2E] font-light" style={{ fontFamily: "'Fraunces', serif" }}>
+            <h2 className="text-4xl sm:text-5xl text-[#09090F] font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
               The team
             </h2>
           </div>
@@ -147,7 +147,7 @@ export default function AboutPage() {
                     className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <h3 className="font-semibold text-[#1C1C2E]">{member.name}</h3>
+                <h3 className="font-semibold text-[#09090F]">{member.name}</h3>
                 <p className="text-sm text-gray-500 mt-1">{member.role}</p>
               </div>
             ))}
@@ -156,10 +156,10 @@ export default function AboutPage() {
       </div>
 
       {/* Investors & ESG */}
-      <div className="py-24 px-4 sm:px-6 lg:px-8 bg-[#1C1C2E]">
+      <div className="py-24 px-4 sm:px-6 lg:px-8 bg-[#09090F]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
-            <h3 className="text-2xl text-white mb-4 font-light" style={{ fontFamily: "'Fraunces', serif" }}>Investor relations</h3>
+            <h3 className="text-2xl text-white mb-4 font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>Investor relations</h3>
             <p className="text-white/60 text-sm leading-relaxed mb-6">
               Workspace Group plc is listed on the London Stock Exchange and is a constituent of the FTSE 250 Index. We are committed to transparent reporting and long-term value creation for our shareholders.
             </p>
@@ -168,7 +168,7 @@ export default function AboutPage() {
             </a>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
-            <h3 className="text-2xl text-white mb-4 font-light" style={{ fontFamily: "'Fraunces', serif" }}>Sustainability</h3>
+            <h3 className="text-2xl text-white mb-4 font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>Sustainability</h3>
             <p className="text-white/60 text-sm leading-relaxed mb-6">
               Our ESG programme covers carbon reduction, biodiversity, active travel, community investment and supply chain ethics. Read our latest sustainability report.
             </p>
