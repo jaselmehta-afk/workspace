@@ -17,40 +17,42 @@
     color: #09090F;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    cursor: none; /* hidden in favour of custom cursor on desktop */
+  }
+  @media (hover: none) {
+    body { cursor: auto; }
+  }
+  a, button { cursor: none; }
+  @media (hover: none) {
+    a, button { cursor: pointer; }
   }
 }
 
 @layer utilities {
-  /* Glass — for dark surfaces */
   .glass {
     background: rgba(255,255,255,0.06);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid rgba(255,255,255,0.10);
   }
-  /* Glass — for light surfaces */
   .glass-light {
     background: rgba(255,255,255,0.72);
     backdrop-filter: blur(24px) saturate(200%);
     -webkit-backdrop-filter: blur(24px) saturate(200%);
     border: 1px solid rgba(255,255,255,0.50);
   }
-  /* Glass — explicit dark variant */
   .glass-dark {
     background: rgba(9,9,15,0.55);
     backdrop-filter: blur(32px) saturate(180%);
     -webkit-backdrop-filter: blur(32px) saturate(180%);
     border: 1px solid rgba(255,255,255,0.07);
   }
-
   .glow-orange {
     box-shadow: 0 0 40px rgba(232,98,42,0.28), 0 0 80px rgba(232,98,42,0.10);
   }
   .glow-orange-sm {
     box-shadow: 0 0 20px rgba(232,98,42,0.32);
   }
-
-  /* Hero dark mesh — single consistent dark */
   .mesh-dark {
     background:
       radial-gradient(ellipse at 15% 60%, rgba(232,98,42,0.13) 0%, transparent 50%),
@@ -58,10 +60,31 @@
       radial-gradient(ellipse at 55% 85%, rgba(232,98,42,0.05) 0%, transparent 40%),
       #09090F;
   }
+  .section-dark { background: #09090F; }
 
-  /* Section dark — same base as hero so nav bleeds seamlessly */
-  .section-dark {
-    background: #09090F;
+  /* ─── Animations ─── */
+
+  @keyframes kenBurns {
+    0%   { transform: scale(1.0) translate3d(0, 0, 0); }
+    50%  { transform: scale(1.06) translate3d(-1.5%, -0.8%, 0); }
+    100% { transform: scale(1.0) translate3d(0, 0, 0); }
+  }
+  .animate-kenburns {
+    animation: kenBurns 22s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 32s linear infinite;
+    will-change: transform;
+  }
+  .animate-marquee-slow {
+    animation: marquee 50s linear infinite;
+    will-change: transform;
   }
 
   @keyframes shimmer {
@@ -83,14 +106,24 @@
     0%,100% { transform: translateY(0px); }
     50%     { transform: translateY(-8px); }
   }
-
-  .animate-shimmer {
-    background: linear-gradient(90deg, transparent 0%, rgba(232,98,42,0.5) 50%, transparent 100%);
-    background-size: 200% auto;
-    animation: shimmer 1.4s linear infinite;
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
   }
-  .animate-fade-up  { animation: fadeUp 0.45s ease forwards; }
-  .cursor-blink     { animation: blink 1s step-end infinite; }
-  .animate-spin-slow { animation: spin-slow 3s linear infinite; }
-  .animate-float    { animation: float 3s ease-in-out infinite; }
+  @keyframes slideOutRight {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(20px); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .animate-shimmer       { background: linear-gradient(90deg, transparent 0%, rgba(232,98,42,0.5) 50%, transparent 100%); background-size: 200% auto; animation: shimmer 1.4s linear infinite; }
+  .animate-fade-up       { animation: fadeUp 0.45s ease forwards; }
+  .cursor-blink          { animation: blink 1s step-end infinite; }
+  .animate-spin-slow     { animation: spin-slow 3s linear infinite; }
+  .animate-float         { animation: float 3s ease-in-out infinite; }
+  .animate-slide-in-right { animation: slideInRight 0.4s cubic-bezier(0.22,1,0.36,1) forwards; }
+  .animate-scale-in      { animation: scaleIn 0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
 }

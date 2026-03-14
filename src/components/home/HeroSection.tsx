@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Sparkles, ChevronDown } from "lucide-react";
+import MagneticButton from "@/components/MagneticButton";
 
 const EXAMPLES = [
   "A creative studio for 12 people in East London…",
@@ -24,10 +25,7 @@ function parse(q: string) {
   const s = q.toLowerCase();
   const p: Record<string, string> = {};
   const m = s.match(/(\d+)\s*(people|person|desk|desks|team|staff)/);
-  if (m) {
-    const n = +m[1];
-    p.size = n <= 5 ? "1-5" : n <= 15 ? "6-15" : n <= 50 ? "16-50" : "51+";
-  }
+  if (m) { const n = +m[1]; p.size = n <= 5 ? "1-5" : n <= 15 ? "6-15" : n <= 50 ? "16-50" : "51+"; }
   if (/studio|creative|photog|maker/.test(s)) p.type = "studio";
   else if (/cowork|hot.?desk|shared|flex/.test(s)) p.type = "coworking";
   else if (/private|own\s|floor|suite/.test(s)) p.type = "private";
@@ -53,7 +51,23 @@ export default function HeroSection() {
   const [ci, setCi] = useState(0);
   const [focused, setFocused] = useState(false);
   const [status, setStatus] = useState<"idle" | "thinking">("idle");
+  const [returning, setReturning] = useState<{ area: string; type: string } | null>(null);
 
+  // Returning visitor personalisation
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("ws_last_search");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const age = Date.now() - (parsed.timestamp || 0);
+        if (age < 7 * 24 * 60 * 60 * 1000 && (parsed.area || parsed.type)) {
+          setReturning({ area: parsed.area || "", type: parsed.type || "" });
+        }
+      }
+    } catch {}
+  }, []);
+
+  // Typewriter
   useEffect(() => {
     if (focused || query) return;
     const ex = EXAMPLES[ei];
@@ -69,54 +83,84 @@ export default function HeroSection() {
     if (!q.trim()) return;
     setStatus("thinking");
     const p = parse(q);
-    setTimeout(() => { router.push(`/spaces?${new URLSearchParams(p)}`); }, 1300);
+    // Save search for personalisation
+    try { localStorage.setItem("ws_last_search", JSON.stringify({ ...p, timestamp: Date.now() })); } catch {}
+    setTimeout(() => { router.push(`/spaces?${new URLSearchParams(p)}`); }, 1200);
   };
 
-  const scrollDown = () => {
-    window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
-  };
+  const scrollDown = () => window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+
+  const returningLabel = returning
+    ? [returning.type ? returning.type.charAt(0).toUpperCase() + returning.type.slice(1) : "", returning.area ? returning.area.charAt(0).toUpperCase() + returning.area.slice(1) + " London" : ""].filter(Boolean).join(" · ")
+    : "";
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden mesh-dark">
-      {/* Ambient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-        <div className="absolute top-1/4 left-1/5 w-[500px] h-[500px] rounded-full bg-[#E8622A]/10 blur-[120px] animate-float" />
-        <div className="absolute bottom-1/4 right-1/5 w-[400px] h-[400px] rounded-full bg-[#7B9E87]/8 blur-[100px] animate-float" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute inset-0 opacity-[0.025]" style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)",
-          backgroundSize: "80px 80px"
-        }} />
+    <section className="relative min-h-screen flex flex-col justify-end overflow-hidden bg-[#09090F]">
+      {/* Cinematic background with Ken Burns */}
+      <div className="absolute inset-0 overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1920&q=85"
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-cover animate-kenburns"
+        />
+        {/* Sophisticated layered overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#09090F]/70 via-[#09090F]/30 to-[#09090F]/90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#09090F]/60 via-transparent to-transparent" />
+        {/* Subtle noise grain */}
+        <div className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
+            backgroundRepeat: "repeat", backgroundSize: "128px 128px" }} />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-28 text-center">
-        {/* Plain label — no card treatment */}
-        <p className="text-white/30 text-xs font-medium tracking-widest uppercase mb-10">
-          60+ inspiring buildings across London
-        </p>
+      {/* Content — bottom anchored, left-weighted */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-20 pt-36">
 
-        <h1
-          className="text-6xl sm:text-7xl lg:text-[88px] text-white mb-6 leading-[1.0] tracking-[-0.03em]"
-          style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
-        >
-          Space to{" "}
-          <span
-            style={{
-              background: "linear-gradient(135deg, #E8622A 0%, #f0844a 60%, #E8622A 100%)",
-              backgroundSize: "200% auto",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              fontWeight: 600,
-            }}
-          >grow.</span>
-        </h1>
+        {/* Returning visitor banner */}
+        {returning && (
+          <div className="mb-8 inline-flex items-center gap-2 text-xs text-white/50 animate-fade-up">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87] inline-block" />
+            Welcome back — still searching for {returningLabel}?{" "}
+            <button
+              onClick={() => router.push(`/spaces?area=${returning.area}&type=${returning.type}`)}
+              className="text-white/80 underline underline-offset-2 hover:text-white transition-colors"
+            >
+              See those spaces
+            </button>
+          </div>
+        )}
 
-        <p className="text-white/40 text-lg sm:text-xl mb-10 max-w-lg mx-auto leading-relaxed">
-          Describe what you need in plain English and we&apos;ll find your perfect London workspace.
-        </p>
+        {/* Headline — left aligned, editorial scale */}
+        <div className="max-w-4xl mb-10">
+          <p className="text-white/30 text-[11px] font-medium tracking-[0.2em] uppercase mb-6">
+            60+ buildings across London
+          </p>
+          <h1
+            className="text-white leading-[0.92] tracking-[-0.04em]"
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+          >
+            <span className="block text-[clamp(64px,10vw,130px)] font-light">Space to</span>
+            <span
+              className="block text-[clamp(72px,11.5vw,148px)] font-bold"
+              style={{
+                background: "linear-gradient(110deg, #E8622A 0%, #f5935a 45%, #E8622A 100%)",
+                backgroundSize: "200% auto",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              grow.
+            </span>
+          </h1>
 
-        {/* Search bar */}
-        <div className="max-w-2xl mx-auto mb-5">
+          <p className="text-white/45 text-lg sm:text-xl mt-6 max-w-md leading-relaxed">
+            Describe what you need. We&apos;ll find the space.
+          </p>
+        </div>
+
+        {/* Search — full width of content column */}
+        <div className="max-w-2xl">
           <div className={`relative glass rounded-2xl transition-all duration-300 ${focused ? "glow-orange border-[#E8622A]/25" : ""}`}>
             <div className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
               {status === "thinking"
@@ -133,76 +177,66 @@ export default function HeroSection() {
               onBlur={() => setFocused(false)}
               placeholder={focused ? "Describe your ideal workspace…" : ph || "Describe your ideal workspace…"}
               disabled={status === "thinking"}
-              className="w-full bg-transparent text-white placeholder-white/25 text-base sm:text-lg py-[18px] pl-14 pr-36 focus:outline-none rounded-2xl disabled:opacity-60"
+              className="w-full bg-transparent text-white placeholder-white/25 text-base sm:text-lg py-[18px] pl-14 pr-40 focus:outline-none rounded-2xl disabled:opacity-60"
             />
-            <button
+            <MagneticButton
               onClick={() => go()}
               disabled={status === "thinking" || !query.trim()}
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 px-5 py-2.5 bg-[#E8622A] text-white font-semibold text-sm rounded-xl hover:bg-[#d4561e] hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 px-5 py-2.5 bg-[#E8622A] text-white font-semibold text-sm rounded-xl hover:bg-[#d4561e] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {status === "thinking" ? (
                 <span className="flex gap-1 items-center px-1">
-                  {[0, 120, 240].map(d => (
-                    <span key={d} className="w-1.5 h-1.5 bg-white/70 rounded-full animate-bounce" style={{ animationDelay: `${d}ms` }} />
-                  ))}
+                  {[0, 120, 240].map(d => <span key={d} className="w-1.5 h-1.5 bg-white/70 rounded-full animate-bounce" style={{ animationDelay: `${d}ms` }} />)}
                 </span>
               ) : (
                 <>Search <ArrowRight size={14} /></>
               )}
-            </button>
+            </MagneticButton>
           </div>
+
           {status === "thinking" && (
-            <p className="text-[#E8622A]/70 text-sm mt-3 animate-fade-up text-left pl-1">
-              ✦ Understanding your query and matching spaces…
-            </p>
+            <p className="text-[#E8622A]/70 text-sm mt-3 animate-fade-up pl-1">✦ Matching spaces…</p>
           )}
+
+          {/* Quick links — plain text */}
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-4">
+            <span className="text-white/20 text-sm">Try:</span>
+            {QUICK.map(({ label, q }) => (
+              <button
+                key={label}
+                onClick={() => { setQuery(q); go(q); }}
+                className="text-white/40 text-sm hover:text-white underline-offset-2 hover:underline transition-all duration-200"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Quick links — clearly interactive with underline hover */}
-        <div className="flex flex-wrap justify-center gap-2 mb-16">
-          <span className="text-white/20 text-sm self-center">Try:</span>
-          {QUICK.map(({ label, q }) => (
-            <button
-              key={label}
-              onClick={() => { setQuery(q); go(q); }}
-              className="text-white/45 text-sm hover:text-white underline-offset-2 hover:underline transition-all duration-200"
-            >
-              {label}
-            </button>
+        {/* Inline stats */}
+        <div className="flex flex-wrap items-center gap-8 mt-12 text-white/25">
+          {[
+            { n: "60+", label: "buildings" },
+            { n: "4,000+", label: "businesses" },
+            { n: "£550", label: "from/desk/mo" },
+          ].map(({ n, label }, i) => (
+            <div key={label} className="flex items-baseline gap-2">
+              {i > 0 && <div className="w-px h-4 bg-white/10 mr-6" />}
+              <span className="text-white text-xl font-semibold" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>{n}</span>
+              <span className="text-xs tracking-wide">{label}</span>
+            </div>
           ))}
-        </div>
-
-        {/* Inline stats — pure text, clearly non-interactive */}
-        <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-10 text-white/35">
-          <div className="text-center">
-            <div className="text-2xl font-semibold text-white" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>60+</div>
-            <div className="text-xs tracking-wide mt-0.5">London buildings</div>
-          </div>
-          <div className="w-px h-8 bg-white/10 hidden sm:block" />
-          <div className="text-center">
-            <div className="text-2xl font-semibold text-white" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>4,000+</div>
-            <div className="text-xs tracking-wide mt-0.5">Businesses growing</div>
-          </div>
-          <div className="w-px h-8 bg-white/10 hidden sm:block" />
-          <div className="text-center">
-            <div className="text-2xl font-semibold text-white" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>Monthly</div>
-            <div className="text-xs tracking-wide mt-0.5">Rolling contracts</div>
-          </div>
         </div>
       </div>
 
-      {/* Scroll down arrow */}
+      {/* Scroll arrow */}
       <button
         onClick={scrollDown}
-        aria-label="Scroll down to explore spaces"
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-white/30 hover:text-white/60 transition-colors duration-300 group"
+        aria-label="Scroll to explore"
+        className="absolute bottom-8 right-8 flex flex-col items-center gap-1.5 text-white/20 hover:text-white/50 transition-colors duration-300 z-10"
       >
-        <span className="text-[10px] tracking-widest uppercase font-medium">Explore</span>
-        <ChevronDown
-          size={20}
-          className="animate-bounce"
-          style={{ animationDuration: "1.8s" }}
-        />
+        <span className="text-[9px] tracking-[0.2em] uppercase font-medium rotate-90 mb-1">Scroll</span>
+        <ChevronDown size={18} className="animate-bounce" style={{ animationDuration: "2s" }} />
       </button>
     </section>
   );

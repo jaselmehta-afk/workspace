@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import CustomCursor from "@/components/CustomCursor";
+import PageTransition from "@/components/PageTransition";
 
 export const metadata: Metadata = {
   title: "Workspace — Flexible, Inspiring Space To Grow Your Business",
@@ -14,11 +16,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <head>
@@ -30,8 +28,11 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+        <CustomCursor />
         <Navigation />
-        <main>{children}</main>
+        <PageTransition>
+          <main>{children}</main>
+        </PageTransition>
         <Footer />
       </body>
     </html>

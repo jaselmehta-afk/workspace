@@ -49,6 +49,18 @@ function SpacesInner() {
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("recommended");
+  const [returningArea, setReturningArea] = useState("");
+
+  // Returning visitor personalisation
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("ws_last_search");
+      if (saved) {
+        const p = JSON.parse(saved);
+        if (p.area && Date.now() - (p.timestamp || 0) < 7 * 24 * 60 * 60 * 1000) setReturningArea(p.area);
+      }
+    } catch {}
+  }, []);
 
   // Re-sync if URL changes (e.g. natural language search redirects)
   useEffect(() => {
@@ -96,15 +108,28 @@ function SpacesInner() {
       {/* Header */}
       <div className="bg-[#09090F] pt-28 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
+          {returningArea && (
+            <p className="text-white/40 text-xs tracking-wider uppercase mb-4 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87]" />
+              Welcome back — showing results near {returningArea.charAt(0).toUpperCase() + returningArea.slice(1)} London
+            </p>
+          )}
           <h1
-            className="text-4xl sm:text-5xl text-white mb-4 font-light"
+            className="text-4xl sm:text-5xl text-white mb-3 font-light tracking-[-0.03em]"
             style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
           >
             Find your perfect space
           </h1>
-          <p className="text-white/60 text-lg mb-8">
-            {spaces.length} buildings across London — private offices, coworking, and studios.
-          </p>
+          <div className="flex items-center gap-3 mb-8">
+            <p className="text-white/50 text-base">
+              {spaces.length} buildings across London
+            </p>
+            <span className="w-1 h-1 rounded-full bg-white/20" />
+            <span className="flex items-center gap-1.5 text-[#7B9E87] text-sm font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87] animate-pulse" />
+              {spaces.filter(s => s.isNew || s.isFeatured).length} spaces with immediate availability
+            </span>
+          </div>
 
           {/* Search bar */}
           <div className="flex gap-3">
