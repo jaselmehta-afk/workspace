@@ -70,9 +70,9 @@ export default function SpaceMap({ spaces, activeId, onMarkerClick }: Props) {
         )
         .addTo(map);
 
-      // CARTO Dark Matter — bold, modern, no washed-out feel
+      // CARTO Voyager — modern, warm, sharp labels, good contrast at all zoom levels
       L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
         { subdomains: "abcd", maxZoom: 19 }
       ).addTo(map);
 
@@ -90,18 +90,19 @@ export default function SpaceMap({ spaces, activeId, onMarkerClick }: Props) {
         marker.bindPopup(
           `<div style="
             font-family:'Bricolage Grotesque',Inter,sans-serif;
-            background:#13131a;
+            background:#ffffff;
             border-radius:16px;
             padding:14px 16px;
             min-width:180px;
-            border:1px solid rgba(255,255,255,0.08);
+            border:1px solid rgba(0,0,0,0.08);
+            box-shadow:0 4px 24px rgba(0,0,0,0.12);
           ">
-            <div style="font-weight:600;color:#F4F1EA;font-size:13px;margin-bottom:3px;line-height:1.3">${space.name}</div>
+            <div style="font-weight:600;color:#09090F;font-size:13px;margin-bottom:3px;line-height:1.3">${space.name}</div>
             <div style="color:#E8622A;font-size:11px;font-weight:600;margin-bottom:8px;letter-spacing:0.02em">${space.neighbourhood} · ${space.postcode}</div>
-            <div style="font-size:11px;color:rgba(244,241,234,0.5);margin-bottom:10px">From £${space.priceFrom.toLocaleString()}/${space.priceUnit}</div>
+            <div style="font-size:11px;color:#6b7280;margin-bottom:10px">From £${space.priceFrom.toLocaleString()}/${space.priceUnit}</div>
             <a href="/spaces/${space.slug}" style="
               display:inline-flex;align-items:center;gap:5px;
-              font-size:11px;font-weight:700;color:#09090F;
+              font-size:11px;font-weight:700;color:#ffffff;
               background:#E8622A;
               padding:5px 12px;border-radius:20px;
               text-decoration:none;
@@ -163,9 +164,9 @@ export default function SpaceMap({ spaces, activeId, onMarkerClick }: Props) {
         .leaflet-popup-content { margin: 0 !important; }
         .leaflet-popup-tip-container { display: none !important; }
         .leaflet-control-attribution {
-          background: rgba(9,9,15,0.7) !important;
+          background: rgba(255,255,255,0.85) !important;
           backdrop-filter: blur(8px);
-          color: rgba(244,241,234,0.35) !important;
+          color: rgba(9,9,15,0.4) !important;
           font-size: 10px !important;
           border-radius: 8px 0 0 0;
           padding: 3px 8px !important;
@@ -175,18 +176,19 @@ export default function SpaceMap({ spaces, activeId, onMarkerClick }: Props) {
           border: none !important;
           border-radius: 12px !important;
           overflow: hidden;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.15) !important;
         }
         .leaflet-control-zoom a {
-          background: #13131a !important;
-          color: #F4F1EA !important;
-          border: 1px solid rgba(255,255,255,0.08) !important;
+          background: #ffffff !important;
+          color: #09090F !important;
+          border: 1px solid rgba(0,0,0,0.08) !important;
           font-size: 16px !important;
           width: 36px !important;
           height: 36px !important;
           line-height: 36px !important;
         }
         .leaflet-control-zoom a:hover {
-          background: #1f1f2e !important;
+          background: #f5f5f5 !important;
           color: #E8622A !important;
         }
       `}</style>
