@@ -1,93 +1,63 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function SpaceFinderCTA() {
   return (
-    <section className="relative overflow-hidden bg-[#09090F] py-32 px-4 sm:px-6 lg:px-8">
-      {/* Background image — real building, heavily darkened */}
+    <section className="relative overflow-hidden bg-[#09090F]" style={{ minHeight: 480 }}>
+      {/* Full-bleed image — different building to hero, portrait warmth */}
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80"
+          src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1920&q=85"
           alt=""
           aria-hidden="true"
-          className="w-full h-full object-cover opacity-20"
+          className="w-full h-full object-cover"
+          style={{ opacity: 0.22 }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#09090F]/60 via-transparent to-[#09090F]/80" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#09090F]/70 via-transparent to-[#09090F]/70" />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(9,9,15,0.92) 35%, rgba(9,9,15,0.55) 65%, rgba(9,9,15,0.82) 100%)" }} />
       </div>
 
-      {/* Ambient glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#E8622A]/8 blur-[120px] rounded-full" />
-      </div>
+      {/* Content — left-aligned, editorial */}
+      <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-32 flex flex-col justify-center" style={{ minHeight: 480 }}>
+        <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-white/30 mb-7">
+          Est. 1987 &nbsp;·&nbsp; FTSE 250 &nbsp;·&nbsp; 4,000+ businesses
+        </p>
 
-      {/* Dot-grid — matches hero */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "52px 52px",
-        }}
-      />
-
-      <div className="relative max-w-4xl mx-auto text-center">
-        {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 glass rounded-full text-sm text-white/65">
-          <Sparkles size={13} className="text-[#E8622A]" />
-          AI Space Finder
-        </div>
-
-        {/* Headline */}
         <h2
-          className="text-5xl sm:text-6xl lg:text-7xl text-white leading-[0.92] tracking-[-0.04em] mb-8"
-          style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
+          className="text-white leading-[0.9] tracking-[-0.04em] mb-10"
+          style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontSize: "clamp(52px, 7vw, 96px)", fontWeight: 300 }}
         >
-          Not sure where
+          Ready to
           <br />
-          <span
-            className="font-bold"
-            style={{
-              background: "linear-gradient(115deg, #E8622A 0%, #f5935a 45%, #E8622A 100%)",
-              backgroundSize: "200% auto",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            to start?
+          <span style={{
+            background: "linear-gradient(115deg, #E8622A 0%, #f5935a 40%, #C9A84C 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            fontWeight: 700,
+          }}>
+            move in?
           </span>
         </h2>
 
-        <p className="text-white/65 text-lg sm:text-xl mb-12 max-w-xl mx-auto leading-relaxed">
-          Answer 4 quick questions. We&apos;ll match you with the right buildings, right now.
+        <p className="text-white/55 text-lg mb-10 max-w-sm leading-relaxed">
+          60 buildings. Flexible contracts. No hidden fees.
         </p>
 
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-3 items-start">
           <Link
-            href="/space-finder"
-            className="group inline-flex items-center gap-3 px-8 py-4 bg-[#E8622A] text-white font-semibold rounded-2xl hover:bg-[#d4561e] transition-all duration-200 text-base hover:scale-105 shadow-[0_0_40px_rgba(232,98,42,0.35)]"
+            href="/spaces"
+            className="group inline-flex items-center gap-3 px-8 py-4 bg-[#E8622A] text-white font-semibold rounded-xl hover:bg-[#d4561e] transition-all hover:scale-[1.02] active:scale-100 text-base"
+            style={{ boxShadow: "0 0 40px rgba(232,98,42,0.3)" }}
           >
-            Find my space
+            Browse all spaces
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link
-            href="/spaces"
-            className="inline-flex items-center gap-2 px-8 py-4 glass text-white font-semibold rounded-2xl hover:border-white/25 transition-all text-base"
+            href="/space-finder"
+            className="inline-flex items-center gap-2 px-8 py-4 text-white/60 hover:text-white font-medium transition-colors text-base"
           >
-            Browse all 60+ spaces
+            Or use the space finder →
           </Link>
-        </div>
-
-        <p className="text-white/45 text-sm mt-8">
-          Takes less than 2 minutes · No commitment required
-        </p>
-
-        {/* Decorative rule */}
-        <div className="mt-16 flex items-center justify-center gap-4">
-          <div className="h-px w-24 bg-gradient-to-r from-transparent to-white/15" />
-          <span className="text-white/20 text-[11px] tracking-[0.3em] uppercase font-medium">Est. 1987</span>
-          <div className="h-px w-24 bg-gradient-to-l from-transparent to-white/15" />
         </div>
       </div>
     </section>

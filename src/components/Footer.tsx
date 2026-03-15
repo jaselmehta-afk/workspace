@@ -67,10 +67,10 @@ export default function Footer() {
                 className="text-2xl font-light text-white mb-2"
                 style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
               >
-                Stay in the loop
+                New spaces move fast.
               </h3>
               <p className="text-white/60 text-sm">
-                Events, new spaces, and insights for London&apos;s growing businesses.
+                Be first to hear about new buildings, events, and member stories.
               </p>
             </div>
             <form className="flex gap-2 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>

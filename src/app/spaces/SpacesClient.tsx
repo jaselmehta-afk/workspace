@@ -65,6 +65,33 @@ function SpacesInner() {
   const [voiceSupported, setVoiceSupported] = useState(false);
   const recognitionRef = useRef<InstanceType<SR> | null>(null);
 
+  // ── Cursor ghost image ──────────────────────────────────────────
+  const [ghostImg, setGhostImg] = useState<string | null>(null);
+  const [ghostVisible, setGhostVisible] = useState(false);
+  const [ghostPos, setGhostPos] = useState({ x: -400, y: -400 });
+  const cursorTargetRef = useRef({ x: -400, y: -400 });
+  const ghostPosRef = useRef({ x: -400, y: -400 });
+  const rafRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      cursorTargetRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const tick = () => {
+      ghostPosRef.current.x = lerp(ghostPosRef.current.x, cursorTargetRef.current.x, 0.1);
+      ghostPosRef.current.y = lerp(ghostPosRef.current.y, cursorTargetRef.current.y, 0.1);
+      setGhostPos({ x: ghostPosRef.current.x, y: ghostPosRef.current.y });
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
   useEffect(() => {
     const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
     setVoiceSupported(!!(w.SpeechRecognition || w.webkitSpeechRecognition));
@@ -447,14 +474,53 @@ function SpacesInner() {
                 : "space-y-4"
             }
           >
-            {filtered.map((space) =>
+            {filtered.map((space, i) =>
               viewMode === "grid" ? (
-                <SpaceCardGrid key={space.id} space={space} />
+                i === 0 && space.isFeatured ? (
+                  <div key={space.id} className="col-span-1 sm:col-span-2">
+                    <SpaceCardHero
+                      space={space}
+                      onGhostEnter={() => { setGhostImg(space.image); setGhostVisible(true); }}
+                      onGhostLeave={() => setGhostVisible(false)}
+                    />
+                  </div>
+                ) : (
+                  <SpaceCardGrid
+                    key={space.id}
+                    space={space}
+                    onGhostEnter={() => { setGhostImg(space.image); setGhostVisible(true); }}
+                    onGhostLeave={() => setGhostVisible(false)}
+                  />
+                )
               ) : (
                 <SpaceCardList key={space.id} space={space} />
               )
             )}
           </div>
+        )}
+      </div>
+
+      {/* ── Cursor ghost image (desktop only) ─────────────────────── */}
+      <div
+        className="fixed pointer-events-none z-[200] hidden lg:block"
+        style={{
+          left: ghostPos.x,
+          top: ghostPos.y,
+          transform: "translate(-50%, -110%)",
+          width: 220,
+          height: 286,
+          opacity: ghostVisible ? 1 : 0,
+          transition: "opacity 0.25s ease",
+          willChange: "transform",
+        }}
+      >
+        {ghostImg && (
+          <img
+            src={ghostImg}
+            alt=""
+            className="w-full h-full object-cover shadow-2xl"
+            style={{ borderRadius: "110px 110px 12px 12px" }}
+          />
         )}
       </div>
     </div>
@@ -470,9 +536,141 @@ export default function SpacesClient() {
 }
 
 /* ─────────────────────────────────────────────────────────────────
+   Hero card — full-width cinematic opener for first featured result
+───────────────────────────────────────────────────────────────── */
+function SpaceCardHero({
+  space,
+  onGhostEnter,
+  onGhostLeave,
+}: {
+  space: Space;
+  onGhostEnter?: () => void;
+  onGhostLeave?: () => void;
+}) {
+  const gallery = space.gallery.length > 1 ? space.gallery : [space.image];
+  const [imgIdx, setImgIdx] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [animKey, setAnimKey] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
+
+  const startCycle = useCallback(() => {
+    setIsHovered(true);
+    onGhostEnter?.();
+    if (gallery.length <= 1) return;
+    intervalRef.current = setInterval(() => {
+      setImgIdx((i) => { setAnimKey((k) => k + 1); return (i + 1) % gallery.length; });
+    }, GALLERY_INTERVAL);
+  }, [gallery.length, onGhostEnter]);
+
+  const stopCycle = useCallback(() => {
+    clearInterval(intervalRef.current);
+    setIsHovered(false);
+    setImgIdx(0);
+    setAnimKey(0);
+    onGhostLeave?.();
+  }, [onGhostLeave]);
+
+  useEffect(() => () => clearInterval(intervalRef.current), []);
+
+  return (
+    <article
+      className="group overflow-hidden cursor-pointer"
+      style={{ aspectRatio: "21/9", borderRadius: "24px 24px 8px 8px" }}
+      onMouseEnter={startCycle}
+      onMouseLeave={stopCycle}
+    >
+      <Link href={`/spaces/${space.slug}`} className="relative block w-full h-full">
+        <img
+          key={animKey}
+          src={gallery[imgIdx]}
+          alt={space.name}
+          className="absolute inset-0 w-full h-full object-cover gallery-fade-in group-hover:scale-[1.025] transition-transform duration-700"
+          style={{ viewTransitionName: imgIdx === 0 ? `space-img-${space.slug}` : undefined }}
+        />
+
+        {/* Progress bars */}
+        {gallery.length > 1 && isHovered && (
+          <div className="absolute top-4 inset-x-5 flex gap-1 z-20">
+            {gallery.map((_, i) => (
+              <div key={i} className="flex-1 h-0.5 rounded-full bg-white/25 overflow-hidden">
+                <div
+                  key={i === imgIdx ? `hero-p-${animKey}` : i}
+                  className="h-full bg-white rounded-full"
+                  style={
+                    i < imgIdx ? { width: "100%" }
+                    : i === imgIdx ? { width: "0%", animation: `galleryProgress ${GALLERY_INTERVAL}ms linear forwards` }
+                    : { width: "0%" }
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Gradient — left-biased so copy reads well */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent" />
+
+        {/* Badges */}
+        <div className="absolute top-5 left-6 flex gap-2 z-10">
+          <span className="px-2.5 py-1 bg-[#E8622A] text-white text-[10px] font-bold rounded-lg uppercase tracking-wider">Featured</span>
+          {space.isNew && <span className="px-2.5 py-1 bg-white/10 backdrop-blur-sm text-white text-[10px] font-semibold rounded-lg border border-white/20 uppercase tracking-wider">New</span>}
+        </div>
+
+        {/* Share + Favourite */}
+        <div className="absolute top-5 right-5 z-10 flex gap-2">
+          <ShareButton data={{ title: space.name, text: space.headline, slug: space.slug }} />
+          <FavouriteButton spaceId={space.id} />
+        </div>
+
+        {/* Content — left column */}
+        <div className="absolute inset-y-0 left-0 flex flex-col justify-end p-7 sm:p-10 max-w-xl z-10">
+          <div className="flex items-center gap-1 text-[#E8622A] text-xs font-semibold tracking-wide mb-2.5">
+            <MapPin size={11} />{space.neighbourhood}, {space.postcode}
+          </div>
+          <h3
+            className="text-white font-light text-3xl sm:text-4xl leading-tight mb-2.5"
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+          >
+            {space.name}
+          </h3>
+          <p className="text-white/60 text-sm mb-5 line-clamp-1">{space.headline}</p>
+          <div className="flex items-center gap-4 flex-wrap">
+            <div>
+              <span className="text-white/45 text-xs">From </span>
+              <span className="text-white font-bold text-xl">£{space.priceFrom.toLocaleString()}</span>
+              <span className="text-white/45 text-xs">/{space.priceUnit}</span>
+            </div>
+            <div className="flex items-center gap-1 glass rounded-full px-2.5 py-1">
+              <Star size={10} className="text-[#C9A84C] fill-[#C9A84C]" />
+              <span className="text-white text-xs font-semibold">{space.rating}</span>
+              <span className="text-white/45 text-[11px]">({space.reviewCount})</span>
+            </div>
+            <Link
+              href={`/book-viewing?space=${space.slug}`}
+              onClick={(e) => e.stopPropagation()}
+              className="px-5 py-2.5 bg-[#E8622A] text-white text-sm font-semibold rounded-xl hover:bg-[#d4561e] transition-colors"
+            >
+              Book a viewing
+            </Link>
+          </div>
+        </div>
+      </Link>
+    </article>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
    Grid card — fully image-dominant, all content overlaid
 ───────────────────────────────────────────────────────────────── */
-function SpaceCardGrid({ space }: { space: Space }) {
+function SpaceCardGrid({
+  space,
+  onGhostEnter,
+  onGhostLeave,
+}: {
+  space: Space;
+  onGhostEnter?: () => void;
+  onGhostLeave?: () => void;
+}) {
   const { add, remove, isComparing } = useCompare();
   const comparing = isComparing(space.id);
   const gallery = space.gallery.length > 1 ? space.gallery : [space.image];
@@ -505,10 +703,10 @@ function SpaceCardGrid({ space }: { space: Space }) {
 
   return (
     <article
-      className="group rounded-lg overflow-hidden cursor-pointer"
-      onMouseEnter={startCycle}
-      onMouseLeave={stopCycle}
-      style={{ aspectRatio: "3/4" }}
+      className="group overflow-hidden cursor-pointer"
+      onMouseEnter={() => { startCycle(); onGhostEnter?.(); }}
+      onMouseLeave={() => { stopCycle(); onGhostLeave?.(); }}
+      style={{ aspectRatio: "3/4", borderRadius: "140px 140px 12px 12px" }}
     >
       <Link href={`/spaces/${space.slug}`} className="relative block w-full h-full">
         {/* Image */}

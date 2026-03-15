@@ -201,8 +201,8 @@ export default function TestimonialsSection() {
 
           {/* Quote */}
           <blockquote
-            className="text-xl sm:text-2xl lg:text-[1.65rem] text-white leading-[1.4] font-light mb-8"
-            style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+            className="text-xl sm:text-2xl lg:text-[1.65rem] text-white leading-[1.45] mb-8"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 400 }}
           >
             &ldquo;{t.quote}&rdquo;
           </blockquote>

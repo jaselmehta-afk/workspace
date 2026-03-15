@@ -103,7 +103,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
   }, [lightboxOpen, lightboxPrev, lightboxNext]);
 
   return (
-    <div className="min-h-screen bg-[#F4F1EA]">
+    <div className="min-h-screen bg-[#F4F1EA] pb-24 lg:pb-0">
       {/* Dark header */}
       <div className="bg-[#09090F]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
@@ -434,6 +434,26 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ── Mobile sticky booking bar ─────────────────────────────── */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 px-4 py-3 flex items-center gap-3"
+        style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(16px)", borderTop: "1px solid rgba(9,9,15,0.07)" }}>
+        <div className="flex-1 min-w-0">
+          <div className="text-[10px] font-medium tracking-[0.12em] uppercase text-[#09090F]/35 mb-0.5">From</div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-xl font-bold text-[#09090F]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+              £{space.priceFrom.toLocaleString()}
+            </span>
+            <span className="text-[#09090F]/35 text-xs">/{space.priceUnit}</span>
+          </div>
+        </div>
+        <Link
+          href={`/book-viewing?space=${space.slug}`}
+          className="shrink-0 px-6 py-3.5 bg-[#E8622A] text-white font-semibold rounded-xl hover:bg-[#d4561e] transition-colors text-sm"
+        >
+          Book a viewing
+        </Link>
       </div>
 
       {/* Lightbox */}
