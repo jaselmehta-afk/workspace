@@ -88,7 +88,6 @@ export default function HeroSection() {
   const [ci, setCi] = useState(0);
   const [focused, setFocused] = useState(false);
   const [status, setStatus] = useState<"idle" | "thinking">("idle");
-  const [returning, setReturning] = useState<{ area: string; type: string } | null>(null);
   const [listening, setListening] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(false);
   const [timeOverlay, setTimeOverlay] = useState<ReturnType<typeof getTimeOfDayOverlay> | null>(null);
@@ -112,16 +111,6 @@ export default function HeroSection() {
   }, []);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("ws_last_search");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const age = Date.now() - (parsed.timestamp || 0);
-        if (age < 7 * 24 * 60 * 60 * 1000 && (parsed.area || parsed.type)) {
-          setReturning({ area: parsed.area || "", type: parsed.type || "" });
-        }
-      }
-    } catch {}
     const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
     setVoiceSupported(!!(w.SpeechRecognition || w.webkitSpeechRecognition));
     setTimeOverlay(getTimeOfDayOverlay());
@@ -196,20 +185,14 @@ export default function HeroSection() {
 
   const scrollDown = () => window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
 
-  const returningLabel = returning
-    ? [
-        returning.type ? returning.type.charAt(0).toUpperCase() + returning.type.slice(1) : "",
-        returning.area ? returning.area.charAt(0).toUpperCase() + returning.area.slice(1) + " London" : "",
-      ].filter(Boolean).join(" · ")
-    : "";
-
   return (
-    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-[#09090F]">
+    <section className="relative min-h-screen flex flex-col overflow-hidden bg-[#09090F]">
 
       {/* ── Background layers ── */}
       <div className="absolute inset-0 overflow-hidden">
+        {/* Warm London workspace interior — characterful, high-ceilinged, natural light */}
         <img
-          src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1920&q=85"
+          src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1920&q=85"
           alt=""
           aria-hidden="true"
           className="w-full h-full object-cover animate-kenburns hero-parallax-bg"
@@ -218,26 +201,21 @@ export default function HeroSection() {
           className="absolute inset-0 transition-all duration-1000"
           style={{ background: timeOverlay?.gradient ?? "linear-gradient(to bottom, rgba(9,9,15,0.72) 0%, rgba(9,9,15,0.22) 50%, rgba(9,9,15,0.68) 100%)" }}
         />
-        {/* Directional vignette */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#09090F]/65 via-transparent to-[#09090F]/20" />
-        {/* Time accent */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#09090F]/55 via-transparent to-[#09090F]/15" />
         {timeOverlay?.accent && (
           <div
             className="absolute inset-0 transition-all duration-1000"
             style={{ background: `radial-gradient(ellipse at 50% 0%, ${timeOverlay.accent} 0%, transparent 65%)` }}
           />
         )}
-        {/* Cursor-reactive warm glow */}
         <div ref={cursorBlobRef} className="absolute inset-0 transition-[background] duration-300 ease-out pointer-events-none" />
-        {/* Architectural dot-grid */}
         <div
-          className="absolute inset-0 opacity-[0.06]"
+          className="absolute inset-0 opacity-[0.05]"
           style={{
             backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px)",
             backgroundSize: "52px 52px",
           }}
         />
-        {/* Noise grain */}
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{
@@ -245,55 +223,38 @@ export default function HeroSection() {
             backgroundRepeat: "repeat", backgroundSize: "128px 128px",
           }}
         />
-        {/* Thin bottom accent line */}
         <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#E8622A]/30 to-transparent" />
       </div>
 
-      {/* ── Content ── */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32 mt-16 hero-content-scroll flex flex-col items-center text-center">
+      {/* ── Content — centered in the viewport ── */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 hero-content-scroll pb-16 pt-24">
 
-        {/* Announcement chip */}
+        {/* Combined status chip */}
         <a
           href="/spaces?filter=new"
-          className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 glass rounded-full text-sm text-white/70 hover:text-white transition-all duration-300 hover:border-white/20 group animate-fade-up"
+          className="inline-flex items-center gap-2.5 mb-10 px-4 py-2 glass rounded-full text-sm text-white/70 hover:text-white transition-all duration-300 hover:border-white/20 group animate-fade-up"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87] animate-pulse shrink-0" />
-          3 new spaces open this month
+          <span className="text-white/50 font-normal">60+ buildings · London</span>
+          <span className="w-px h-3 bg-white/20 shrink-0" />
+          3 new spaces this month
           <ArrowRight size={11} className="opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
         </a>
 
-        {/* Time greeting */}
+        {/* Time greeting — inline, very subtle */}
         {timeOverlay?.label && (
-          <div className="mb-3 text-xs text-white/60 tracking-[0.18em] uppercase animate-fade-up">
+          <p className="text-xs text-white/55 tracking-[0.2em] uppercase mb-4 animate-fade-up">
             {timeOverlay.label}
-          </div>
-        )}
-
-        {/* Returning visitor */}
-        {returning && (
-          <div className="mb-6 inline-flex items-center gap-2 text-sm text-white/60 animate-fade-up">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87] inline-block" />
-            Welcome back — still searching for {returningLabel}?{" "}
-            <button
-              onClick={() => router.push(`/spaces?area=${returning.area}&type=${returning.type}`)}
-              className="text-white underline underline-offset-2 hover:text-white/80 transition-colors"
-            >
-              See those spaces
-            </button>
-          </div>
+          </p>
         )}
 
         {/* ── Headline ── */}
-        <div className="max-w-5xl mb-10 overflow-hidden">
-          <p className="text-white/65 text-xs font-medium tracking-[0.22em] uppercase mb-8 word-up" style={{ animationDelay: "0.05s" }}>
-            60+ buildings · London
-          </p>
-
+        <div className="max-w-5xl mb-9 overflow-hidden text-center">
           <h1 className="text-white leading-[0.9] tracking-[-0.04em]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
-            <span className="block text-[clamp(60px,9.5vw,120px)] font-light word-up" style={{ animationDelay: "0.12s" }}>
+            <span className="block text-[clamp(60px,9.5vw,120px)] font-light word-up" style={{ animationDelay: "0.08s" }}>
               Space to
             </span>
-            <span className="block text-[clamp(70px,11vw,144px)] font-bold word-up" style={{ animationDelay: "0.22s" }}>
+            <span className="block text-[clamp(70px,11vw,144px)] font-bold word-up" style={{ animationDelay: "0.18s" }}>
               <span
                 className={`inline-block ${verbPhase === "in" ? "verb-in" : "verb-out"}`}
                 style={{
@@ -309,13 +270,13 @@ export default function HeroSection() {
             </span>
           </h1>
 
-          <p className="text-white/70 text-lg sm:text-xl mt-7 leading-relaxed word-up" style={{ animationDelay: "0.38s" }}>
+          <p className="text-white/65 text-lg sm:text-xl mt-6 leading-relaxed word-up" style={{ animationDelay: "0.32s" }}>
             Describe what you need. We&apos;ll find the space.
           </p>
         </div>
 
-        {/* ── Search + Autocomplete ── */}
-        <div className="w-full max-w-2xl word-up" style={{ animationDelay: "0.5s" }}>
+        {/* ── Search bar ── */}
+        <div className="w-full max-w-2xl word-up" style={{ animationDelay: "0.44s" }}>
           <div className={`relative glass rounded-2xl transition-all duration-300 ${focused ? "glow-orange border-[#E8622A]/25" : ""}`}>
             <div className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
               {status === "thinking"
@@ -417,30 +378,6 @@ export default function HeroSection() {
               </button>
             ))}
           </div>
-        </div>
-
-        {/* ── Stats pill badges ── */}
-        <div className="flex flex-wrap justify-center gap-3 mt-12 word-up" style={{ animationDelay: "0.62s" }}>
-          {[
-            { n: "60+",    label: "buildings" },
-            { n: "4,000+", label: "businesses" },
-            { n: "£550",   label: "from / desk / mo" },
-            { n: "35yrs",  label: "in London" },
-          ].map(({ n, label }) => (
-            <div
-              key={label}
-              className="flex items-center gap-3 px-5 py-2.5 rounded-2xl"
-              style={{
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.09)",
-                backdropFilter: "blur(12px)",
-              }}
-            >
-              <span className="text-white font-bold text-base" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>{n}</span>
-              <span className="w-px h-4 bg-white/15 shrink-0" />
-              <span className="text-white/65 text-xs tracking-wide">{label}</span>
-            </div>
-          ))}
         </div>
       </div>
 

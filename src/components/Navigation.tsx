@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, Phone, Heart, Sun, Moon, MapPin, ArrowRight } from "lucide-react";
+import { Menu, X, ChevronDown, Heart, Sun, Moon, MapPin, ArrowRight } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useFavourites } from "@/context/FavouritesContext";
 import { spaces } from "@/data/spaces";
@@ -43,19 +43,18 @@ const navLinks = [
 
 function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2.5 group">
-      {/* Three ascending bars — growth mark */}
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect width="32" height="32" rx="8" fill="#E8622A"/>
-        {/* Left bar — shortest */}
-        <rect x="5" y="18" width="6" height="10" rx="2" fill="white"/>
-        {/* Middle bar */}
-        <rect x="13" y="11" width="6" height="17" rx="2" fill="white"/>
-        {/* Right bar — tallest */}
-        <rect x="21" y="5" width="6" height="23" rx="2" fill="white"/>
-      </svg>
-      <span className="text-white font-semibold text-[17px] tracking-[-0.03em] leading-none"
-        style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+    <Link href="/" aria-label="Workspace — home">
+      <span
+        className="text-[20px] font-bold tracking-[-0.045em] leading-none animate-gradient-logo"
+        style={{
+          fontFamily: "'Bricolage Grotesque', sans-serif",
+          background: "linear-gradient(90deg, #ffffff 0%, #f5935a 20%, #E8622A 38%, #C9A84C 56%, #7B9E87 74%, #ffffff 100%)",
+          backgroundSize: "250% auto",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
+      >
         Workspace
       </span>
     </Link>
@@ -131,7 +130,7 @@ export default function Navigation() {
                 >
                   <Link
                     href={link.href}
-                    className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors rounded-md hover:bg-white/[0.07]"
+                    className="flex items-center gap-1.5 px-4 py-2 text-sm font-normal text-white/65 hover:text-white transition-colors tracking-wide"
                   >
                     {link.label}
                     {link.children && (
@@ -172,12 +171,7 @@ export default function Navigation() {
             </nav>
 
             {/* CTA + controls */}
-            <div className="hidden lg:flex items-center gap-3">
-              <a href="tel:02071383307"
-                className="flex items-center gap-1.5 text-sm text-white/65 hover:text-white transition-colors">
-                <Phone size={13} /><span>020 7138 3307</span>
-              </a>
-
+            <div className="hidden lg:flex items-center gap-2">
               {/* Theme toggle */}
               <button
                 onClick={toggleTheme}

@@ -37,6 +37,27 @@ const footerLinks = {
 export default function Footer() {
   return (
     <footer className="bg-[#09090F] text-white">
+
+      {/* ── Animated marquee ribbon ── */}
+      <div className="border-b border-white/[0.06] overflow-hidden py-5">
+        <div className="flex whitespace-nowrap animate-marquee-slow select-none" aria-hidden="true">
+          {[...Array(5)].map((_, i) => (
+            <span key={i} className="inline-flex items-center gap-8 px-8 text-white/25 text-[11px] font-medium tracking-[0.3em] uppercase">
+              <span>London&apos;s brightest offices</span>
+              <span className="text-[#E8622A]">✦</span>
+              <span>60+ Buildings</span>
+              <span className="text-[#E8622A]">✦</span>
+              <span>Space to grow</span>
+              <span className="text-[#E8622A]">✦</span>
+              <span>Est. 1987</span>
+              <span className="text-[#E8622A]">✦</span>
+              <span>4,000+ businesses</span>
+              <span className="text-[#E8622A]">✦</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* Newsletter strip */}
       <div className="border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -74,12 +95,18 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
           {/* Brand column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="32" height="32" rx="7" fill="#E8622A"/>
-                <path d="M7 10L11.5 22L16 14L20.5 22L25 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="text-white font-semibold text-[17px] tracking-[-0.02em]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+            <Link href="/" className="inline-block mb-5" aria-label="Workspace — home">
+              <span
+                className="text-[22px] font-bold tracking-[-0.045em] leading-none animate-gradient-logo"
+                style={{
+                  fontFamily: "'Bricolage Grotesque', sans-serif",
+                  background: "linear-gradient(90deg, #ffffff 0%, #f5935a 20%, #E8622A 38%, #C9A84C 56%, #7B9E87 74%, #ffffff 100%)",
+                  backgroundSize: "250% auto",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
                 Workspace
               </span>
             </Link>
@@ -148,6 +175,23 @@ export default function Footer() {
           <p className="mt-4 text-xs text-white/25">
             © {new Date().getFullYear()} Workspace Group plc. Registered in England & Wales. Company No. 2041612. FTSE 250 listed.
           </p>
+        </div>
+      </div>
+
+      {/* ── Large ghost wordmark ── */}
+      <div className="overflow-hidden border-t border-white/[0.04] pt-6 pb-2 select-none pointer-events-none" aria-hidden="true">
+        <div
+          className="text-center font-bold leading-[0.85] tracking-[-0.05em]"
+          style={{
+            fontFamily: "'Bricolage Grotesque', sans-serif",
+            fontSize: "clamp(72px, 14vw, 192px)",
+            background: "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          Workspace
         </div>
       </div>
     </footer>
