@@ -131,7 +131,7 @@ export default function FeaturedSpaces() {
             </div>
           </ScrollReveal>
           <ScrollReveal delay={0.15} className="hidden lg:block">
-            <Link href="/spaces" className="flex items-center gap-2 text-white/40 hover:text-white text-sm font-medium transition-colors group">
+            <Link href="/spaces" className="flex items-center gap-2 text-white/55 hover:text-white text-sm font-medium transition-colors group">
               View all 60+ spaces
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </Link>

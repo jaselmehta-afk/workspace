@@ -80,7 +80,7 @@ export default function NeighbourhoodsSection() {
             </div>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <Link href="/spaces" className="flex items-center gap-2 text-white/40 hover:text-white text-sm font-medium transition-colors group">
+            <Link href="/spaces" className="flex items-center gap-2 text-white/55 hover:text-white text-sm font-medium transition-colors group">
               All locations
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -126,7 +126,7 @@ export default function NeighbourhoodsSection() {
                   >
                     {area.name}
                   </h3>
-                  <p className="text-white/55 text-xs leading-relaxed max-w-[200px] hidden sm:block opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                  <p className="text-white/75 text-xs leading-relaxed max-w-[200px] hidden sm:block opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
                     {area.desc}
                   </p>
 
@@ -145,7 +145,7 @@ export default function NeighbourhoodsSection() {
         <ScrollReveal delay={0.2}>
           <div className="mt-6 rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4"
             style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <p className="text-white/50 text-sm">
+            <p className="text-white/65 text-sm">
               Can&apos;t find your area? We have buildings across all of London.
             </p>
             <Link href="/spaces" className="flex items-center gap-2 text-[#E8622A] text-sm font-semibold hover:gap-3 transition-all group">

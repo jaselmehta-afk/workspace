@@ -27,7 +27,7 @@ export default function SustainabilitySection() {
               <br />
               <span className="text-[#7B9E87]">Good for the planet.</span>
             </h2>
-            <p className="text-white/60 leading-relaxed mb-8 text-lg">
+            <p className="text-white/70 leading-relaxed mb-8 text-lg">
               We&apos;re committed to making Workspace the most sustainable portfolio of office buildings in London — from renewable energy and waste reduction to active travel and biodiversity.
             </p>
             <a
@@ -56,7 +56,7 @@ export default function SustainabilitySection() {
                   >
                     {c.label}
                   </div>
-                  <div className="text-white/50 text-sm">{c.sub}</div>
+                  <div className="text-white/65 text-sm">{c.sub}</div>
                 </div>
               );
             })}

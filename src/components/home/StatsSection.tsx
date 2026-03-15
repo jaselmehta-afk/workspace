@@ -29,7 +29,7 @@ export default function StatsSection() {
                 </div>
                 <div>
                   <div className="text-white font-medium text-sm mb-1">{stat.label}</div>
-                  <div className="text-white/55 text-xs leading-relaxed">{stat.sub}</div>
+                  <div className="text-white/65 text-xs leading-relaxed">{stat.sub}</div>
                 </div>
               </div>
             </ScrollReveal>

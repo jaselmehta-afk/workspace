@@ -15,7 +15,7 @@ export default function SpaceFinderCTA() {
 
         {/* Left — large number display */}
         <div>
-          <p className="text-[10px] font-semibold tracking-[0.28em] uppercase text-white/20 mb-8">
+          <p className="text-[10px] font-semibold tracking-[0.28em] uppercase text-white/40 mb-8">
             Est. 1987 · FTSE 250 · London
           </p>
           <div
@@ -29,7 +29,7 @@ export default function SpaceFinderCTA() {
             60
           </div>
           <div
-            className="text-white/40 leading-tight"
+            className="text-white/55 leading-tight"
             style={{
               fontFamily: "'Bricolage Grotesque', sans-serif",
               fontWeight: 300,
@@ -52,29 +52,29 @@ export default function SpaceFinderCTA() {
           >
             Flexible from day one.
             <br />
-            <span className="text-white/40">Yours to make your own.</span>
+            <span className="text-white/55">Yours to make your own.</span>
           </h2>
 
           <ul className="space-y-3 mb-10">
             {POINTS.map(point => (
-              <li key={point} className="flex items-center gap-3 text-white/45 text-sm">
-                <span className="w-1 h-1 rounded-full bg-[#E8622A] shrink-0" />
+              <li key={point} className="flex items-center gap-3 text-white/65 text-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E8622A] shrink-0" />
                 {point}
               </li>
             ))}
           </ul>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5">
             <Link
               href="/spaces"
-              className="group inline-flex items-center gap-2.5 px-6 py-3 border border-white/20 text-white text-sm font-medium rounded-xl hover:border-white/50 hover:bg-white/5 transition-all"
+              className="group inline-flex items-center gap-2.5 px-6 py-3.5 bg-[#E8622A] text-white text-sm font-semibold rounded-xl hover:bg-[#d4561e] transition-colors"
             >
               Browse all spaces
               <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <Link
               href="/space-finder"
-              className="text-white/35 hover:text-white/70 text-sm transition-colors"
+              className="text-white/55 hover:text-white/80 text-sm transition-colors"
             >
               Use the space finder →
             </Link>

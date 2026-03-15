@@ -33,18 +33,18 @@ export default function ComparisonSection() {
 
           {/* Old way — dark card, muted */}
           <div className="rounded-2xl bg-[#09090F] p-8">
-            <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-white/25 mb-8">
+            <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-white/45 mb-8">
               Traditional lease
             </p>
             <ul className="space-y-5">
               {rows.map(row => (
                 <li key={row.label} className="flex items-start gap-3">
-                  <span className="text-white/20 text-base leading-none mt-px shrink-0">✕</span>
+                  <span className="text-white/35 text-base leading-none mt-px shrink-0">✕</span>
                   <div>
-                    <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-white/20 mb-1">
+                    <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-white/40 mb-1">
                       {row.label}
                     </div>
-                    <div className="text-white/40 text-sm">{row.old}</div>
+                    <div className="text-white/60 text-sm">{row.old}</div>
                   </div>
                 </li>
               ))}

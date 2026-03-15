@@ -71,7 +71,7 @@ export default function TestimonialsSection() {
     >
       <div className="max-w-2xl mx-auto">
 
-        <p className="text-[10px] font-semibold tracking-[0.28em] uppercase text-white/20 text-center mb-16">
+        <p className="text-[10px] font-semibold tracking-[0.28em] uppercase text-white/45 text-center mb-16">
           Member stories
         </p>
 
@@ -99,11 +99,10 @@ export default function TestimonialsSection() {
               src={t.avatar}
               alt={t.name}
               className="w-9 h-9 rounded-full object-cover"
-              style={{ opacity: 0.75 }}
             />
             <div>
-              <div className="text-white/85 text-sm font-medium tracking-[-0.01em]">{t.name}</div>
-              <div className="text-white/30 text-xs mt-0.5">{t.role}</div>
+              <div className="text-white text-sm font-medium tracking-[-0.01em]">{t.name}</div>
+              <div className="text-white/55 text-xs mt-0.5">{t.role}</div>
             </div>
           </div>
         </div>

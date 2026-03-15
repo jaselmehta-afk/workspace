@@ -42,7 +42,7 @@ export default function Footer() {
       <div className="border-b border-white/[0.06] overflow-hidden py-5">
         <div className="flex whitespace-nowrap animate-marquee-slow select-none" aria-hidden="true">
           {[...Array(5)].map((_, i) => (
-            <span key={i} className="inline-flex items-center gap-8 px-8 text-white/25 text-[11px] font-medium tracking-[0.3em] uppercase">
+            <span key={i} className="inline-flex items-center gap-8 px-8 text-white/40 text-[11px] font-medium tracking-[0.3em] uppercase">
               <span>London&apos;s brightest offices</span>
               <span className="text-[#E8622A]">✦</span>
               <span>60+ Buildings</span>
@@ -129,7 +129,7 @@ export default function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
-              <h4 className="text-xs font-semibold tracking-widest uppercase text-white/40 mb-4">
+              <h4 className="text-xs font-semibold tracking-widest uppercase text-white/50 mb-4">
                 {title}
               </h4>
               <ul className="space-y-3">
@@ -151,7 +151,7 @@ export default function Footer() {
         {/* Contact bar */}
         <div className="mt-16 pt-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex flex-wrap gap-6 text-sm text-white/50">
+            <div className="flex flex-wrap gap-6 text-sm text-white/60">
               <a href="tel:02071383307" className="flex items-center gap-2 hover:text-white transition-colors">
                 <Phone size={13} />
                 020 7138 3307
@@ -165,14 +165,14 @@ export default function Footer() {
                 Canterbury Court, Kennington Park, London
               </span>
             </div>
-            <div className="flex flex-wrap gap-4 text-xs text-white/30">
+            <div className="flex flex-wrap gap-4 text-xs text-white/45">
               <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacy Policy</Link>
               <Link href="/terms" className="hover:text-white/60 transition-colors">Terms of Use</Link>
               <Link href="/cookies" className="hover:text-white/60 transition-colors">Cookie Settings</Link>
               <Link href="/accessibility" className="hover:text-white/60 transition-colors">Accessibility</Link>
             </div>
           </div>
-          <p className="mt-4 text-xs text-white/25">
+          <p className="mt-4 text-xs text-white/40">
             © {new Date().getFullYear()} Workspace Group plc. Registered in England & Wales. Company No. 2041612. FTSE 250 listed.
           </p>
         </div>
