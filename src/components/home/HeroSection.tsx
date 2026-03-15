@@ -95,7 +95,7 @@ export default function HeroSection() {
     : "";
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-end overflow-hidden bg-[#09090F]">
+    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-[#09090F]">
       {/* Cinematic background with Ken Burns */}
       <div className="absolute inset-0 overflow-hidden">
         <img
@@ -105,7 +105,7 @@ export default function HeroSection() {
           className="w-full h-full object-cover animate-kenburns"
         />
         {/* Sophisticated layered overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#09090F]/70 via-[#09090F]/30 to-[#09090F]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#09090F]/75 via-[#09090F]/25 to-[#09090F]/65" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#09090F]/60 via-transparent to-transparent" />
         {/* Subtle noise grain */}
         <div className="absolute inset-0 opacity-[0.04]"
@@ -113,8 +113,8 @@ export default function HeroSection() {
             backgroundRepeat: "repeat", backgroundSize: "128px 128px" }} />
       </div>
 
-      {/* Content — bottom anchored, left-weighted */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-20 pt-36">
+      {/* Content — vertically centred, left-weighted */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32 mt-16">
 
         {/* Returning visitor banner */}
         {returning && (
