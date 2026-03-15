@@ -145,7 +145,7 @@ export default function SpaceFinderPage() {
                     <div className="text-sm text-gray-500">{opt.sub}</div>
                   </div>
                   {teamSize === opt.value && <Check size={18} className="text-[#E8622A]" />}
-                  <ArrowRight size={16} className="text-gray-300" />
+                  <ArrowRight size={16} className="text-gray-400" />
                 </button>
               ))}
             </div>
@@ -172,7 +172,7 @@ export default function SpaceFinderPage() {
                     <span className="font-semibold text-[#09090F]">{opt.label}</span>
                     {area === opt.value && <Check size={16} className="text-[#E8622A]" />}
                   </div>
-                  <div className="text-xs text-gray-400">{opt.desc}</div>
+                  <div className="text-xs text-gray-500">{opt.desc}</div>
                 </button>
               ))}
             </div>
@@ -215,7 +215,7 @@ export default function SpaceFinderPage() {
                 </button>
               ))}
             </div>
-            <div className="text-xs text-gray-400 text-center mb-6">
+            <div className="text-xs text-gray-500 text-center mb-6">
               {priorities.length === 0 ? "Select at least 1 priority" : `${priorities.length}/3 selected`}
             </div>
             <div className="flex gap-3">
@@ -273,7 +273,7 @@ export default function SpaceFinderPage() {
                         </div>
                         <div className="text-center shrink-0">
                           <div className="text-2xl font-bold text-[#E8622A]">{match}%</div>
-                          <div className="text-xs text-gray-400">match</div>
+                          <div className="text-xs text-gray-500">match</div>
                         </div>
                       </div>
                       <p className="text-xs text-gray-500 mb-3 line-clamp-2">{space.headline}</p>
@@ -281,7 +281,7 @@ export default function SpaceFinderPage() {
                         <div className="flex items-center gap-1">
                           <Star size={11} className="text-[#C9A84C] fill-[#C9A84C]" />
                           <span className="text-xs font-semibold">{space.rating}</span>
-                          <span className="text-xs text-gray-400">· from £{space.priceFrom.toLocaleString()}/{space.priceUnit}</span>
+                          <span className="text-xs text-gray-500">· from £{space.priceFrom.toLocaleString()}/{space.priceUnit}</span>
                         </div>
                         <span className="flex items-center gap-1 text-[#E8622A] text-xs font-semibold group-hover:gap-2 transition-all">
                           View space <ArrowRight size={12} />

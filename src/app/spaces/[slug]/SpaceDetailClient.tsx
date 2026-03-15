@@ -419,13 +419,13 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
               {/* Talk */}
               <div className="bg-[#09090F] rounded-3xl p-6">
-                <p className="text-white/40 text-[11px] font-medium tracking-[0.15em] uppercase mb-3">Prefer to talk?</p>
+                <p className="text-white/65 text-[11px] font-medium tracking-[0.15em] uppercase mb-3">Prefer to talk?</p>
                 <a href="tel:02071383307"
                   className="flex items-center gap-2 text-white font-semibold text-lg hover:text-[#E8622A] transition-colors">
                   <ArrowUpRight size={16} className="text-[#E8622A] shrink-0" />
                   020 7138 3307
                 </a>
-                <p className="text-white/20 text-xs mt-1">Mon–Fri, 9am–6pm</p>
+                <p className="text-white/50 text-xs mt-1">Mon–Fri, 9am–6pm</p>
               </div>
             </div>
           </div>

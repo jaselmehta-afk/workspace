@@ -45,7 +45,7 @@ export default function ShareButton({ data, variant = "icon", className = "" }: 
         onClick={share}
         aria-label="Share this space"
         className={`flex items-center gap-1.5 text-sm font-medium transition-colors
-          ${copied ? "text-[#7B9E87]" : "text-white/40 hover:text-white"}
+          ${copied ? "text-[#7B9E87]" : "text-white/65 hover:text-white"}
           ${className}`}
       >
         <Icon size={13} />

@@ -91,7 +91,7 @@ function BookingFlow() {
           <strong className="text-white/80">{space.name}</strong> via email within the hour.
         </p>
         <div className="mt-6 inline-flex flex-col items-center gap-1 px-6 py-4 bg-white/[0.05] rounded-2xl border border-white/[0.08] text-sm">
-          <span className="text-white/40 text-xs tracking-wider uppercase mb-1">Your appointment</span>
+          <span className="text-white/65 text-xs tracking-wider uppercase mb-1">Your appointment</span>
           <span className="text-white font-medium">{data.date && new Date(data.date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}</span>
           <span className="text-white/50">{data.time} · {data.viewingType === "virtual" ? "Video call" : space.neighbourhood}</span>
         </div>
@@ -121,9 +121,9 @@ function BookingFlow() {
           </span>
         </Link>
         <div className="flex items-center gap-3">
-          <span className="text-white/30 text-xs">{step} of 6</span>
+          <span className="text-white/55 text-xs">{step} of 6</span>
           {step > 1 && (
-            <button onClick={back} className="flex items-center gap-1 text-white/40 hover:text-white/70 text-sm transition-colors">
+            <button onClick={back} className="flex items-center gap-1 text-white/65 hover:text-white text-sm transition-colors">
               <ArrowLeft size={14} /> Back
             </button>
           )}
@@ -164,7 +164,7 @@ function BookingFlow() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-white text-sm">{s.name}</div>
-                      <div className="text-white/40 text-xs mt-0.5">{s.neighbourhood}, {s.postcode}</div>
+                      <div className="text-white/60 text-xs mt-0.5">{s.neighbourhood}, {s.postcode}</div>
                     </div>
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
                       data.spaceSlug === s.slug ? "border-[#E8622A] bg-[#E8622A]" : "border-white/20"
@@ -195,12 +195,12 @@ function BookingFlow() {
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${
-                      data.viewingType === value ? "bg-[#E8622A]/20 text-[#E8622A]" : "bg-white/[0.06] text-white/40"
+                      data.viewingType === value ? "bg-[#E8622A]/20 text-[#E8622A]" : "bg-white/[0.06] text-white/60"
                     }`}>
                       <Icon size={20} />
                     </div>
                     <div className="font-semibold text-white text-base mb-1">{title}</div>
-                    <div className="text-white/40 text-sm leading-relaxed">{sub}</div>
+                    <div className="text-white/65 text-sm leading-relaxed">{sub}</div>
                   </button>
                 ))}
               </div>
@@ -228,7 +228,7 @@ function BookingFlow() {
                   >
                     <Users size={18} className={data.teamSize === value ? "text-[#E8622A] mb-3" : "text-white/25 mb-3"} />
                     <div className="font-semibold text-white text-base">{label}</div>
-                    <div className="text-white/40 text-xs mt-0.5">{sub}</div>
+                    <div className="text-white/60 text-xs mt-0.5">{sub}</div>
                   </button>
                 ))}
               </div>
@@ -293,8 +293,8 @@ function BookingFlow() {
                   { key: "phone", label: "Phone number", type: "tel", required: false, placeholder: "+44 7700 000000" },
                 ].map((f, i) => (
                   <div key={f.key}>
-                    <label htmlFor={`book-${f.key}`} className="text-white/40 text-xs font-medium tracking-wider uppercase block mb-2">
-                      {f.label}{!f.required && <span className="ml-1 text-white/20">(optional)</span>}
+                    <label htmlFor={`book-${f.key}`} className="text-white/65 text-xs font-medium tracking-wider uppercase block mb-2">
+                      {f.label}{!f.required && <span className="ml-1 text-white/45">(optional)</span>}
                     </label>
                     <input
                       id={`book-${f.key}`}
@@ -312,15 +312,15 @@ function BookingFlow() {
                 {/* Booking summary */}
                 <div className="mt-6 p-4 bg-white/[0.04] rounded-2xl border border-white/[0.07] space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-white/40">Space</span>
+                    <span className="text-white/60">Space</span>
                     <span className="text-white font-medium">{space.name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/40">Type</span>
+                    <span className="text-white/60">Type</span>
                     <span className="text-white/70 capitalize">{data.viewingType === "virtual" ? "Virtual tour" : "In-person viewing"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/40">When</span>
+                    <span className="text-white/60">When</span>
                     <span className="text-white/70">
                       {data.date && new Date(data.date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" })} at {data.time}
                     </span>
@@ -346,7 +346,7 @@ function BookingFlow() {
 function StepWrapper({ q, hint, children }: { q: string; hint: string; children: React.ReactNode }) {
   return (
     <div className="animate-fade-up">
-      <p className="text-white/30 text-xs font-medium tracking-widest uppercase mb-4">{hint}</p>
+      <p className="text-white/55 text-xs font-medium tracking-widest uppercase mb-4">{hint}</p>
       <h2
         className="text-2xl sm:text-3xl text-white mb-8 leading-tight"
         style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}

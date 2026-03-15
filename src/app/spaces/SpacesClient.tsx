@@ -4,7 +4,10 @@ import { useState, useMemo, useEffect, useRef, useCallback, Suspense } from "rea
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { Search, MapPin, SlidersHorizontal, X, Star, ArrowRight, Grid3X3, List, Map, Wifi, Coffee, Bike, Zap, Dog, Mic, Scale } from "lucide-react";
+import {
+  Search, MapPin, X, Star, ArrowRight, Grid3X3, List, Map,
+  Scale, TrendingUp, ArrowUpDown, ChevronDown, ChevronUp,
+} from "lucide-react";
 import { spaces, Space, Area, amenityOptions } from "@/data/spaces";
 import FavouriteButton from "@/components/FavouriteButton";
 import ShareButton from "@/components/ShareButton";
@@ -13,42 +16,35 @@ import { useCompare } from "@/context/CompareContext";
 const SpaceMap = dynamic(() => import("@/components/SpaceMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full rounded-2xl animate-pulse" style={{ backgroundColor: "var(--ws-surface)" }} />
+    <div className="w-full h-full rounded-2xl" style={{ background: "#09090F" }} />
   ),
 });
 
 const areaOptions: { value: Area | ""; label: string }[] = [
   { value: "", label: "All London" },
   { value: "central", label: "Central" },
-  { value: "east", label: "East London" },
-  { value: "south", label: "South London" },
-  { value: "west", label: "West London" },
-  { value: "north", label: "North London" },
+  { value: "east", label: "East" },
+  { value: "south", label: "South" },
+  { value: "west", label: "West" },
+  { value: "north", label: "North" },
 ];
 
 const typeOptions = [
   { value: "", label: "Any type" },
-  { value: "private", label: "Private Office" },
+  { value: "private", label: "Private office" },
   { value: "coworking", label: "Coworking" },
   { value: "studio", label: "Studio" },
 ];
 
 const sizeOptions = [
   { value: "", label: "Any size" },
-  { value: "1-5", label: "1–5 people" },
-  { value: "6-15", label: "6–15 people" },
-  { value: "16-50", label: "16–50 people" },
-  { value: "51+", label: "51+ people" },
+  { value: "1-5", label: "1–5" },
+  { value: "6-15", label: "6–15" },
+  { value: "16-50", label: "16–50" },
+  { value: "51+", label: "51+" },
 ];
 
-const amenityIcons: Record<string, React.ReactNode> = {
-  "High-speed Wi-Fi": <Wifi size={12} />,
-  "Café on-site": <Coffee size={12} />,
-  "Bike storage": <Bike size={12} />,
-  "EV charging": <Zap size={12} />,
-  "Pet-friendly": <Dog size={12} />,
-  "Podcast studio": <Mic size={12} />,
-};
+const GALLERY_INTERVAL = 3500;
 
 function SpacesInner() {
   const searchParams = useSearchParams();
@@ -57,21 +53,10 @@ function SpacesInner() {
   const [type, setType] = useState(searchParams.get("type") || "");
   const [size, setSize] = useState(searchParams.get("size") || "");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showAmenities, setShowAmenities] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
   const [sortBy, setSortBy] = useState("recommended");
   const [mapActiveId, setMapActiveId] = useState<string | null>(null);
-  const [returningArea, setReturningArea] = useState("");
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("ws_last_search");
-      if (saved) {
-        const p = JSON.parse(saved);
-        if (p.area && Date.now() - (p.timestamp || 0) < 7 * 24 * 60 * 60 * 1000) setReturningArea(p.area);
-      }
-    } catch {}
-  }, []);
 
   useEffect(() => {
     setSearch(searchParams.get("location") || "");
@@ -88,9 +73,12 @@ function SpacesInner() {
 
   const filtered = useMemo(() => {
     let result = spaces.filter((s) => {
-      if (search && !s.name.toLowerCase().includes(search.toLowerCase()) &&
+      if (
+        search &&
+        !s.name.toLowerCase().includes(search.toLowerCase()) &&
         !s.neighbourhood.toLowerCase().includes(search.toLowerCase()) &&
-        !s.postcode.toLowerCase().includes(search.toLowerCase())) return false;
+        !s.postcode.toLowerCase().includes(search.toLowerCase())
+      ) return false;
       if (area && s.area !== area) return false;
       if (type && !s.type.includes(type as Space["type"][0])) return false;
       if (size) {
@@ -111,201 +99,278 @@ function SpacesInner() {
     return result;
   }, [search, area, type, size, selectedAmenities, sortBy]);
 
-  const activeFilterCount = [area, type, size].filter(Boolean).length + selectedAmenities.length;
+  const activeFilterCount =
+    [area, type, size].filter(Boolean).length + selectedAmenities.length;
+
+  const clearAll = () => {
+    setSearch("");
+    setArea("");
+    setType("");
+    setSize("");
+    setSelectedAmenities([]);
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--ws-bg)" }}>
-      {/* Header */}
-      <div className="bg-[#09090F] pt-28 pb-12 px-4 sm:px-6 lg:px-8">
+      {/* ── Dark hero header with integrated filters ── */}
+      <div className="bg-[#09090F] pt-28 pb-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          {returningArea && (
-            <p className="text-white/40 text-xs tracking-wider uppercase mb-4 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87]" />
-              Welcome back — showing results near {returningArea.charAt(0).toUpperCase() + returningArea.slice(1)} London
-            </p>
-          )}
           <h1
-            className="text-4xl sm:text-5xl text-white mb-3 font-light tracking-[-0.03em]"
+            className="text-4xl sm:text-5xl text-white mb-2 font-light tracking-[-0.03em]"
             style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
           >
             Find your perfect space
           </h1>
-          <div className="flex items-center gap-3 mb-8">
-            <p className="text-white/50 text-base">
-              {spaces.length} buildings across London
-            </p>
-            <span className="w-1 h-1 rounded-full bg-white/20" />
-            <span className="flex items-center gap-1.5 text-[#7B9E87] text-sm font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87] animate-pulse" />
-              {spaces.filter(s => s.isNew || s.isFeatured).length} spaces with immediate availability
+          <p className="text-white/50 text-sm mb-6">
+            {spaces.length} buildings across London ·{" "}
+            <span className="text-[#7B9E87]">
+              {spaces.filter((s) => s.isNew || s.isFeatured).length} with immediate availability
             </span>
-          </div>
+          </p>
 
-          {/* Search bar */}
-          <div className="flex gap-3">
-            <div className="flex-1 flex items-center gap-3 bg-white rounded-xl px-4 py-3 shadow-sm">
-              <Search size={18} className="text-gray-400 shrink-0" />
+          {/* Search — dark glass */}
+          <div className="flex gap-2.5 mb-5">
+            <div className="flex-1 flex items-center gap-3 glass rounded-xl px-4 py-3">
+              <Search size={16} className="text-white/40 shrink-0" />
               <input
                 type="text"
-                placeholder="Search by name, area or postcode..."
+                placeholder="Search by name, area or postcode…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="flex-1 text-sm text-[#09090F] placeholder-gray-400 focus:outline-none"
+                className="flex-1 text-sm text-white placeholder-white/30 bg-transparent focus:outline-none"
               />
               {search && (
-                <button onClick={() => setSearch("")} className="text-gray-400 hover:text-gray-600">
-                  <X size={15} />
+                <button onClick={() => setSearch("")} className="text-white/30 hover:text-white/60 transition-colors">
+                  <X size={14} />
                 </button>
               )}
             </div>
+          </div>
+
+          {/* ── Filter chips row 1: Area ── */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar mb-2">
+            <span className="text-white/30 text-[11px] uppercase tracking-widest font-medium shrink-0 mr-1">Area</span>
+            {areaOptions.map((o) => (
+              <button
+                key={o.value}
+                onClick={() => setArea(o.value as Area | "")}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150 ${
+                  area === o.value
+                    ? "bg-white text-[#09090F]"
+                    : "bg-white/8 text-white/60 hover:bg-white/15 hover:text-white"
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+
+          {/* ── Filter chips row 2: Type + Size ── */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar mb-3">
+            <span className="text-white/30 text-[11px] uppercase tracking-widest font-medium shrink-0 mr-1">Type</span>
+            {typeOptions.filter((o) => o.value).map((o) => (
+              <button
+                key={o.value}
+                onClick={() => setType(type === o.value ? "" : o.value)}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150 ${
+                  type === o.value
+                    ? "bg-[#E8622A] text-white"
+                    : "bg-white/8 text-white/60 hover:bg-white/15 hover:text-white"
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+
+            <span className="w-px h-4 bg-white/15 mx-1 shrink-0" />
+
+            <span className="text-white/30 text-[11px] uppercase tracking-widest font-medium shrink-0">Team</span>
+            {sizeOptions.filter((o) => o.value).map((o) => (
+              <button
+                key={o.value}
+                onClick={() => setSize(size === o.value ? "" : o.value)}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150 ${
+                  size === o.value
+                    ? "bg-[#E8622A] text-white"
+                    : "bg-white/8 text-white/60 hover:bg-white/15 hover:text-white"
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+
+            <span className="w-px h-4 bg-white/15 mx-1 shrink-0" />
+
+            {/* Amenities toggle */}
             <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl font-medium text-sm transition-colors ${
-                showFilters || activeFilterCount > 0
+              onClick={() => setShowAmenities(!showAmenities)}
+              className={`shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150 ${
+                selectedAmenities.length > 0
                   ? "bg-[#E8622A] text-white"
-                  : "bg-white text-[#09090F] hover:bg-gray-50"
+                  : "bg-white/8 text-white/60 hover:bg-white/15 hover:text-white"
               }`}
             >
-              <SlidersHorizontal size={16} />
-              Filters
-              {activeFilterCount > 0 && (
-                <span className="w-5 h-5 bg-white/20 rounded-full text-xs flex items-center justify-center">
-                  {activeFilterCount}
+              Amenities
+              {selectedAmenities.length > 0 && (
+                <span className="bg-white/20 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">
+                  {selectedAmenities.length}
                 </span>
               )}
+              {showAmenities ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
             </button>
           </div>
+
+          {/* Amenities panel (inline, no separate drawer) */}
+          {showAmenities && (
+            <div className="flex flex-wrap gap-2 pb-2 pt-1 border-t border-white/[0.06] mt-1">
+              {amenityOptions.map((a) => (
+                <button
+                  key={a}
+                  onClick={() => toggleAmenity(a)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-150 ${
+                    selectedAmenities.includes(a)
+                      ? "bg-[#E8622A] text-white"
+                      : "bg-white/8 text-white/55 hover:bg-white/15 hover:text-white"
+                  }`}
+                >
+                  {a}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filter panel */}
-        {showFilters && (
-          <div className="rounded-2xl border p-6 mb-6 shadow-sm" style={{ backgroundColor: "var(--ws-surface)", borderColor: "var(--ws-border)" }}>
-            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-wide mb-2 block" style={{ color: "var(--ws-text-muted)" }}>Area</label>
-                <select
-                  value={area}
-                  onChange={(e) => setArea(e.target.value as Area | "")}
-                  className="w-full text-sm border rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A]"
-                  style={{ color: "var(--ws-text)", borderColor: "var(--ws-border)", backgroundColor: "var(--ws-input-bg)" }}
-                >
-                  {areaOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-wide mb-2 block" style={{ color: "var(--ws-text-muted)" }}>Space type</label>
-                <select
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  className="w-full text-sm border rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A]"
-                  style={{ color: "var(--ws-text)", borderColor: "var(--ws-border)", backgroundColor: "var(--ws-input-bg)" }}
-                >
-                  {typeOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-wide mb-2 block" style={{ color: "var(--ws-text-muted)" }}>Team size</label>
-                <select
-                  value={size}
-                  onChange={(e) => setSize(e.target.value)}
-                  className="w-full text-sm border rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A]"
-                  style={{ color: "var(--ws-text)", borderColor: "var(--ws-border)", backgroundColor: "var(--ws-input-bg)" }}
-                >
-                  {sizeOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
-              </div>
-            </div>
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wide mb-3 block" style={{ color: "var(--ws-text-muted)" }}>Amenities</label>
-              <div className="flex flex-wrap gap-2">
-                {amenityOptions.map((a) => (
-                  <button
-                    key={a}
-                    onClick={() => toggleAmenity(a)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                      selectedAmenities.includes(a)
-                        ? "bg-[#E8622A] text-white border-[#E8622A]"
-                        : "text-gray-600 border-gray-200 hover:border-[#E8622A] hover:text-[#E8622A]"
-                    }`}
-                    style={!selectedAmenities.includes(a) ? { backgroundColor: "var(--ws-surface)" } : {}}
-                  >
-                    {amenityIcons[a] || null}
-                    {a}
-                  </button>
-                ))}
-              </div>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Active filter chips + results bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-sm" style={{ color: "var(--ws-text-muted)" }}>
+              <span className="font-semibold" style={{ color: "var(--ws-text)" }}>{filtered.length}</span>
+              {" "}space{filtered.length !== 1 ? "s" : ""}
+              {activeFilterCount > 0 && " found"}
+            </p>
+
+            {/* Active dismissible chips */}
+            {area && (
+              <button
+                onClick={() => setArea("")}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#09090F] text-white"
+              >
+                {areaOptions.find((o) => o.value === area)?.label}
+                <X size={10} />
+              </button>
+            )}
+            {type && (
+              <button
+                onClick={() => setType("")}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#09090F] text-white"
+              >
+                {typeOptions.find((o) => o.value === type)?.label}
+                <X size={10} />
+              </button>
+            )}
+            {size && (
+              <button
+                onClick={() => setSize("")}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#09090F] text-white"
+              >
+                {sizeOptions.find((o) => o.value === size)?.label} people
+                <X size={10} />
+              </button>
+            )}
+            {selectedAmenities.map((a) => (
+              <button
+                key={a}
+                onClick={() => toggleAmenity(a)}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#09090F] text-white"
+              >
+                {a} <X size={10} />
+              </button>
+            ))}
             {activeFilterCount > 0 && (
               <button
-                onClick={() => { setArea(""); setType(""); setSize(""); setSelectedAmenities([]); }}
-                className="mt-4 text-sm text-gray-400 hover:text-[#E8622A] transition-colors"
+                onClick={clearAll}
+                className="text-xs text-[#E8622A] hover:underline"
               >
-                Clear all filters
+                Clear all
               </button>
             )}
           </div>
-        )}
 
-        {/* Results bar */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-sm" style={{ color: "var(--ws-text-muted)" }}>
-            Showing <span className="font-semibold" style={{ color: "var(--ws-text)" }}>{filtered.length}</span> of {spaces.length} spaces
-          </p>
+          {/* Sort + view controls */}
           <div className="flex items-center gap-3">
             {viewMode !== "map" && (
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="text-sm border rounded-lg px-3 py-2 focus:outline-none focus:border-[#E8622A]"
-                style={{ color: "var(--ws-text)", borderColor: "var(--ws-border)", backgroundColor: "var(--ws-surface)" }}
-              >
-                <option value="recommended">Recommended</option>
-                <option value="price-asc">Price: Low to high</option>
-                <option value="price-desc">Price: High to low</option>
-                <option value="rating">Top rated</option>
-              </select>
+              <div className="flex items-center gap-1 p-1 rounded-xl border" style={{ borderColor: "var(--ws-border)", backgroundColor: "var(--ws-surface)" }}>
+                {[
+                  { value: "recommended", label: "Best", icon: <Star size={11} /> },
+                  { value: "price-asc", label: "Price ↑", icon: <ArrowUpDown size={11} /> },
+                  { value: "price-desc", label: "Price ↓", icon: <ArrowUpDown size={11} className="rotate-180" /> },
+                  { value: "rating", label: "Rating", icon: <TrendingUp size={11} /> },
+                ].map((s) => (
+                  <button
+                    key={s.value}
+                    onClick={() => setSortBy(s.value)}
+                    className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+                      sortBy === s.value
+                        ? "bg-[#09090F] text-white shadow-sm"
+                        : "text-gray-500 hover:text-gray-800"
+                    }`}
+                    style={sortBy !== s.value ? { color: "var(--ws-text-muted)" } : {}}
+                  >
+                    {s.icon}
+                    <span className="hidden sm:inline">{s.label}</span>
+                  </button>
+                ))}
+              </div>
             )}
-            <div className="flex gap-1 border rounded-lg overflow-hidden" style={{ borderColor: "var(--ws-border)" }}>
+
+            {/* View mode toggle */}
+            <div className="flex gap-0.5 border rounded-xl overflow-hidden p-0.5" style={{ borderColor: "var(--ws-border)", backgroundColor: "var(--ws-surface)" }}>
               {(["grid", "list", "map"] as const).map((mode) => (
                 <button
                   key={mode}
                   onClick={() => setViewMode(mode)}
                   aria-label={`${mode} view`}
-                  className={`p-2 transition-colors ${viewMode === mode ? "bg-[#09090F] text-white" : "text-gray-400 hover:text-gray-600"}`}
-                  style={viewMode !== mode ? { backgroundColor: "var(--ws-surface)" } : {}}
+                  className={`p-2 rounded-lg transition-all duration-150 ${
+                    viewMode === mode
+                      ? "bg-[#09090F] text-white"
+                      : "text-gray-400 hover:text-gray-600"
+                  }`}
+                  style={viewMode !== mode ? { color: "var(--ws-text-muted)" } : {}}
                 >
-                  {mode === "grid" && <Grid3X3 size={15} />}
-                  {mode === "list" && <List size={15} />}
-                  {mode === "map"  && <Map size={15} />}
+                  {mode === "grid" && <Grid3X3 size={14} />}
+                  {mode === "list" && <List size={14} />}
+                  {mode === "map" && <Map size={14} />}
                 </button>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Space cards / map */}
+        {/* Content */}
         {filtered.length === 0 ? (
-          <div className="text-center py-24">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: "var(--ws-surface)" }}>
-              <Search size={24} className="text-gray-300" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2" style={{ color: "var(--ws-text)" }}>No spaces found</h3>
-            <p className="text-sm mb-6" style={{ color: "var(--ws-text-muted)" }}>Try adjusting your filters or search term</p>
-            <button
-              onClick={() => { setSearch(""); setArea(""); setType(""); setSize(""); setSelectedAmenities([]); }}
-              className="text-sm text-[#E8622A] hover:underline"
+          <div className="text-center py-28">
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
+              style={{ backgroundColor: "var(--ws-surface)" }}
             >
+              <Search size={22} className="text-gray-300" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2" style={{ color: "var(--ws-text)" }}>
+              No spaces match
+            </h3>
+            <p className="text-sm mb-6" style={{ color: "var(--ws-text-muted)" }}>
+              Try broadening your search or removing a filter
+            </p>
+            <button onClick={clearAll} className="text-sm text-[#E8622A] hover:underline">
               Clear all filters
             </button>
           </div>
         ) : viewMode === "map" ? (
-          /* ── Map + side-list split ── */
-          <div className="flex gap-4" style={{ height: "calc(100vh - 280px)", minHeight: 500 }}>
-            {/* Scrollable card column */}
+          <div className="flex gap-4" style={{ height: "calc(100vh - 280px)", minHeight: 520 }}>
             <div className="w-80 shrink-0 overflow-y-auto space-y-3 pr-1">
-              {filtered.map(space => (
+              {filtered.map((space) => (
                 <SpaceCardMapSidebar
                   key={space.id}
                   space={space}
@@ -314,7 +379,6 @@ function SpacesInner() {
                 />
               ))}
             </div>
-            {/* Sticky map */}
             <div className="flex-1 rounded-2xl overflow-hidden sticky top-24">
               <SpaceMap
                 spaces={filtered}
@@ -324,14 +388,20 @@ function SpacesInner() {
             </div>
           </div>
         ) : (
-          <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" : "space-y-4"}>
-            {filtered.map((space) => (
+          <div
+            className={
+              viewMode === "grid"
+                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+                : "space-y-4"
+            }
+          >
+            {filtered.map((space) =>
               viewMode === "grid" ? (
                 <SpaceCardGrid key={space.id} space={space} />
               ) : (
                 <SpaceCardList key={space.id} space={space} />
               )
-            ))}
+            )}
           </div>
         )}
       </div>
@@ -347,168 +417,306 @@ export default function SpacesClient() {
   );
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   Grid card — fully image-dominant, all content overlaid
+───────────────────────────────────────────────────────────────── */
 function SpaceCardGrid({ space }: { space: Space }) {
   const { add, remove, isComparing } = useCompare();
   const comparing = isComparing(space.id);
   const gallery = space.gallery.length > 1 ? space.gallery : [space.image];
+
   const [imgIdx, setImgIdx] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const [isHovered, setIsHovered] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  // Track render count to key the animation
+  const [animKey, setAnimKey] = useState(0);
 
   const startCycle = useCallback(() => {
     if (gallery.length <= 1) return;
-    timerRef.current = setInterval(() => {
-      setImgIdx(i => (i + 1) % gallery.length);
-    }, 900);
-  }, [gallery]);
+    setIsHovered(true);
+    intervalRef.current = setInterval(() => {
+      setImgIdx((i) => {
+        setAnimKey((k) => k + 1);
+        return (i + 1) % gallery.length;
+      });
+    }, GALLERY_INTERVAL);
+  }, [gallery.length]);
 
   const stopCycle = useCallback(() => {
-    clearInterval(timerRef.current);
+    clearInterval(intervalRef.current);
+    setIsHovered(false);
     setImgIdx(0);
+    setAnimKey(0);
   }, []);
+
+  useEffect(() => () => clearInterval(intervalRef.current), []);
 
   return (
     <article
-      className="group rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col"
-      style={{ backgroundColor: "var(--ws-surface)" }}
+      className="group rounded-3xl overflow-hidden cursor-pointer"
+      onMouseEnter={startCycle}
+      onMouseLeave={stopCycle}
+      style={{ aspectRatio: "3/4" }}
     >
-      {/* Image wrapper */}
-      <div className="relative h-52" onMouseEnter={startCycle} onMouseLeave={stopCycle}>
-        <Link href={`/spaces/${space.slug}`} className="block absolute inset-0 overflow-hidden">
-          <img
-            key={imgIdx}
-            src={gallery[imgIdx]}
-            alt={space.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 space-img"
-            style={{ viewTransitionName: imgIdx === 0 ? `space-img-${space.slug}` : undefined }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-          <div className="absolute top-3 left-3 flex gap-2">
-            {space.isNew && <span className="px-2 py-1 bg-[#E8622A] text-white text-xs font-semibold rounded-md">New</span>}
-            {space.grade && <span className="px-2 py-1 bg-[#C9A84C] text-white text-xs font-semibold rounded-md">Listed</span>}
+      <Link href={`/spaces/${space.slug}`} className="relative block w-full h-full">
+        {/* Image */}
+        <img
+          key={animKey}
+          src={gallery[imgIdx]}
+          alt={space.name}
+          className="absolute inset-0 w-full h-full object-cover gallery-fade-in group-hover:scale-[1.03] transition-transform duration-700"
+          style={{
+            viewTransitionName: imgIdx === 0 ? `space-img-${space.slug}` : undefined,
+          }}
+        />
+
+        {/* Stories-style progress bars */}
+        {gallery.length > 1 && isHovered && (
+          <div className="absolute top-3.5 inset-x-3.5 flex gap-1 z-20">
+            {gallery.map((_, i) => (
+              <div key={i} className="flex-1 h-0.5 rounded-full bg-white/25 overflow-hidden">
+                <div
+                  key={i === imgIdx ? `prog-${animKey}` : i}
+                  className="h-full bg-white rounded-full"
+                  style={
+                    i < imgIdx
+                      ? { width: "100%" }
+                      : i === imgIdx
+                      ? { width: "0%", animation: `galleryProgress ${GALLERY_INTERVAL}ms linear forwards` }
+                      : { width: "0%" }
+                  }
+                />
+              </div>
+            ))}
           </div>
-          {/* Gallery dots */}
-          {gallery.length > 1 && (
-            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              {gallery.map((_, i) => (
-                <span key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${i === imgIdx ? "bg-white" : "bg-white/40"}`} />
-              ))}
-            </div>
+        )}
+
+        {/* Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" />
+
+        {/* Badges — top-left (below progress bars) */}
+        <div className="absolute top-4 left-4 flex gap-1.5 z-10" style={{ marginTop: gallery.length > 1 && isHovered ? "18px" : "0" }}>
+          {space.isNew && (
+            <span className="px-2.5 py-1 bg-[#E8622A] text-white text-[10px] font-bold rounded-lg uppercase tracking-wider">
+              New
+            </span>
           )}
-        </Link>
-        {/* Actions */}
-        <div className="absolute top-3 right-3 z-10 flex gap-1.5">
+          {space.grade && (
+            <span className="px-2.5 py-1 bg-[#C9A84C] text-white text-[10px] font-bold rounded-lg uppercase tracking-wider">
+              Listed
+            </span>
+          )}
+        </div>
+
+        {/* Share + Favourite — top-right */}
+        <div className="absolute top-4 right-4 z-10 flex gap-1.5">
           <ShareButton data={{ title: space.name, text: space.headline, slug: space.slug }} />
           <FavouriteButton spaceId={space.id} />
         </div>
-      </div>
 
-      {/* Text content */}
-      <Link href={`/spaces/${space.slug}`} className="block px-5 pt-4 pb-3 flex-1">
-        <div className="flex items-center gap-1 text-[#E8622A] text-xs font-medium mb-1.5">
-          <MapPin size={11} />{space.neighbourhood}, {space.postcode}
-        </div>
-        <h3 className="font-semibold mb-1 leading-snug" style={{ color: "var(--ws-text)" }}>{space.name}</h3>
-        <p className="text-sm line-clamp-1" style={{ color: "var(--ws-text-muted)" }}>{space.headline}</p>
-      </Link>
-
-      {/* Footer */}
-      <div className="px-5 pb-4 flex items-center justify-between border-t pt-3" style={{ borderColor: "var(--ws-border)" }}>
-        <div>
-          <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>From </span>
-          <span className="font-bold" style={{ color: "var(--ws-text)" }}>£{space.priceFrom.toLocaleString()}</span>
-          <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>/{space.priceUnit}</span>
-        </div>
-        <div className="flex items-center gap-2.5">
-          <div className="flex items-center gap-1">
-            <Star size={10} className="text-[#C9A84C] fill-[#C9A84C]" />
-            <span className="text-xs font-medium" style={{ color: "var(--ws-text-muted)" }}>{space.rating}</span>
+        {/* Content overlay — bottom */}
+        <div className="absolute bottom-0 inset-x-0 p-5 z-10">
+          {/* Neighbourhood + rating row */}
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-1 text-[#E8622A] text-[11px] font-semibold tracking-wide">
+              <MapPin size={10} />
+              {space.neighbourhood}
+            </div>
+            <div className="flex items-center gap-1 glass rounded-full px-2 py-0.5">
+              <Star size={9} className="text-[#C9A84C] fill-[#C9A84C]" />
+              <span className="text-white text-[11px] font-semibold">{space.rating}</span>
+              <span className="text-white/50 text-[10px]">({space.reviewCount})</span>
+            </div>
           </div>
+
+          {/* Space name */}
+          <h3
+            className="text-white font-light text-xl leading-tight mb-3"
+            style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+          >
+            {space.name}
+          </h3>
+
+          {/* Price + CTA row */}
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-white/55 text-xs">From </span>
+              <span className="text-white font-bold text-base">
+                £{space.priceFrom.toLocaleString()}
+              </span>
+              <span className="text-white/55 text-xs">/{space.priceUnit}</span>
+            </div>
+            <div
+              className={`transition-all duration-300 ${
+                isHovered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-2"
+              }`}
+            >
+              <span className="flex items-center gap-1.5 bg-white text-[#09090F] text-xs font-bold px-3.5 py-2 rounded-full">
+                View <ArrowRight size={11} />
+              </span>
+            </div>
+          </div>
+
+          {/* Compare — subtle */}
           <button
-            onClick={() => comparing ? remove(space.id) : add(space.id)}
-            aria-label={comparing ? "Remove from comparison" : "Add to comparison"}
-            title={comparing ? "Remove from comparison" : "Compare this space"}
-            className={`transition-colors ${comparing ? "text-[#E8622A]" : "text-gray-300 hover:text-[#E8622A]"}`}
+            onClick={(e) => {
+              e.preventDefault();
+              comparing ? remove(space.id) : add(space.id);
+            }}
+            className={`mt-3 text-[11px] font-medium flex items-center gap-1 transition-colors ${
+              comparing ? "text-[#E8622A]" : "text-white/30 hover:text-white/60"
+            }`}
           >
-            <Scale size={13} />
+            <Scale size={10} />
+            {comparing ? "Comparing" : "Compare"}
           </button>
-          <Link
-            href={`/spaces/${space.slug}`}
-            className="flex items-center gap-1 text-[#E8622A] text-xs font-semibold hover:gap-2 transition-all"
-          >
-            View <ArrowRight size={12} />
-          </Link>
         </div>
-      </div>
+      </Link>
     </article>
   );
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   List card — side-by-side, image left, content right
+───────────────────────────────────────────────────────────────── */
 function SpaceCardList({ space }: { space: Space }) {
   const { add, remove, isComparing } = useCompare();
   const comparing = isComparing(space.id);
+  const gallery = space.gallery.length > 1 ? space.gallery : [space.image];
+
+  const [imgIdx, setImgIdx] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const [animKey, setAnimKey] = useState(0);
+
+  const startCycle = useCallback(() => {
+    if (gallery.length <= 1) return;
+    setIsHovered(true);
+    intervalRef.current = setInterval(() => {
+      setImgIdx((i) => {
+        setAnimKey((k) => k + 1);
+        return (i + 1) % gallery.length;
+      });
+    }, GALLERY_INTERVAL);
+  }, [gallery.length]);
+
+  const stopCycle = useCallback(() => {
+    clearInterval(intervalRef.current);
+    setIsHovered(false);
+    setImgIdx(0);
+    setAnimKey(0);
+  }, []);
+
+  useEffect(() => () => clearInterval(intervalRef.current), []);
 
   return (
     <article
-      className="group rounded-2xl overflow-hidden hover:shadow-lg transition-all flex flex-col sm:flex-row"
+      className="group rounded-2xl overflow-hidden flex flex-col sm:flex-row hover:shadow-lg transition-shadow duration-300"
       style={{ backgroundColor: "var(--ws-surface)" }}
+      onMouseEnter={startCycle}
+      onMouseLeave={stopCycle}
     >
-      {/* Image wrapper */}
-      <div className="relative w-full sm:w-56 h-44 sm:h-auto shrink-0">
-        <Link href={`/spaces/${space.slug}`} className="block absolute inset-0 overflow-hidden">
+      {/* Image */}
+      <div className="relative w-full sm:w-64 shrink-0" style={{ aspectRatio: "4/3" }}>
+        <Link href={`/spaces/${space.slug}`} className="absolute inset-0 block overflow-hidden">
           <img
-            src={space.image}
+            key={animKey}
+            src={gallery[imgIdx]}
             alt={space.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 space-img"
+            className="absolute inset-0 w-full h-full object-cover gallery-fade-in group-hover:scale-[1.04] transition-transform duration-700"
             style={{ viewTransitionName: `space-img-${space.slug}` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+
+          {/* Badges */}
           {space.isNew && (
-            <span className="absolute top-3 left-3 px-2 py-1 bg-[#E8622A] text-white text-xs font-semibold rounded-md">New</span>
+            <span className="absolute top-3 left-3 px-2.5 py-1 bg-[#E8622A] text-white text-[10px] font-bold rounded-lg uppercase tracking-wider z-10">
+              New
+            </span>
           )}
         </Link>
-        {/* Actions outside anchor */}
+
+        {/* Actions on image */}
         <div className="absolute top-2.5 right-2.5 z-10 flex gap-1.5">
           <ShareButton data={{ title: space.name, text: space.headline, slug: space.slug }} />
           <FavouriteButton spaceId={space.id} />
         </div>
+
+        {/* Gallery dots */}
+        {gallery.length > 1 && isHovered && (
+          <div className="absolute bottom-2.5 inset-x-3 flex gap-1 z-10">
+            {gallery.map((_, i) => (
+              <div key={i} className="flex-1 h-0.5 rounded-full bg-white/25 overflow-hidden">
+                <div
+                  key={i === imgIdx ? `listprog-${animKey}` : i}
+                  className="h-full bg-white rounded-full"
+                  style={
+                    i < imgIdx
+                      ? { width: "100%" }
+                      : i === imgIdx
+                      ? { width: "0%", animation: `galleryProgress ${GALLERY_INTERVAL}ms linear forwards` }
+                      : { width: "0%" }
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-5 flex flex-col justify-between">
-        <Link href={`/spaces/${space.slug}`} className="block">
+      <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between">
+        <Link href={`/spaces/${space.slug}`} className="block flex-1">
           <div className="flex items-start justify-between gap-4 mb-2">
             <div>
-              <div className="flex items-center gap-1 text-[#E8622A] text-xs font-medium mb-1">
-                <MapPin size={11} />{space.neighbourhood}, {space.postcode}
+              <div className="flex items-center gap-1 text-[#E8622A] text-[11px] font-semibold mb-1 tracking-wide">
+                <MapPin size={10} />
+                {space.neighbourhood}, {space.postcode}
               </div>
-              <h3 className="font-semibold text-lg leading-snug" style={{ color: "var(--ws-text)" }}>{space.name}</h3>
+              <h3 className="font-semibold text-lg leading-snug" style={{ color: "var(--ws-text)" }}>
+                {space.name}
+              </h3>
             </div>
             <div className="flex items-center gap-1 shrink-0 mt-0.5">
               <Star size={11} className="text-[#C9A84C] fill-[#C9A84C]" />
-              <span className="text-sm font-medium" style={{ color: "var(--ws-text-muted)" }}>{space.rating}</span>
+              <span className="text-sm font-semibold" style={{ color: "var(--ws-text)" }}>
+                {space.rating}
+              </span>
+              <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>
+                ({space.reviewCount})
+              </span>
             </div>
           </div>
-          <p className="text-sm leading-relaxed" style={{ color: "var(--ws-text-muted)" }}>{space.headline}</p>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--ws-text-muted)" }}>
+            {space.headline}
+          </p>
         </Link>
 
-        <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: "var(--ws-border)" }}>
+        <div
+          className="flex items-center justify-between mt-4 pt-4 border-t"
+          style={{ borderColor: "var(--ws-border)" }}
+        >
           <div>
             <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>From </span>
-            <span className="font-bold text-lg" style={{ color: "var(--ws-text)" }}>£{space.priceFrom.toLocaleString()}</span>
+            <span className="font-bold text-lg" style={{ color: "var(--ws-text)" }}>
+              £{space.priceFrom.toLocaleString()}
+            </span>
             <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>/{space.priceUnit}</span>
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => comparing ? remove(space.id) : add(space.id)}
-              aria-label={comparing ? "Remove from comparison" : "Add to comparison"}
+              onClick={() => (comparing ? remove(space.id) : add(space.id))}
+              aria-label={comparing ? "Remove from comparison" : "Compare"}
               title={comparing ? "Remove from comparison" : "Compare this space"}
-              className={`transition-colors ${comparing ? "text-[#E8622A]" : "text-gray-300 hover:text-[#E8622A]"}`}
+              className={`transition-colors ${
+                comparing ? "text-[#E8622A]" : "text-gray-300 hover:text-[#E8622A]"
+              }`}
             >
               <Scale size={15} />
             </button>
             <Link
               href={`/spaces/${space.slug}`}
-              className="flex items-center gap-2 px-4 py-2 bg-[#E8622A] text-white text-sm font-semibold rounded-lg hover:bg-[#d4561e] transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-[#09090F] text-white text-sm font-semibold rounded-xl hover:bg-[#E8622A] transition-colors duration-200"
             >
               View space <ArrowRight size={14} />
             </Link>
@@ -519,7 +727,18 @@ function SpaceCardList({ space }: { space: Space }) {
   );
 }
 
-function SpaceCardMapSidebar({ space, active, onHover }: { space: Space; active: boolean; onHover: (id: string | null) => void }) {
+/* ─────────────────────────────────────────────────────────────────
+   Map sidebar card — compact
+───────────────────────────────────────────────────────────────── */
+function SpaceCardMapSidebar({
+  space,
+  active,
+  onHover,
+}: {
+  space: Space;
+  active: boolean;
+  onHover: (id: string | null) => void;
+}) {
   return (
     <article
       onMouseEnter={() => onHover(space.id)}
@@ -529,29 +748,40 @@ function SpaceCardMapSidebar({ space, active, onHover }: { space: Space; active:
       }`}
       style={{ backgroundColor: "var(--ws-surface)" }}
     >
-      {/* Thumbnail */}
       <Link href={`/spaces/${space.slug}`} className="shrink-0 w-20 h-20 rounded-xl overflow-hidden block">
-        <img src={space.image} alt={space.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+        <img
+          src={space.image}
+          alt={space.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
       </Link>
 
-      {/* Info */}
       <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
         <div>
-          <div className="flex items-center gap-1 text-[#E8622A] text-[10px] font-medium mb-0.5">
-            <MapPin size={9} />{space.neighbourhood}
+          <div className="flex items-center gap-1 text-[#E8622A] text-[10px] font-semibold mb-0.5">
+            <MapPin size={9} />
+            {space.neighbourhood}
           </div>
           <Link href={`/spaces/${space.slug}`} className="block">
-            <h3 className="text-sm font-semibold leading-snug truncate" style={{ color: "var(--ws-text)" }}>{space.name}</h3>
+            <h3 className="text-sm font-semibold leading-snug truncate" style={{ color: "var(--ws-text)" }}>
+              {space.name}
+            </h3>
           </Link>
         </div>
         <div className="flex items-center justify-between mt-1">
           <div>
-            <span className="text-xs font-bold" style={{ color: "var(--ws-text)" }}>£{space.priceFrom.toLocaleString()}</span>
-            <span className="text-[10px]" style={{ color: "var(--ws-text-muted)" }}>/{space.priceUnit}</span>
+            <span className="text-xs font-bold" style={{ color: "var(--ws-text)" }}>
+              £{space.priceFrom.toLocaleString()}
+            </span>
+            <span className="text-[10px]" style={{ color: "var(--ws-text-muted)" }}>
+              /{space.priceUnit}
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <Star size={9} className="text-[#C9A84C] fill-[#C9A84C]" />
-            <span className="text-[10px] font-medium" style={{ color: "var(--ws-text-muted)" }}>{space.rating}</span>
+            <span className="text-[10px] font-semibold" style={{ color: "var(--ws-text)" }}>
+              {space.rating}
+            </span>
           </div>
         </div>
       </div>

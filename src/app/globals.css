@@ -279,4 +279,19 @@
   .animate-gradient-logo {
     animation: gradient-logo 9s ease infinite;
   }
+
+  /* ─── Gallery crossfade — used in space listing cards ─── */
+  @keyframes galleryFade {
+    from { opacity: 0; transform: scale(1.02); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .gallery-fade-in {
+    animation: galleryFade 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* ─── Gallery Stories-style progress segment ─── */
+  @keyframes galleryProgress {
+    from { width: 0%; }
+    to   { width: 100%; }
+  }
 }
