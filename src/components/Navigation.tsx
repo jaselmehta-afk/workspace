@@ -66,6 +66,7 @@ export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [savedOpen, setSavedOpen] = useState(false);
+  const [expandedMobileLink, setExpandedMobileLink] = useState<string | null>(null);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const savedPanelRef = useRef<HTMLDivElement>(null);
 
@@ -82,6 +83,16 @@ export default function Navigation() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Lock body scroll when mobile menu open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
 
   // Close saved panel on outside click
   useEffect(() => {
@@ -213,65 +224,137 @@ export default function Navigation() {
               </Link>
             </div>
 
-            {/* Mobile toggle */}
+            {/* Mobile hamburger */}
             <button
-              onClick={() => setMobileOpen(!mobileOpen)}
+              onClick={() => setMobileOpen(true)}
               className="lg:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
-              aria-label="Toggle menu"
+              aria-label="Open menu"
             >
-              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+              <Menu size={22} />
             </button>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {mobileOpen && (
-          <div className="lg:hidden bg-[#09090F] border-t border-white/[0.08]">
-            <div className="px-4 py-4 space-y-1">
-              {navLinks.map((link) => (
-                <div key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="block px-3 py-3 text-white font-medium rounded-xl hover:bg-white/[0.07] transition-colors"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                  {link.children && (
-                    <div className="pl-4 space-y-1">
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.label}
-                          href={child.href}
-                          className="block px-3 py-2 text-white/65 text-sm rounded-xl hover:text-white hover:bg-white/[0.05] transition-colors"
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-              <div className="pt-4 border-t border-white/[0.08] flex items-center gap-3">
-                <button onClick={toggleTheme} className="flex items-center gap-2 px-3 py-3 text-white/60 hover:text-white text-sm rounded-xl hover:bg-white/[0.07] transition-colors">
-                  {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
-                  {theme === "dark" ? "Light mode" : "Dark mode"}
-                </button>
-              </div>
-              <div className="pt-2">
-                <Link
-                  href="/spaces"
-                  className="block text-center px-4 py-3 bg-[#E8622A] text-white font-semibold rounded-xl hover:bg-[#d4561e] transition-colors"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Find a Space
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
       </header>
+
+      {/* ── Full-screen mobile overlay ── */}
+      <div
+        className={`fixed inset-0 z-[100] bg-[#09090F] flex flex-col lg:hidden transition-all duration-500 ${
+          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* Top bar */}
+        <div className="flex items-center justify-between px-6 py-5 shrink-0">
+          <Logo />
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center justify-center w-10 h-10 rounded-full text-white/50 hover:text-white hover:bg-white/[0.08] transition-colors"
+            aria-label="Close menu"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div className="h-px bg-white/[0.07] mx-6" />
+
+        {/* Nav links */}
+        <nav className="flex-1 overflow-y-auto px-6 py-8 flex flex-col justify-center">
+          {navLinks.map((link, i) => (
+            <div
+              key={link.label}
+              className="border-b border-white/[0.07]"
+              style={{
+                opacity: mobileOpen ? 1 : 0,
+                transform: mobileOpen ? "translateY(0)" : "translateY(24px)",
+                transition: `opacity 0.5s ${0.08 + i * 0.06}s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s ${0.08 + i * 0.06}s cubic-bezier(0.22, 1, 0.36, 1)`,
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <Link
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex-1 py-5 text-[2.25rem] font-light text-white/80 hover:text-white transition-colors"
+                  style={{ fontFamily: "'Bricolage Grotesque', sans-serif", letterSpacing: "-0.025em" }}
+                >
+                  {link.label}
+                </Link>
+                {link.children && (
+                  <button
+                    onClick={() => setExpandedMobileLink(expandedMobileLink === link.label ? null : link.label)}
+                    className="p-2 text-white/30 hover:text-white/70 transition-colors"
+                    aria-label={`Expand ${link.label}`}
+                  >
+                    <span
+                      className="block w-4 h-4 relative"
+                      style={{
+                        transform: expandedMobileLink === link.label ? "rotate(45deg)" : "rotate(0deg)",
+                        transition: "transform 0.25s",
+                      }}
+                    >
+                      <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-current" />
+                      <span
+                        className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-current"
+                        style={{ opacity: expandedMobileLink === link.label ? 0 : 1, transition: "opacity 0.2s" }}
+                      />
+                    </span>
+                  </button>
+                )}
+              </div>
+
+              {/* Sub-links */}
+              {link.children && expandedMobileLink === link.label && (
+                <div className="pb-4 space-y-1 pl-1">
+                  {link.children.map((child) => (
+                    <Link
+                      key={child.label}
+                      href={child.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-2 py-2 text-sm text-white/50 hover:text-white/90 transition-colors"
+                    >
+                      <ArrowRight size={11} className="shrink-0 text-[#E8622A]" />
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+
+        {/* Bottom actions */}
+        <div
+          className="px-6 pb-10 pt-4 space-y-3 shrink-0"
+          style={{
+            opacity: mobileOpen ? 1 : 0,
+            transform: mobileOpen ? "translateY(0)" : "translateY(16px)",
+            transition: "opacity 0.5s 0.4s, transform 0.5s 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
+          <Link
+            href="/spaces"
+            onClick={() => setMobileOpen(false)}
+            className="block text-center py-4 bg-[#E8622A] text-white font-semibold rounded-xl hover:bg-[#d4561e] transition-colors"
+          >
+            Find a Space
+          </Link>
+          <div className="flex items-center justify-between px-1">
+            <button
+              onClick={toggleTheme}
+              className="flex items-center gap-2 text-white/40 hover:text-white/70 text-sm transition-colors"
+            >
+              {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+              {theme === "dark" ? "Light mode" : "Dark mode"}
+            </button>
+            <button
+              onClick={() => { setMobileOpen(false); setSavedOpen(true); }}
+              className="flex items-center gap-2 text-white/40 hover:text-white/70 text-sm transition-colors"
+            >
+              <Heart size={14} fill={ids.length > 0 ? "#E8622A" : "none"} className={ids.length > 0 ? "text-[#E8622A]" : ""} />
+              Saved {ids.length > 0 && `(${ids.length})`}
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Saved spaces side panel */}
       {savedOpen && (
