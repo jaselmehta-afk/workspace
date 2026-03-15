@@ -18,9 +18,9 @@ export default function MarqueeStrip({ dark = false }: { dark?: boolean }) {
     <div className={`overflow-hidden py-4 border-y ${dark ? "bg-[#09090F] border-white/[0.06]" : "bg-[#E8622A] border-[#E8622A]"}`}>
       <div className="flex gap-0 animate-marquee whitespace-nowrap select-none">
         {items.map((item, i) => (
-          <span key={i} className={`inline-flex items-center gap-4 px-6 text-sm font-semibold tracking-[0.12em] uppercase ${dark ? "text-white/25" : "text-white/80"}`}>
+          <span key={i} className={`inline-flex items-center gap-4 px-6 text-sm font-semibold tracking-[0.12em] uppercase ${dark ? "text-white/50" : "text-white/85"}`}>
             {item}
-            <span className={`w-1 h-1 rounded-full shrink-0 ${dark ? "bg-white/15" : "bg-white/40"}`} />
+            <span className={`w-1 h-1 rounded-full shrink-0 ${dark ? "bg-white/25" : "bg-white/50"}`} />
           </span>
         ))}
       </div>

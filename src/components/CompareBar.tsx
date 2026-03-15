@@ -69,7 +69,7 @@ export default function CompareBar() {
             <p className="text-white text-sm font-semibold" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
               {ids.length} space{ids.length !== 1 ? "s" : ""} selected
             </p>
-            <p className="text-white/30 text-xs">{3 - ids.length} more slot{3 - ids.length !== 1 ? "s" : ""} available</p>
+            <p className="text-white/55 text-xs">{3 - ids.length} more slot{3 - ids.length !== 1 ? "s" : ""} available</p>
           </div>
 
           <div className="flex items-center gap-2 ml-2">
@@ -153,7 +153,7 @@ export default function CompareBar() {
                     className="grid gap-4 py-4 border-b border-white/[0.05] items-center"
                     style={{ gridTemplateColumns: `180px repeat(${selected.length}, 1fr)` }}
                   >
-                    <div className="text-white/35 text-xs font-semibold uppercase tracking-wider">
+                    <div className="text-white/55 text-xs font-semibold uppercase tracking-wider">
                       {row.label}
                     </div>
                     {selected.map(space => (
@@ -176,7 +176,7 @@ export default function CompareBar() {
                   className="grid gap-4 py-3 items-center"
                   style={{ gridTemplateColumns: `180px repeat(${selected.length}, 1fr)` }}
                 >
-                  <div className="text-white/35 text-xs font-semibold uppercase tracking-wider pt-4">
+                  <div className="text-white/55 text-xs font-semibold uppercase tracking-wider pt-4">
                     Amenities
                   </div>
                 </div>
@@ -191,7 +191,7 @@ export default function CompareBar() {
                       className="grid gap-4 py-3 border-b border-white/[0.04] items-center"
                       style={{ gridTemplateColumns: `180px repeat(${selected.length}, 1fr)` }}
                     >
-                      <div className="text-white/40 text-xs">{amenity}</div>
+                      <div className="text-white/65 text-xs">{amenity}</div>
                       {selected.map(space => {
                         const has = space.amenities.some(a =>
                           a.toLowerCase().includes(amenity.toLowerCase().split(" ")[0])
@@ -228,7 +228,7 @@ export default function CompareBar() {
                     <Link
                       href={`/spaces/${space.slug}`}
                       onClick={() => setModalOpen(false)}
-                      className="flex items-center justify-center gap-1 text-white/40 hover:text-white text-xs transition-colors"
+                      className="flex items-center justify-center gap-1 text-white/60 hover:text-white text-xs transition-colors"
                     >
                       Full details <ArrowRight size={11} />
                     </Link>

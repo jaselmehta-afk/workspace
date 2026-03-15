@@ -83,13 +83,13 @@ export default function FeaturedSpaces() {
                       {main.name}
                     </h3>
                     <div className="flex items-center justify-between">
-                      <p className="text-white/50 text-sm">{main.headline}</p>
+                      <p className="text-white/70 text-sm">{main.headline}</p>
                       <div className="flex items-center gap-1.5 text-white text-sm font-semibold group-hover:gap-3 transition-all shrink-0 ml-4">
                         View <ArrowRight size={14} />
                       </div>
                     </div>
                     <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">
-                      <span className="text-white/30 text-xs">From <span className="text-white/70">£{main.priceFrom.toLocaleString()}/{main.priceUnit}</span></span>
+                      <span className="text-white/55 text-xs">From <span className="text-white font-medium">£{main.priceFrom.toLocaleString()}/{main.priceUnit}</span></span>
                       <div className="flex gap-1">
                         {main.type.map(t => (
                           <span key={t} className="px-2 py-0.5 bg-white/[0.07] text-white/40 text-[10px] rounded-full capitalize">{t}</span>
@@ -143,9 +143,9 @@ export default function FeaturedSpaces() {
                           >
                             {space.name}
                           </h3>
-                          <p className="text-white/40 text-xs">From £{space.priceFrom.toLocaleString()}/{space.priceUnit}</p>
+                          <p className="text-white/60 text-xs">From £{space.priceFrom.toLocaleString()}/{space.priceUnit}</p>
                         </div>
-                        <div className="flex items-center gap-1 text-white/60 text-sm group-hover:gap-2 group-hover:text-white transition-all shrink-0 ml-3">
+                        <div className="flex items-center gap-1 text-white/70 text-sm group-hover:gap-2 group-hover:text-white transition-all shrink-0 ml-3">
                           View <ArrowRight size={13} />
                         </div>
                       </div>

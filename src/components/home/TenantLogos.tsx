@@ -1,27 +1,33 @@
+const COMPANIES = [
+  "Transferwise", "Monzo", "Depop", "Bulb Energy", "Babylon Health",
+  "Marshmallow", "Nested", "Cleo", "Tide", "Octopus Energy",
+];
+
 export default function TenantLogos() {
-  const companies = [
-    "Transferwise", "Monzo", "Depop", "Bulb Energy", "Babylon Health",
-    "Marshmallow", "Nested", "Cleo", "Tide", "Octopus Energy",
-  ];
+  // Triple the items for a gapless infinite loop
+  const items = [...COMPANIES, ...COMPANIES, ...COMPANIES];
 
   return (
     <div className="bg-white border-y border-[#09090F]/[0.06] py-8 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
-        <p className="text-center text-xs font-semibold tracking-widest uppercase text-[#09090F]/35">
-          Trusted by London&apos;s most ambitious businesses
-        </p>
-      </div>
-      <div className="flex gap-12 animate-none overflow-x-auto scrollbar-hide px-8">
-        {[...companies, ...companies].map((company, i) => (
-          <div
-            key={`${company}-${i}`}
-            className="shrink-0 flex items-center justify-center px-4"
-          >
-            <span className="text-[#09090F]/25 font-semibold text-sm tracking-wide whitespace-nowrap hover:text-[#09090F]/55 transition-colors cursor-default">
+      <p className="text-center text-[11px] font-semibold tracking-[0.2em] uppercase text-[#09090F]/50 mb-6">
+        Trusted by London&apos;s most ambitious businesses
+      </p>
+      <div className="relative">
+        {/* Fade edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+        <div className="flex gap-0 animate-marquee whitespace-nowrap select-none">
+          {items.map((company, i) => (
+            <span
+              key={`${company}-${i}`}
+              className="inline-flex items-center gap-6 px-8 text-sm font-semibold text-[#09090F]/45 tracking-wide hover:text-[#09090F]/80 transition-colors cursor-default"
+            >
               {company}
+              <span className="w-1 h-1 rounded-full bg-[#09090F]/15 shrink-0" />
             </span>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

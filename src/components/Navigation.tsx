@@ -131,7 +131,7 @@ export default function Navigation() {
                 >
                   <Link
                     href={link.href}
-                    className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-white/70 hover:text-white transition-colors rounded-md hover:bg-white/[0.07]"
+                    className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors rounded-md hover:bg-white/[0.07]"
                   >
                     {link.label}
                     {link.children && (
@@ -160,7 +160,7 @@ export default function Navigation() {
                               <span className="text-sm font-medium text-[#09090F] group-hover:text-[#E8622A] transition-colors">
                                 {child.label}
                               </span>
-                              <span className="text-xs text-[#09090F]/40 mt-0.5">{child.desc}</span>
+                              <span className="text-xs text-[#09090F]/60 mt-0.5">{child.desc}</span>
                             </Link>
                           ))}
                         </div>
@@ -174,7 +174,7 @@ export default function Navigation() {
             {/* CTA + controls */}
             <div className="hidden lg:flex items-center gap-3">
               <a href="tel:02071383307"
-                className="flex items-center gap-1.5 text-sm text-white/50 hover:text-white/80 transition-colors">
+                className="flex items-center gap-1.5 text-sm text-white/65 hover:text-white transition-colors">
                 <Phone size={13} /><span>020 7138 3307</span>
               </a>
 
@@ -237,7 +237,7 @@ export default function Navigation() {
                         <Link
                           key={child.label}
                           href={child.href}
-                          className="block px-3 py-2 text-white/50 text-sm rounded-xl hover:text-white hover:bg-white/[0.05] transition-colors"
+                          className="block px-3 py-2 text-white/65 text-sm rounded-xl hover:text-white hover:bg-white/[0.05] transition-colors"
                           onClick={() => setMobileOpen(false)}
                         >
                           {child.label}
@@ -286,7 +286,7 @@ export default function Navigation() {
                 <h2 className="text-white font-semibold text-lg" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
                   Saved spaces
                 </h2>
-                <p className="text-white/40 text-xs mt-0.5">
+                <p className="text-white/60 text-xs mt-0.5">
                   {savedSpaces.length === 0 ? "None saved yet" : `${savedSpaces.length} space${savedSpaces.length !== 1 ? "s" : ""}`}
                 </p>
               </div>
@@ -306,7 +306,7 @@ export default function Navigation() {
                   <div className="w-16 h-16 rounded-full bg-white/[0.04] flex items-center justify-center mb-4">
                     <Heart size={24} className="text-white/20" />
                   </div>
-                  <p className="text-white/40 text-sm leading-relaxed">
+                  <p className="text-white/60 text-sm leading-relaxed">
                     Tap the heart on any space<br />to save it here.
                   </p>
                   <Link
@@ -343,7 +343,7 @@ export default function Navigation() {
                         {space.name}
                       </h3>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-white/40 text-xs">From £{space.priceFrom.toLocaleString()}/{space.priceUnit}</span>
+                        <span className="text-white/60 text-xs">From £{space.priceFrom.toLocaleString()}/{space.priceUnit}</span>
                         <Link
                           href={`/spaces/${space.slug}`}
                           onClick={() => setSavedOpen(false)}

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Sparkles, ChevronDown, Mic, MicOff } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Sparkles, Mic, MicOff, ChevronDown } from "lucide-react";
 import MagneticButton from "@/components/MagneticButton";
+import { spaces } from "@/data/spaces";
 
 const VERBS = ["grow.", "think.", "build.", "thrive."];
 
@@ -17,7 +19,7 @@ const EXAMPLES = [
 
 const QUICK = [
   { label: "Private offices", q: "private office" },
-  { label: "Coworking", q: "coworking hot desk" },
+  { label: "Coworking", q: "coworking" },
   { label: "Creative studios", q: "creative studio" },
   { label: "East London", q: "east london" },
   { label: "South London", q: "south london" },
@@ -49,28 +51,24 @@ function getTimeOfDayOverlay(): { gradient: string; accent: string; label: strin
   if (h >= 5 && h < 9) {
     return {
       gradient: "linear-gradient(to bottom, rgba(120,60,20,0.65) 0%, rgba(9,9,15,0.25) 50%, rgba(9,9,15,0.70) 100%)",
-      accent: "rgba(232,120,42,0.18)",
-      label: "Good morning",
+      accent: "rgba(232,120,42,0.18)", label: "Good morning",
     };
   }
   if (h >= 9 && h < 17) {
     return {
       gradient: "linear-gradient(to bottom, rgba(9,9,15,0.72) 0%, rgba(9,9,15,0.22) 50%, rgba(9,9,15,0.68) 100%)",
-      accent: "rgba(123,158,135,0.10)",
-      label: "",
+      accent: "rgba(123,158,135,0.10)", label: "",
     };
   }
   if (h >= 17 && h < 21) {
     return {
       gradient: "linear-gradient(to bottom, rgba(80,30,10,0.72) 0%, rgba(20,10,5,0.28) 50%, rgba(9,9,15,0.80) 100%)",
-      accent: "rgba(200,80,40,0.20)",
-      label: "Good evening",
+      accent: "rgba(200,80,40,0.20)", label: "Good evening",
     };
   }
   return {
     gradient: "linear-gradient(to bottom, rgba(10,8,30,0.82) 0%, rgba(9,9,15,0.30) 50%, rgba(9,9,15,0.85) 100%)",
-    accent: "rgba(60,40,120,0.20)",
-    label: "Working late?",
+    accent: "rgba(60,40,120,0.20)", label: "Working late?",
   };
 }
 
@@ -80,6 +78,7 @@ type SR = new () => any;
 export default function HeroSection() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const cursorBlobRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
 
@@ -93,12 +92,25 @@ export default function HeroSection() {
   const [listening, setListening] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(false);
   const [timeOverlay, setTimeOverlay] = useState<ReturnType<typeof getTimeOfDayOverlay> | null>(null);
-
-  // Cycling verb state
   const [verbIdx, setVerbIdx] = useState(0);
   const [verbPhase, setVerbPhase] = useState<"in" | "out">("in");
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // Returning visitor personalisation
+  // Cursor-reactive warm blob
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      const blob = cursorBlobRef.current;
+      if (!blob) return;
+      const rect = blob.parentElement?.getBoundingClientRect();
+      if (!rect) return;
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      blob.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(232,98,42,0.14) 0%, transparent 55%)`;
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
   useEffect(() => {
     try {
       const saved = localStorage.getItem("ws_last_search");
@@ -110,22 +122,18 @@ export default function HeroSection() {
         }
       }
     } catch {}
-
     const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
     setVoiceSupported(!!(w.SpeechRecognition || w.webkitSpeechRecognition));
     setTimeOverlay(getTimeOfDayOverlay());
   }, []);
 
-  // Verb cycling: show for 2.8s, swap
+  // Verb cycling
   useEffect(() => {
-    const showFor = setTimeout(() => {
+    const t = setTimeout(() => {
       setVerbPhase("out");
-      setTimeout(() => {
-        setVerbIdx(i => (i + 1) % VERBS.length);
-        setVerbPhase("in");
-      }, 320);
+      setTimeout(() => { setVerbIdx(i => (i + 1) % VERBS.length); setVerbPhase("in"); }, 320);
     }, 2800);
-    return () => clearTimeout(showFor);
+    return () => clearTimeout(t);
   }, [verbIdx]);
 
   // Typewriter
@@ -143,6 +151,7 @@ export default function HeroSection() {
   const go = useCallback((q = query) => {
     if (!q.trim()) return;
     setStatus("thinking");
+    setShowSuggestions(false);
     const p = parse(q);
     try { localStorage.setItem("ws_last_search", JSON.stringify({ ...p, timestamp: Date.now() })); } catch {}
     setTimeout(() => { router.push(`/spaces?${new URLSearchParams(p)}`); }, 1200);
@@ -152,36 +161,38 @@ export default function HeroSection() {
     const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
     const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
     if (!SR) return;
-
-    if (listening) {
-      recognitionRef.current?.stop();
-      setListening(false);
-      return;
-    }
-
+    if (listening) { recognitionRef.current?.stop(); setListening(false); return; }
     const recognition = new SR();
     recognitionRef.current = recognition;
     recognition.lang = "en-GB";
     recognition.interimResults = true;
     recognition.continuous = false;
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     recognition.onresult = (e: any) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const transcript = Array.from(e.results).map((r: any) => r[0].transcript).join("");
       setQuery(transcript);
-      if (e.results[0].isFinal) {
-        setListening(false);
-        setTimeout(() => go(transcript), 400);
-      }
+      if (e.results[0].isFinal) { setListening(false); setTimeout(() => go(transcript), 400); }
     };
-
     recognition.onerror = () => setListening(false);
     recognition.onend = () => setListening(false);
     recognition.start();
     setListening(true);
     inputRef.current?.focus();
   }, [listening, go]);
+
+  // Autocomplete suggestions
+  const suggestions = useMemo(() => {
+    if (!query || query.length < 2) return [];
+    const q = query.toLowerCase();
+    return spaces
+      .filter(s =>
+        s.name.toLowerCase().includes(q) ||
+        s.neighbourhood.toLowerCase().includes(q) ||
+        s.postcode.toLowerCase().includes(q)
+      )
+      .slice(0, 5);
+  }, [query]);
 
   const scrollDown = () => window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
 
@@ -197,40 +208,36 @@ export default function HeroSection() {
 
       {/* ── Background layers ── */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Hero image with Ken Burns + scroll parallax */}
         <img
           src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1920&q=85"
           alt=""
           aria-hidden="true"
           className="w-full h-full object-cover animate-kenburns hero-parallax-bg"
         />
-
-        {/* Time-of-day gradient */}
         <div
           className="absolute inset-0 transition-all duration-1000"
           style={{ background: timeOverlay?.gradient ?? "linear-gradient(to bottom, rgba(9,9,15,0.72) 0%, rgba(9,9,15,0.22) 50%, rgba(9,9,15,0.68) 100%)" }}
         />
         {/* Directional vignette */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#09090F]/65 via-transparent to-[#09090F]/20" />
-
-        {/* Time accent blush */}
+        {/* Time accent */}
         {timeOverlay?.accent && (
           <div
             className="absolute inset-0 transition-all duration-1000"
             style={{ background: `radial-gradient(ellipse at 50% 0%, ${timeOverlay.accent} 0%, transparent 65%)` }}
           />
         )}
-
-        {/* Architectural dot-grid — gives depth and a blueprint feel */}
+        {/* Cursor-reactive warm glow */}
+        <div ref={cursorBlobRef} className="absolute inset-0 transition-[background] duration-300 ease-out pointer-events-none" />
+        {/* Architectural dot-grid */}
         <div
-          className="absolute inset-0 opacity-[0.07]"
+          className="absolute inset-0 opacity-[0.06]"
           style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px)",
             backgroundSize: "52px 52px",
           }}
         />
-
-        {/* Subtle noise grain */}
+        {/* Noise grain */}
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{
@@ -238,38 +245,38 @@ export default function HeroSection() {
             backgroundRepeat: "repeat", backgroundSize: "128px 128px",
           }}
         />
+        {/* Thin bottom accent line */}
+        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#E8622A]/30 to-transparent" />
       </div>
 
-      {/* ── Content — scroll-exits as you scroll down ── */}
+      {/* ── Content ── */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32 mt-16 hero-content-scroll flex flex-col items-center text-center">
 
         {/* Announcement chip */}
         <a
           href="/spaces?filter=new"
-          className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 glass rounded-full text-xs text-white/50 hover:text-white transition-all duration-300 hover:border-white/20 group animate-fade-up"
-          style={{ animationDelay: "0s" }}
+          className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 glass rounded-full text-sm text-white/70 hover:text-white transition-all duration-300 hover:border-white/20 group animate-fade-up"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87] animate-pulse shrink-0" />
-          <span>3 new spaces open this month</span>
-          <ArrowRight size={10} className="opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+          3 new spaces open this month
+          <ArrowRight size={11} className="opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
         </a>
 
-        {/* Time-of-day greeting */}
+        {/* Time greeting */}
         {timeOverlay?.label && (
-          <div className="mb-3 inline-flex items-center gap-2 text-[10px] text-white/25 tracking-[0.18em] uppercase animate-fade-up" style={{ animationDelay: "0.1s" }}>
-            <span className="w-1 h-1 rounded-full bg-white/20 inline-block" />
+          <div className="mb-3 text-xs text-white/45 tracking-[0.18em] uppercase animate-fade-up">
             {timeOverlay.label}
           </div>
         )}
 
-        {/* Returning visitor banner */}
+        {/* Returning visitor */}
         {returning && (
-          <div className="mb-6 inline-flex items-center gap-2 text-xs text-white/50 animate-fade-up" style={{ animationDelay: "0.1s" }}>
+          <div className="mb-6 inline-flex items-center gap-2 text-sm text-white/60 animate-fade-up">
             <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87] inline-block" />
             Welcome back — still searching for {returningLabel}?{" "}
             <button
               onClick={() => router.push(`/spaces?area=${returning.area}&type=${returning.type}`)}
-              className="text-white/80 underline underline-offset-2 hover:text-white transition-colors"
+              className="text-white underline underline-offset-2 hover:text-white/80 transition-colors"
             >
               See those spaces
             </button>
@@ -278,30 +285,15 @@ export default function HeroSection() {
 
         {/* ── Headline ── */}
         <div className="max-w-5xl mb-10 overflow-hidden">
-          <p
-            className="text-white/25 text-[10px] font-medium tracking-[0.25em] uppercase mb-8 word-up"
-            style={{ animationDelay: "0.05s" }}
-          >
+          <p className="text-white/50 text-xs font-medium tracking-[0.22em] uppercase mb-8 word-up" style={{ animationDelay: "0.05s" }}>
             60+ buildings · London
           </p>
 
-          <h1
-            className="text-white leading-[0.9] tracking-[-0.04em]"
-            style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
-          >
-            {/* Line 1 */}
-            <span
-              className="block text-[clamp(60px,9.5vw,120px)] font-light word-up"
-              style={{ animationDelay: "0.12s" }}
-            >
+          <h1 className="text-white leading-[0.9] tracking-[-0.04em]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+            <span className="block text-[clamp(60px,9.5vw,120px)] font-light word-up" style={{ animationDelay: "0.12s" }}>
               Space to
             </span>
-
-            {/* Line 2 — cycling verb */}
-            <span
-              className="block text-[clamp(70px,11vw,144px)] font-bold"
-              style={{ animationDelay: "0.24s" }}
-            >
+            <span className="block text-[clamp(70px,11vw,144px)] font-bold word-up" style={{ animationDelay: "0.22s" }}>
               <span
                 className={`inline-block ${verbPhase === "in" ? "verb-in" : "verb-out"}`}
                 style={{
@@ -317,54 +309,47 @@ export default function HeroSection() {
             </span>
           </h1>
 
-          <p
-            className="text-white/50 text-lg sm:text-xl mt-7 leading-relaxed word-up"
-            style={{ animationDelay: "0.38s" }}
-          >
+          <p className="text-white/70 text-lg sm:text-xl mt-7 leading-relaxed word-up" style={{ animationDelay: "0.38s" }}>
             Describe what you need. We&apos;ll find the space.
           </p>
         </div>
 
-        {/* ── Search ── */}
-        <div
-          className="w-full max-w-2xl word-up"
-          style={{ animationDelay: "0.5s" }}
-        >
+        {/* ── Search + Autocomplete ── */}
+        <div className="w-full max-w-2xl word-up" style={{ animationDelay: "0.5s" }}>
           <div className={`relative glass rounded-2xl transition-all duration-300 ${focused ? "glow-orange border-[#E8622A]/25" : ""}`}>
             <div className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
               {status === "thinking"
                 ? <div className="w-4 h-4 border-2 border-[#E8622A]/40 border-t-[#E8622A] rounded-full animate-spin" />
-                : <Sparkles size={17} className={`transition-colors duration-200 ${focused || query ? "text-[#E8622A]" : "text-white/20"}`} />
+                : <Sparkles size={17} className={`transition-colors duration-200 ${focused || query ? "text-[#E8622A]" : "text-white/40"}`} />
               }
             </div>
             <input
               ref={inputRef}
               value={query}
-              onChange={e => setQuery(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && go()}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
+              onChange={e => { setQuery(e.target.value); setShowSuggestions(true); }}
+              onKeyDown={e => {
+                if (e.key === "Enter") go();
+                if (e.key === "Escape") setShowSuggestions(false);
+              }}
+              onFocus={() => { setFocused(true); setShowSuggestions(true); }}
+              onBlur={() => { setFocused(false); setTimeout(() => setShowSuggestions(false), 150); }}
               placeholder={focused ? "Describe your ideal workspace…" : ph || "Describe your ideal workspace…"}
               disabled={status === "thinking"}
               aria-label="Describe your ideal workspace"
-              className="w-full bg-transparent text-white placeholder-white/25 text-base sm:text-lg py-[18px] pl-14 pr-44 focus:outline-none rounded-2xl disabled:opacity-60"
+              className="w-full bg-transparent text-white placeholder-white/40 text-base sm:text-lg py-[18px] pl-14 pr-44 focus:outline-none rounded-2xl disabled:opacity-60"
             />
-
             {voiceSupported && (
               <button
                 onClick={startVoice}
                 aria-label={listening ? "Stop listening" : "Search by voice"}
                 disabled={status === "thinking"}
                 className={`absolute right-[7.5rem] top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200
-                  ${listening
-                    ? "bg-[#E8622A]/20 text-[#E8622A] animate-pulse"
-                    : "text-white/25 hover:text-white/60 hover:bg-white/[0.06]"
-                  } disabled:opacity-30`}
+                  ${listening ? "bg-[#E8622A]/20 text-[#E8622A] animate-pulse" : "text-white/50 hover:text-white/80 hover:bg-white/[0.06]"}
+                  disabled:opacity-30`}
               >
                 {listening ? <MicOff size={15} /> : <Mic size={15} />}
               </button>
             )}
-
             <MagneticButton
               onClick={() => go()}
               disabled={status === "thinking" || !query.trim()}
@@ -378,27 +363,55 @@ export default function HeroSection() {
                 <>Search <ArrowRight size={14} /></>
               )}
             </MagneticButton>
+
+            {/* Autocomplete dropdown */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl overflow-hidden shadow-2xl z-50"
+                style={{ background: "rgba(9,9,15,0.97)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(24px)" }}>
+                {suggestions.map(space => (
+                  <button
+                    key={space.id}
+                    onMouseDown={() => { setQuery(space.name); go(space.name); }}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.05] transition-colors text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0">
+                      <img src={space.image} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-white text-sm font-medium truncate">{space.name}</div>
+                      <div className="text-white/55 text-xs">{space.neighbourhood} · from £{space.priceFrom.toLocaleString()}/{space.priceUnit}</div>
+                    </div>
+                    <Link
+                      href={`/spaces/${space.slug}`}
+                      onMouseDown={e => e.stopPropagation()}
+                      className="text-[#E8622A] opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <ArrowRight size={14} />
+                    </Link>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {listening && (
-            <p className="text-[#E8622A]/80 text-sm mt-3 animate-fade-up pl-1 flex items-center gap-2">
+            <p className="text-[#E8622A]/90 text-sm mt-3 animate-fade-up pl-1 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#E8622A] animate-pulse inline-block" />
               Listening… speak now
             </p>
           )}
-
           {status === "thinking" && !listening && (
-            <p className="text-[#E8622A]/70 text-sm mt-3 animate-fade-up pl-1">✦ Matching spaces…</p>
+            <p className="text-[#E8622A]/80 text-sm mt-3 animate-fade-up pl-1">✦ Matching spaces…</p>
           )}
 
           {/* Quick links */}
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-4">
-            <span className="text-white/20 text-sm">Try:</span>
+            <span className="text-white/45 text-sm">Try:</span>
             {QUICK.map(({ label, q }) => (
               <button
                 key={label}
                 onClick={() => { setQuery(q); go(q); }}
-                className="text-white/40 text-sm hover:text-white underline-offset-2 hover:underline transition-all duration-200"
+                className="text-white/60 text-sm hover:text-white underline-offset-2 hover:underline transition-all duration-200"
               >
                 {label}
               </button>
@@ -406,11 +419,8 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* ── Stats — frosted-glass pill badges ── */}
-        <div
-          className="flex flex-wrap justify-center gap-3 mt-12 word-up"
-          style={{ animationDelay: "0.62s" }}
-        >
+        {/* ── Stats pill badges ── */}
+        <div className="flex flex-wrap justify-center gap-3 mt-12 word-up" style={{ animationDelay: "0.62s" }}>
           {[
             { n: "60+",    label: "buildings" },
             { n: "4,000+", label: "businesses" },
@@ -419,36 +429,31 @@ export default function HeroSection() {
           ].map(({ n, label }) => (
             <div
               key={label}
-              className="flex items-center gap-3 px-5 py-2.5 rounded-2xl border"
+              className="flex items-center gap-3 px-5 py-2.5 rounded-2xl"
               style={{
-                background: "rgba(255,255,255,0.04)",
-                borderColor: "rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.09)",
                 backdropFilter: "blur(12px)",
               }}
             >
-              <span
-                className="text-white font-bold text-base"
-                style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
-              >
-                {n}
-              </span>
-              <span className="w-px h-4 bg-white/10 shrink-0" />
-              <span className="text-white/35 text-xs tracking-wide">{label}</span>
+              <span className="text-white font-bold text-base" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>{n}</span>
+              <span className="w-px h-4 bg-white/15 shrink-0" />
+              <span className="text-white/60 text-xs tracking-wide">{label}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── Animated scroll indicator ── */}
+      {/* ── Scroll indicator ── */}
       <button
         onClick={scrollDown}
         aria-label="Scroll to explore"
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-white/20 hover:text-white/50 transition-colors duration-300 z-10 group"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-white/30 hover:text-white/60 transition-colors duration-300 z-10 group"
       >
-        <span className="text-[9px] tracking-[0.3em] uppercase font-medium group-hover:text-white/40 transition-colors">
+        <span className="text-[10px] tracking-[0.3em] uppercase font-medium text-white/45 group-hover:text-white/65 transition-colors">
           Explore
         </span>
-        <div className="relative w-px h-12 overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+        <div className="relative w-px h-12 overflow-hidden" style={{ background: "rgba(255,255,255,0.10)" }}>
           <div className="absolute inset-0 w-full bg-white animate-scroll-line" />
         </div>
         <ChevronDown size={14} className="opacity-50" />
