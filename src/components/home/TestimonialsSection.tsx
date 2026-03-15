@@ -253,7 +253,6 @@ export default function TestimonialsSection() {
                 width: i === active ? 40 : 28,
                 height: i === active ? 40 : 28,
                 opacity: i === active ? 1 : 0.35,
-                ring: i === active ? "2px solid #E8622A" : "none",
                 outline: i === active ? "2px solid #E8622A" : "none",
                 outlineOffset: 2,
               }}
