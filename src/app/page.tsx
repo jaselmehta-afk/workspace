@@ -3,6 +3,7 @@ import MarqueeStrip from "@/components/home/MarqueeStrip";
 import TenantLogos from "@/components/home/TenantLogos";
 import SpaceTypesSection from "@/components/home/SpaceTypesSection";
 import FeaturedSpaces from "@/components/home/FeaturedSpaces";
+import NeighbourhoodsSection from "@/components/home/NeighbourhoodsSection";
 import PricingComparison from "@/components/home/PricingComparison";
 import OfficeCalculator from "@/components/home/OfficeCalculator";
 import StatsSection from "@/components/home/StatsSection";
@@ -20,6 +21,7 @@ export default function Home() {
       <TenantLogos />
       <SpaceTypesSection />
       <FeaturedSpaces />
+      <NeighbourhoodsSection />
       <PricingComparison />
       <OfficeCalculator />
       <StatsSection />
