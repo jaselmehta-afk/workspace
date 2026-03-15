@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, Phone, Heart, Sun, Moon, MapPin, ArrowRight } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useFavourites } from "@/context/FavouritesContext";
@@ -63,9 +64,13 @@ export default function Navigation() {
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const savedPanelRef = useRef<HTMLDivElement>(null);
 
+  const pathname = usePathname();
   const { theme, toggle: toggleTheme } = useTheme();
   const { ids, toggle: toggleFav } = useFavourites();
   const savedSpaces = spaces.filter(s => ids.includes(s.id));
+
+  // Hide on focused flow pages that have their own header
+  if (pathname === "/book-viewing") return null;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
