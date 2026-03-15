@@ -216,7 +216,7 @@ export default function HeroSection() {
       </div>
 
       {/* Content — scroll-exits as you scroll down */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32 mt-16 hero-content-scroll">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32 mt-16 hero-content-scroll flex flex-col items-center text-center">
 
         {/* Time-of-day greeting */}
         {timeOverlay?.label && (
@@ -264,13 +264,13 @@ export default function HeroSection() {
             </span>
           </h1>
 
-          <p className="text-white/65 text-lg sm:text-xl mt-6 max-w-md leading-relaxed">
+          <p className="text-white/65 text-lg sm:text-xl mt-6 leading-relaxed">
             Describe what you need. We&apos;ll find the space.
           </p>
         </div>
 
         {/* Search */}
-        <div className="max-w-2xl">
+        <div className="w-full max-w-2xl">
           <div className={`relative glass rounded-2xl transition-all duration-300 ${focused ? "glow-orange border-[#E8622A]/25" : ""}`}>
             <div className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
               {status === "thinking"
@@ -335,7 +335,7 @@ export default function HeroSection() {
           )}
 
           {/* Quick links */}
-          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-4">
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-4">
             <span className="text-white/20 text-sm">Try:</span>
             {QUICK.map(({ label, q }) => (
               <button
@@ -350,7 +350,7 @@ export default function HeroSection() {
         </div>
 
         {/* Inline stats */}
-        <div className="flex flex-wrap items-center gap-8 mt-12 text-white/25">
+        <div className="flex flex-wrap justify-center items-center gap-8 mt-12 text-white/25">
           {[
             { n: "60+", label: "buildings" },
             { n: "4,000+", label: "businesses" },
