@@ -8,6 +8,7 @@ import { FavouritesProvider } from "@/context/FavouritesContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { CompareProvider } from "@/context/CompareContext";
 import CompareBar from "@/components/CompareBar";
+import FloatingCTA from "@/components/FloatingCTA";
 
 export const metadata: Metadata = {
   title: "Workspace — Flexible, Inspiring Space To Grow Your Business",
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </PageTransition>
             <Footer />
             <CompareBar />
+            <FloatingCTA />
           </CompareProvider>
           </FavouritesProvider>
         </ThemeProvider>

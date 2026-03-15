@@ -105,7 +105,7 @@ export default function HeroSection() {
       if (!rect) return;
       const x = ((e.clientX - rect.left) / rect.width) * 100;
       const y = ((e.clientY - rect.top) / rect.height) * 100;
-      blob.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(232,98,42,0.14) 0%, transparent 55%)`;
+      blob.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(232,98,42,0.07) 0%, transparent 42%)`;
     };
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
@@ -264,7 +264,7 @@ export default function HeroSection() {
 
         {/* Time greeting */}
         {timeOverlay?.label && (
-          <div className="mb-3 text-xs text-white/45 tracking-[0.18em] uppercase animate-fade-up">
+          <div className="mb-3 text-xs text-white/60 tracking-[0.18em] uppercase animate-fade-up">
             {timeOverlay.label}
           </div>
         )}
@@ -285,7 +285,7 @@ export default function HeroSection() {
 
         {/* ── Headline ── */}
         <div className="max-w-5xl mb-10 overflow-hidden">
-          <p className="text-white/50 text-xs font-medium tracking-[0.22em] uppercase mb-8 word-up" style={{ animationDelay: "0.05s" }}>
+          <p className="text-white/65 text-xs font-medium tracking-[0.22em] uppercase mb-8 word-up" style={{ animationDelay: "0.05s" }}>
             60+ buildings · London
           </p>
 
@@ -406,7 +406,7 @@ export default function HeroSection() {
 
           {/* Quick links */}
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-4">
-            <span className="text-white/45 text-sm">Try:</span>
+            <span className="text-white/60 text-sm">Try:</span>
             {QUICK.map(({ label, q }) => (
               <button
                 key={label}
@@ -438,7 +438,7 @@ export default function HeroSection() {
             >
               <span className="text-white font-bold text-base" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>{n}</span>
               <span className="w-px h-4 bg-white/15 shrink-0" />
-              <span className="text-white/60 text-xs tracking-wide">{label}</span>
+              <span className="text-white/65 text-xs tracking-wide">{label}</span>
             </div>
           ))}
         </div>
@@ -450,7 +450,7 @@ export default function HeroSection() {
         aria-label="Scroll to explore"
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-white/30 hover:text-white/60 transition-colors duration-300 z-10 group"
       >
-        <span className="text-[10px] tracking-[0.3em] uppercase font-medium text-white/45 group-hover:text-white/65 transition-colors">
+        <span className="text-[10px] tracking-[0.3em] uppercase font-medium text-white/60 group-hover:text-white/80 transition-colors">
           Explore
         </span>
         <div className="relative w-px h-12 overflow-hidden" style={{ background: "rgba(255,255,255,0.10)" }}>
