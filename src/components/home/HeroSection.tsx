@@ -77,18 +77,15 @@ function getTimeOfDayOverlay(): { gradient: string; accent: string; label: strin
   };
 }
 
-// Extend window for webkit speech
-declare global {
-  interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
-  }
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SR = new () => any;
+
 
 export default function HeroSection() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
 
   const [query, setQuery] = useState("");
   const [ph, setPh] = useState("");
@@ -115,7 +112,8 @@ export default function HeroSection() {
     } catch {}
 
     // Check voice support
-    setVoiceSupported(!!(window.SpeechRecognition || window.webkitSpeechRecognition));
+    const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
+    setVoiceSupported(!!(w.SpeechRecognition || w.webkitSpeechRecognition));
 
     // Time-of-day overlay (client-side only to avoid hydration mismatch)
     setTimeOverlay(getTimeOfDayOverlay());
@@ -142,7 +140,8 @@ export default function HeroSection() {
   }, [query, router]);
 
   const startVoice = useCallback(() => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
     if (!SR) return;
 
     if (listening) {
@@ -157,10 +156,10 @@ export default function HeroSection() {
     recognition.interimResults = true;
     recognition.continuous = false;
 
-    recognition.onresult = (e: SpeechRecognitionEvent) => {
-      const transcript = Array.from(e.results)
-        .map(r => r[0].transcript)
-        .join("");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    recognition.onresult = (e: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const transcript = Array.from(e.results).map((r: any) => r[0].transcript).join("");
       setQuery(transcript);
       if (e.results[0].isFinal) {
         setListening(false);
