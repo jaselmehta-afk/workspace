@@ -5,12 +5,12 @@ import Link from "next/link";
 import { ArrowRight, Clock, BookOpen, Mic, Video, Lightbulb, Users, TrendingUp, Play } from "lucide-react";
 
 const categories = [
-  { value: "all", label: "All", icon: BookOpen },
-  { value: "story", label: "Member Stories", icon: Users },
-  { value: "insight", label: "Insights", icon: Lightbulb },
-  { value: "podcast", label: "Podcast", icon: Mic },
-  { value: "video", label: "Video", icon: Video },
-  { value: "news", label: "News", icon: TrendingUp },
+  { value: "all",     label: "All",            icon: BookOpen  },
+  { value: "story",   label: "Member Stories", icon: Users     },
+  { value: "insight", label: "Insights",       icon: Lightbulb },
+  { value: "podcast", label: "Podcast",        icon: Mic       },
+  { value: "video",   label: "Video",          icon: Video     },
+  { value: "news",    label: "News",           icon: TrendingUp},
 ];
 
 const articles = [
@@ -82,63 +82,21 @@ const articles = [
   },
 ];
 
-// Visual treatment config per category
-const cardTheme: Record<string, {
-  bg: string;
-  label: string;
-  labelBg: string;
-  titleColor: string;
-  bodyColor: string;
-  borderColor: string;
-}> = {
-  story: {
-    bg: "bg-white",
-    label: "Member story",
-    labelBg: "bg-[#E8622A]/10 text-[#E8622A]",
-    titleColor: "text-[#09090F]",
-    bodyColor: "text-gray-400",
-    borderColor: "border-gray-100",
-  },
-  insight: {
-    bg: "bg-[#F4F1EA]",
-    label: "Insight",
-    labelBg: "bg-[#09090F]/8 text-[#09090F]/60",
-    titleColor: "text-[#09090F]",
-    bodyColor: "text-[#09090F]/45",
-    borderColor: "border-[#09090F]/[0.06]",
-  },
-  podcast: {
-    bg: "bg-[#09090F]",
-    label: "Podcast",
-    labelBg: "bg-white/10 text-white/70",
-    titleColor: "text-white",
-    bodyColor: "text-white/40",
-    borderColor: "border-white/[0.08]",
-  },
-  video: {
-    bg: "bg-white",
-    label: "Video",
-    labelBg: "bg-[#E8622A]/10 text-[#E8622A]",
-    titleColor: "text-[#09090F]",
-    bodyColor: "text-gray-400",
-    borderColor: "border-gray-100",
-  },
-  news: {
-    bg: "bg-white",
-    label: "News",
-    labelBg: "bg-[#C9A84C]/15 text-[#C9A84C]",
-    titleColor: "text-[#09090F]",
-    bodyColor: "text-gray-400",
-    borderColor: "border-gray-100",
-  },
+// Per-category: accent colour + label text
+const categoryMeta: Record<string, { label: string; accent: string; iconColor: string }> = {
+  story:   { label: "Member story", accent: "bg-[#E8622A]/10 text-[#E8622A]",        iconColor: "text-[#E8622A]"  },
+  insight: { label: "Insight",      accent: "bg-[#09090F]/[0.06] text-[#09090F]/60", iconColor: "text-[#09090F]/50" },
+  podcast: { label: "Podcast",      accent: "bg-[#7B9E87]/15 text-[#4a7a5e]",        iconColor: "text-[#4a7a5e]"  },
+  video:   { label: "Video",        accent: "bg-[#E8622A]/10 text-[#E8622A]",        iconColor: "text-[#E8622A]"  },
+  news:    { label: "News",         accent: "bg-[#C9A84C]/15 text-[#9a7830]",        iconColor: "text-[#9a7830]"  },
 };
 
 const categoryIconMap: Record<string, React.ReactNode> = {
-  story: <Users size={12} />,
-  insight: <Lightbulb size={12} />,
-  podcast: <Mic size={12} />,
-  video: <Video size={12} />,
-  news: <TrendingUp size={12} />,
+  story:   <Users size={11} />,
+  insight: <Lightbulb size={11} />,
+  podcast: <Mic size={11} />,
+  video:   <Video size={11} />,
+  news:    <TrendingUp size={11} />,
 };
 
 export default function ContentHubPage() {
@@ -150,12 +108,13 @@ export default function ContentHubPage() {
 
   return (
     <div className="min-h-screen bg-[#F4F1EA]">
+
       {/* Header */}
       <div className="bg-[#09090F] pt-28 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#E8622A] mb-3">Content hub</p>
           <h1
-            className="text-4xl sm:text-5xl text-white mb-4 font-light"
+            className="text-4xl sm:text-5xl text-white font-light"
             style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
           >
             Stories, insights and ideas
@@ -166,6 +125,7 @@ export default function ContentHubPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
         {/* Category filter */}
         <div className="flex flex-wrap gap-2 mb-10">
           {categories.map((cat) => {
@@ -176,7 +136,7 @@ export default function ContentHubPage() {
                 onClick={() => setActiveCategory(cat.value)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeCategory === cat.value
-                    ? "bg-[#E8622A] text-white"
+                    ? "bg-[#09090F] text-white"
                     : "bg-white text-gray-600 hover:bg-gray-100"
                 }`}
               >
@@ -189,7 +149,7 @@ export default function ContentHubPage() {
 
         {/* Featured article */}
         {activeCategory === "all" && featured && (
-          <Link href="#" className="block bg-white rounded-2xl overflow-hidden mb-8 hover:shadow-xl transition-all group cursor-pointer">
+          <Link href="#" className="block bg-white rounded-2xl overflow-hidden mb-8 hover:shadow-xl transition-all group">
             <div className="grid grid-cols-1 lg:grid-cols-2">
               <div className="h-64 lg:h-auto overflow-hidden">
                 <img
@@ -200,7 +160,7 @@ export default function ContentHubPage() {
               </div>
               <div className="p-8 lg:p-12 flex flex-col justify-center">
                 <div className="flex items-center gap-2 mb-4">
-                  <span className="flex items-center gap-1.5 px-3 py-1 bg-[#E8622A]/10 text-[#E8622A] text-xs rounded-full font-semibold">
+                  <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${categoryMeta[featured.category].accent}`}>
                     {categoryIconMap[featured.category]}
                     Featured
                   </span>
@@ -227,97 +187,77 @@ export default function ContentHubPage() {
           </Link>
         )}
 
-        {/* Article grid — equal height, category-specific treatment */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-start">
+        {/* Article grid — all white cards, equal height per row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {rest.map((article) => {
-            const theme = cardTheme[article.category] ?? cardTheme.story;
-            const isVideo = article.category === "video";
+            const meta = categoryMeta[article.category] ?? categoryMeta.story;
+            const isVideo   = article.category === "video";
             const isPodcast = article.category === "podcast";
-            const isInsight = article.category === "insight";
 
             return (
               <Link
                 key={article.id}
                 href="#"
-                className={`flex flex-col rounded-2xl overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer h-full ${theme.bg}`}
+                className="flex flex-col bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-shadow group"
               >
-                {/* Image — all categories have an image except insight which gets text treatment */}
-                {isInsight ? (
-                  /* Insight: text-only header block */
-                  <div className="h-44 flex items-end p-6 bg-[#E8E4DA] relative overflow-hidden">
-                    <div
-                      className="absolute top-5 right-5 text-[80px] font-bold leading-none select-none pointer-events-none"
-                      style={{
-                        fontFamily: "'Bricolage Grotesque', sans-serif",
-                        color: "rgba(9,9,15,0.06)",
-                      }}
-                    >
-                      →
+                {/* Image block — fixed height, same for every card */}
+                <div className="relative h-48 overflow-hidden shrink-0">
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+
+                  {/* Podcast: dark scrim so the card body feels dark */}
+                  {isPodcast && (
+                    <div className="absolute inset-0 bg-[#09090F]/55" />
+                  )}
+
+                  {/* Video: play button */}
+                  {isVideo && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                        <Play size={14} className="text-[#09090F] ml-0.5" fill="currentColor" />
+                      </div>
                     </div>
-                    <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${theme.labelBg}`}>
+                  )}
+
+                  {/* Category chip — always bottom-left on image */}
+                  <div className="absolute bottom-3 left-3">
+                    <span className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold backdrop-blur-sm ${meta.accent}`}>
                       {categoryIconMap[article.category]}
-                      {theme.label}
+                      {meta.label}
                     </span>
                   </div>
-                ) : (
-                  <div className="relative h-44 overflow-hidden shrink-0">
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    {isVideo && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                        <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-                          <Play size={16} className="text-[#09090F] ml-0.5" fill="currentColor" />
-                        </div>
-                      </div>
-                    )}
-                    {isPodcast && (
-                      /* Dark overlay on podcast cards */
-                      <div className="absolute inset-0 bg-[#09090F]/50" />
-                    )}
-                  </div>
-                )}
+                </div>
 
                 {/* Content */}
                 <div className="flex flex-col flex-1 p-5">
-                  {/* Label + read time */}
                   <div className="flex items-center gap-2 mb-3">
-                    {!isInsight && (
-                      <span className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${theme.labelBg}`}>
-                        {categoryIconMap[article.category]}
-                        {theme.label}
-                      </span>
-                    )}
-                    <span className={`flex items-center gap-1 text-xs ${isPodcast ? "text-white/35" : "text-gray-400"}`}>
-                      <Clock size={10} />{article.readTime}
+                    <span className="flex items-center gap-1 text-xs text-gray-400">
+                      <Clock size={10} />
+                      {article.readTime}
                     </span>
                   </div>
 
-                  {/* Title */}
                   <h3
-                    className={`font-semibold leading-snug mb-2 ${theme.titleColor} group-hover:text-[#E8622A] transition-colors`}
+                    className="font-semibold text-[#09090F] leading-snug mb-2 group-hover:text-[#E8622A] transition-colors"
                     style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
                   >
                     {article.title}
                   </h3>
 
-                  {/* Excerpt */}
-                  <p className={`text-xs leading-relaxed line-clamp-2 mb-4 flex-1 ${theme.bodyColor}`}>
+                  <p className="text-xs text-gray-400 leading-relaxed line-clamp-2 flex-1 mb-4">
                     {article.excerpt}
                   </p>
 
-                  {/* Footer — always at bottom */}
-                  <div className={`flex items-center justify-between pt-3 border-t mt-auto ${theme.borderColor}`}>
+                  {/* Footer — pinned to bottom */}
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
                     <div className="flex items-center gap-2">
                       <img src={article.author.avatar} alt="" className="w-6 h-6 rounded-full object-cover" />
-                      <span className={`text-xs ${isPodcast ? "text-white/35" : "text-gray-400"}`}>{article.date}</span>
+                      <span className="text-xs text-gray-400">{article.date}</span>
                     </div>
-                    <ArrowRight
-                      size={14}
-                      className={`${isPodcast ? "text-white/20" : "text-gray-300"} group-hover:text-[#E8622A] transition-colors`}
-                    />
+                    <ArrowRight size={14} className="text-gray-300 group-hover:text-[#E8622A] transition-colors" />
                   </div>
                 </div>
               </Link>
@@ -327,8 +267,8 @@ export default function ContentHubPage() {
 
         {/* Load more */}
         <div className="text-center mt-12">
-          <button className="px-8 py-3 border border-gray-200 text-gray-600 font-medium rounded-xl hover:border-[#E8622A] hover:text-[#E8622A] transition-colors">
-            Load more articles
+          <button className="px-8 py-3 border border-gray-200 text-gray-600 font-medium rounded-xl hover:border-[#09090F] hover:text-[#09090F] transition-colors text-sm">
+            Load more
           </button>
         </div>
       </div>
