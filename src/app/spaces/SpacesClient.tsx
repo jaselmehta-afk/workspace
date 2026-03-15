@@ -20,7 +20,7 @@ import { useCompare } from "@/context/CompareContext";
 const SpaceMap = dynamic(() => import("@/components/SpaceMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full rounded-2xl" style={{ background: "#09090F" }} />
+    <div className="w-full h-full rounded-lg" style={{ background: "#09090F" }} />
   ),
 });
 
@@ -165,7 +165,7 @@ function SpacesInner() {
 
           {/* Search — dark glass */}
           <div className="flex gap-2.5 mb-5">
-            <div className="flex-1 flex items-center gap-3 glass rounded-xl px-4 py-3">
+            <div className="flex-1 flex items-center gap-3 glass rounded-lg px-4 py-3">
               <Search size={16} className="text-white/40 shrink-0" />
               <input
                 type="text"
@@ -183,7 +183,7 @@ function SpacesInner() {
                 <button
                   onClick={startVoice}
                   aria-label={listening ? "Stop listening" : "Search by voice"}
-                  className={`flex items-center justify-center w-8 h-8 rounded-xl transition-all duration-200 shrink-0 ${
+                  className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200 shrink-0 ${
                     listening
                       ? "bg-[#E8622A] text-white shadow-[0_0_16px_rgba(232,98,42,0.5)]"
                       : "text-white/40 hover:text-white hover:bg-white/10"
@@ -353,7 +353,7 @@ function SpacesInner() {
           {/* Sort + view controls */}
           <div className="flex items-center gap-3">
             {viewMode !== "map" && (
-              <div className="flex items-center gap-1 p-1 rounded-xl border" style={{ borderColor: "var(--ws-border)", backgroundColor: "var(--ws-surface)" }}>
+              <div className="flex items-center gap-1 p-1 rounded-lg border" style={{ borderColor: "var(--ws-border)", backgroundColor: "var(--ws-surface)" }}>
                 {[
                   { value: "recommended", label: "Best", icon: <Star size={11} /> },
                   { value: "price-asc", label: "Price ↑", icon: <ArrowUpDown size={11} /> },
@@ -378,7 +378,7 @@ function SpacesInner() {
             )}
 
             {/* View mode toggle */}
-            <div className="flex gap-0.5 border rounded-xl overflow-hidden p-0.5" style={{ borderColor: "var(--ws-border)", backgroundColor: "var(--ws-surface)" }}>
+            <div className="flex gap-0.5 border rounded-lg overflow-hidden p-0.5" style={{ borderColor: "var(--ws-border)", backgroundColor: "var(--ws-surface)" }}>
               {(["grid", "list", "map"] as const).map((mode) => (
                 <button
                   key={mode}
@@ -404,7 +404,7 @@ function SpacesInner() {
         {filtered.length === 0 ? (
           <div className="text-center py-28">
             <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
+              className="w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-5"
               style={{ backgroundColor: "var(--ws-surface)" }}
             >
               <Search size={22} className="text-gray-300" />
@@ -431,7 +431,7 @@ function SpacesInner() {
                 />
               ))}
             </div>
-            <div className="flex-1 rounded-2xl overflow-hidden sticky top-24">
+            <div className="flex-1 rounded-lg overflow-hidden sticky top-24">
               <SpaceMap
                 spaces={filtered}
                 activeId={mapActiveId}
@@ -505,7 +505,7 @@ function SpaceCardGrid({ space }: { space: Space }) {
 
   return (
     <article
-      className="group rounded-3xl overflow-hidden cursor-pointer"
+      className="group rounded-lg overflow-hidden cursor-pointer"
       onMouseEnter={startCycle}
       onMouseLeave={stopCycle}
       style={{ aspectRatio: "3/4" }}
@@ -663,7 +663,7 @@ function SpaceCardList({ space }: { space: Space }) {
 
   return (
     <article
-      className="group rounded-2xl overflow-hidden flex flex-col sm:flex-row hover:shadow-lg transition-shadow duration-300"
+      className="group rounded-lg overflow-hidden flex flex-col sm:flex-row hover:shadow-lg transition-shadow duration-300"
       style={{ backgroundColor: "var(--ws-surface)" }}
       onMouseEnter={startCycle}
       onMouseLeave={stopCycle}
@@ -795,12 +795,12 @@ function SpaceCardMapSidebar({
     <article
       onMouseEnter={() => onHover(space.id)}
       onMouseLeave={() => onHover(null)}
-      className={`group flex gap-3 rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 p-3 ${
+      className={`group flex gap-3 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 p-3 ${
         active ? "shadow-lg ring-2 ring-[#E8622A]" : "hover:shadow-md"
       }`}
       style={{ backgroundColor: "var(--ws-surface)" }}
     >
-      <Link href={`/spaces/${space.slug}`} className="shrink-0 w-20 h-20 rounded-xl overflow-hidden block">
+      <Link href={`/spaces/${space.slug}`} className="shrink-0 w-20 h-20 rounded-lg overflow-hidden block">
         <img
           src={space.image}
           alt={space.name}

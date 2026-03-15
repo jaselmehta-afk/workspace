@@ -143,7 +143,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
             {/* Gallery */}
             <ScrollReveal>
-              <div className="relative rounded-3xl overflow-hidden">
+              <div className="relative rounded-lg overflow-hidden">
                 <img
                   src={allImages[activeImage] || space.image}
                   alt={`${space.name} — view ${activeImage + 1}`}
@@ -188,7 +188,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                     onClick={() => setActiveImage(i)}
                     aria-label={`Photo ${i + 1}`}
                     aria-pressed={i === activeImage}
-                    className={`shrink-0 w-20 h-14 rounded-xl overflow-hidden border-2 transition-all ${i === activeImage ? "border-[#E8622A]" : "border-transparent opacity-50 hover:opacity-75"}`}
+                    className={`shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${i === activeImage ? "border-[#E8622A]" : "border-transparent opacity-50 hover:opacity-75"}`}
                   >
                     <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
@@ -205,7 +205,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                   { label: "Contract", value: "Monthly rolling" },
                   { label: "Available", value: "Now", green: true },
                 ].map(({ label, value, green }) => (
-                  <div key={label} className="bg-white rounded-2xl p-4">
+                  <div key={label} className="bg-white rounded-lg p-4">
                     <div className="text-[11px] font-medium tracking-wider uppercase text-[#09090F]/30 mb-1">{label}</div>
                     <div className={`font-semibold text-sm ${green ? "text-[#7B9E87]" : "text-[#09090F]"}`}>{value}</div>
                   </div>
@@ -215,7 +215,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
             {/* About */}
             <ScrollReveal>
-              <div className="bg-white rounded-3xl p-8">
+              <div className="bg-white rounded-lg p-8">
                 <h2 className="text-xl text-[#09090F] mb-4" style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500 }}>
                   About this space
                 </h2>
@@ -225,14 +225,14 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
             {/* Amenities */}
             <ScrollReveal>
-              <div className="bg-white rounded-3xl p-8">
+              <div className="bg-white rounded-lg p-8">
                 <h2 className="text-xl text-[#09090F] mb-6" style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500 }}>
                   What&apos;s included
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {space.amenities.map(a => (
                     <div key={a} className="flex items-center gap-3 py-2">
-                      <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[#E8622A]"
+                      <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-[#E8622A]"
                         style={{ background: "rgba(232,98,42,0.07)" }} aria-hidden="true">
                         {amenityIconMap[a] ?? <ArrowRight size={16} />}
                       </div>
@@ -245,7 +245,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
             {/* Getting here */}
             <ScrollReveal>
-              <div className="bg-[#09090F] rounded-3xl overflow-hidden">
+              <div className="bg-[#09090F] rounded-lg overflow-hidden">
                 {/* Dark Leaflet map — consistent with the map view on the listing page */}
                 <div className="h-56">
                   <SpaceMapSingle
@@ -278,7 +278,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                     {space.transport.map(t => (
                       <div
                         key={t.name}
-                        className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium ${
+                        className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium ${
                           t.type === "tube"
                             ? "bg-[#E32017]/20 text-red-300 border border-[#E32017]/30"
                             : t.type === "rail"
@@ -310,7 +310,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {similar.map(s => (
                       <Link key={s.id} href={`/spaces/${s.slug}`}
-                        className="group bg-white rounded-2xl overflow-hidden hover:shadow-md transition-all">
+                        className="group bg-white rounded-lg overflow-hidden hover:shadow-md transition-all">
                         <div className="h-36 overflow-hidden relative">
                           <img src={s.image} alt={s.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                         </div>
@@ -334,7 +334,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-3">
               {/* Pricing */}
-              <div className="bg-white rounded-3xl p-6 border border-[#09090F]/[0.05]">
+              <div className="bg-white rounded-lg p-6 border border-[#09090F]/[0.05]">
                 <div className="mb-5">
                   <p className="text-[#09090F]/35 text-[11px] font-medium tracking-[0.15em] uppercase mb-1">Starting from</p>
                   <div className="flex items-baseline gap-1">
@@ -351,19 +351,19 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
                 <Link
                   href={`/book-viewing?space=${space.slug}`}
-                  className="block w-full py-3.5 bg-[#E8622A] text-white font-semibold rounded-2xl hover:bg-[#d4561e] transition-colors text-center text-sm mb-3"
+                  className="block w-full py-3.5 bg-[#E8622A] text-white font-semibold rounded-xl hover:bg-[#d4561e] transition-colors text-center text-sm mb-3"
                 >
                   Book a viewing
                 </Link>
                 <MagneticButton
                   onClick={() => setShowEnquiry(!showEnquiry)}
-                  className="w-full py-3.5 bg-[#F4F1EA] text-[#09090F] font-semibold rounded-2xl hover:bg-[#ebe8e1] transition-colors text-sm mb-3"
+                  className="w-full py-3.5 bg-[#F4F1EA] text-[#09090F] font-semibold rounded-xl hover:bg-[#ebe8e1] transition-colors text-sm mb-3"
                 >
                   {showEnquiry ? "Hide enquiry" : "Send an enquiry"}
                 </MagneticButton>
                 <button
                   onClick={() => comparing ? remove(space.id) : add(space.id)}
-                  className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-medium border transition-colors ${
+                  className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
                     comparing
                       ? "border-[#E8622A] text-[#E8622A] bg-[#E8622A]/[0.06]"
                       : "border-[#09090F]/[0.08] text-[#09090F]/50 hover:border-[#E8622A] hover:text-[#E8622A]"
