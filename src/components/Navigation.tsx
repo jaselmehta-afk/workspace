@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, Heart, Sun, Moon, MapPin, ArrowRight } from "lucide-react";
+import { Menu, X, Heart, Sun, Moon, MapPin, ArrowRight } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useFavourites } from "@/context/FavouritesContext";
 import { spaces } from "@/data/spaces";
@@ -109,65 +109,77 @@ export default function Navigation() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
-            ? "bg-[#09090F]/92 backdrop-blur-xl border-b border-white/[0.06]"
+            ? "bg-[#09090F]/80 backdrop-blur-2xl border-b border-white/[0.05]"
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-18 py-4">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
             <Logo />
 
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) => (
-                <div
-                  key={link.label}
-                  className="relative"
-                  onMouseEnter={() => link.children && showMenu(link.label)}
-                  onMouseLeave={scheduleHide}
-                >
-                  <Link
-                    href={link.href}
-                    className="flex items-center gap-1.5 px-4 py-2 text-sm font-normal text-white/65 hover:text-white transition-colors tracking-wide"
+            {/* Desktop Nav — floating glass pill */}
+            <nav
+              className="hidden lg:flex items-center gap-0.5 px-2 py-2 rounded-full transition-all duration-300"
+              style={{
+                background: "rgba(255,255,255,0.055)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                backdropFilter: "blur(24px)",
+              }}
+            >
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+                return (
+                  <div
+                    key={link.label}
+                    className="relative"
+                    onMouseEnter={() => link.children && showMenu(link.label)}
+                    onMouseLeave={scheduleHide}
                   >
-                    {link.label}
-                    {link.children && (
-                      <ChevronDown
-                        size={13}
-                        className={`opacity-50 mt-px transition-transform duration-200 ${activeDropdown === link.label ? "rotate-180" : ""}`}
-                      />
-                    )}
-                  </Link>
-
-                  {link.children && activeDropdown === link.label && (
-                    <div
-                      className="absolute top-full left-0 pt-1 w-68"
-                      onMouseEnter={cancelHide}
-                      onMouseLeave={scheduleHide}
+                    <Link
+                      href={link.href}
+                      className={`flex items-center px-4 py-2 text-sm rounded-full transition-all duration-200 ${
+                        isActive
+                          ? "bg-white/[0.11] text-white font-medium"
+                          : "text-white/65 hover:text-white hover:bg-white/[0.07] font-normal"
+                      }`}
                     >
-                      <div className="bg-white/[0.97] backdrop-blur-2xl rounded-2xl shadow-2xl border border-black/[0.06] overflow-hidden">
-                        <div className="p-1.5">
-                          {link.children.map((child) => (
-                            <Link
-                              key={child.label}
-                              href={child.href}
-                              onClick={() => setActiveDropdown(null)}
-                              className="flex flex-col px-3.5 py-3 rounded-xl hover:bg-[#F4F1EA] group transition-colors"
-                            >
-                              <span className="text-sm font-medium text-[#09090F] group-hover:text-[#E8622A] transition-colors">
-                                {child.label}
-                              </span>
-                              <span className="text-xs text-[#09090F]/60 mt-0.5">{child.desc}</span>
-                            </Link>
-                          ))}
+                      {link.label}
+                    </Link>
+
+                    {link.children && activeDropdown === link.label && (
+                      <div
+                        className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-64"
+                        onMouseEnter={cancelHide}
+                        onMouseLeave={scheduleHide}
+                      >
+                        {/* Arrow notch */}
+                        <div className="mx-auto w-3 h-3 -mb-1.5 rotate-45 rounded-sm"
+                          style={{ background: "rgba(30,28,40,0.98)", border: "1px solid rgba(255,255,255,0.08)", clipPath: "polygon(0 0,100% 0,100% 100%,0 100%)", borderRight: "none", borderBottom: "none" }} />
+                        <div className="rounded-2xl overflow-hidden shadow-2xl"
+                          style={{ background: "rgba(18,16,28,0.97)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(24px)" }}>
+                          <div className="p-1.5">
+                            {link.children.map((child) => (
+                              <Link
+                                key={child.label}
+                                href={child.href}
+                                onClick={() => setActiveDropdown(null)}
+                                className="flex flex-col px-3.5 py-3 rounded-xl hover:bg-white/[0.06] group transition-colors"
+                              >
+                                <span className="text-sm font-medium text-white/90 group-hover:text-[#E8622A] transition-colors">
+                                  {child.label}
+                                </span>
+                                <span className="text-xs text-white/40 mt-0.5">{child.desc}</span>
+                              </Link>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+                    )}
+                  </div>
+                );
+              })}
             </nav>
 
             {/* CTA + controls */}
@@ -176,27 +188,27 @@ export default function Navigation() {
               <button
                 onClick={toggleTheme}
                 aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                className="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.08] transition-colors"
+                className="flex items-center justify-center w-8 h-8 rounded-full text-white/35 hover:text-white/80 transition-colors"
               >
-                {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+                {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
               </button>
 
               {/* Saved spaces */}
               <button
                 onClick={() => setSavedOpen(o => !o)}
                 aria-label={`Saved spaces (${ids.length})`}
-                className="relative flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.08] transition-colors"
+                className="relative flex items-center justify-center w-8 h-8 rounded-full text-white/35 hover:text-white/80 transition-colors"
               >
-                <Heart size={15} fill={ids.length > 0 ? "#E8622A" : "none"} className={ids.length > 0 ? "text-[#E8622A]" : ""} />
+                <Heart size={14} fill={ids.length > 0 ? "#E8622A" : "none"} className={ids.length > 0 ? "text-[#E8622A]" : ""} />
                 {ids.length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#E8622A] rounded-full text-white text-[9px] font-bold flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-[#E8622A] rounded-full text-white text-[8px] font-bold flex items-center justify-center">
                     {ids.length}
                   </span>
                 )}
               </button>
 
               <Link href="/spaces"
-                className="px-4 py-2 bg-[#E8622A] text-white text-sm font-semibold rounded-xl hover:bg-[#d4561e] transition-colors">
+                className="px-4 py-2 bg-[#E8622A] text-white text-sm font-semibold rounded-full hover:bg-[#d4561e] transition-all hover:scale-105 active:scale-100">
                 Find a Space
               </Link>
             </div>
