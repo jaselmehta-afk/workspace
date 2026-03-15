@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Search, MapPin, SlidersHorizontal, X, Star, ArrowRight, Grid3X3, List, Wifi, Coffee, Bike, Zap, Dog, Mic } from "lucide-react";
 import { spaces, Space, Area, amenityOptions } from "@/data/spaces";
+import FavouriteButton from "@/components/FavouriteButton";
+import ShareButton from "@/components/ShareButton";
 
 const areaOptions: { value: Area | ""; label: string }[] = [
   { value: "", label: "All London" },
@@ -51,7 +53,6 @@ function SpacesInner() {
   const [sortBy, setSortBy] = useState("recommended");
   const [returningArea, setReturningArea] = useState("");
 
-  // Returning visitor personalisation
   useEffect(() => {
     try {
       const saved = localStorage.getItem("ws_last_search");
@@ -62,7 +63,6 @@ function SpacesInner() {
     } catch {}
   }, []);
 
-  // Re-sync if URL changes (e.g. natural language search redirects)
   useEffect(() => {
     setSearch(searchParams.get("location") || "");
     setArea((searchParams.get("area") as Area) || "");
@@ -104,7 +104,7 @@ function SpacesInner() {
   const activeFilterCount = [area, type, size].filter(Boolean).length + selectedAmenities.length;
 
   return (
-    <div className="min-h-screen bg-[#F4F1EA]">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--ws-bg)" }}>
       {/* Header */}
       <div className="bg-[#09090F] pt-28 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
@@ -171,41 +171,44 @@ function SpacesInner() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filter panel */}
         {showFilters && (
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 shadow-sm">
+          <div className="rounded-2xl border p-6 mb-6 shadow-sm" style={{ backgroundColor: "var(--ws-surface)", borderColor: "var(--ws-border)" }}>
             <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Area</label>
+                <label className="text-xs font-semibold uppercase tracking-wide mb-2 block" style={{ color: "var(--ws-text-muted)" }}>Area</label>
                 <select
                   value={area}
                   onChange={(e) => setArea(e.target.value as Area | "")}
-                  className="w-full text-sm text-[#09090F] border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A] bg-white"
+                  className="w-full text-sm border rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A]"
+                  style={{ color: "var(--ws-text)", borderColor: "var(--ws-border)", backgroundColor: "var(--ws-input-bg)" }}
                 >
                   {areaOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Space type</label>
+                <label className="text-xs font-semibold uppercase tracking-wide mb-2 block" style={{ color: "var(--ws-text-muted)" }}>Space type</label>
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="w-full text-sm text-[#09090F] border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A] bg-white"
+                  className="w-full text-sm border rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A]"
+                  style={{ color: "var(--ws-text)", borderColor: "var(--ws-border)", backgroundColor: "var(--ws-input-bg)" }}
                 >
                   {typeOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Team size</label>
+                <label className="text-xs font-semibold uppercase tracking-wide mb-2 block" style={{ color: "var(--ws-text-muted)" }}>Team size</label>
                 <select
                   value={size}
                   onChange={(e) => setSize(e.target.value)}
-                  className="w-full text-sm text-[#09090F] border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A] bg-white"
+                  className="w-full text-sm border rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#E8622A]"
+                  style={{ color: "var(--ws-text)", borderColor: "var(--ws-border)", backgroundColor: "var(--ws-input-bg)" }}
                 >
                   {sizeOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               </div>
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 block">Amenities</label>
+              <label className="text-xs font-semibold uppercase tracking-wide mb-3 block" style={{ color: "var(--ws-text-muted)" }}>Amenities</label>
               <div className="flex flex-wrap gap-2">
                 {amenityOptions.map((a) => (
                   <button
@@ -214,8 +217,9 @@ function SpacesInner() {
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                       selectedAmenities.includes(a)
                         ? "bg-[#E8622A] text-white border-[#E8622A]"
-                        : "bg-white text-gray-600 border-gray-200 hover:border-[#E8622A] hover:text-[#E8622A]"
+                        : "text-gray-600 border-gray-200 hover:border-[#E8622A] hover:text-[#E8622A]"
                     }`}
+                    style={!selectedAmenities.includes(a) ? { backgroundColor: "var(--ws-surface)" } : {}}
                   >
                     {amenityIcons[a] || null}
                     {a}
@@ -236,30 +240,33 @@ function SpacesInner() {
 
         {/* Results bar */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-sm text-gray-500">
-            Showing <span className="font-semibold text-[#09090F]">{filtered.length}</span> of {spaces.length} spaces
+          <p className="text-sm" style={{ color: "var(--ws-text-muted)" }}>
+            Showing <span className="font-semibold" style={{ color: "var(--ws-text)" }}>{filtered.length}</span> of {spaces.length} spaces
           </p>
           <div className="flex items-center gap-3">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="text-sm text-[#09090F] border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#E8622A] bg-white"
+              className="text-sm border rounded-lg px-3 py-2 focus:outline-none focus:border-[#E8622A]"
+              style={{ color: "var(--ws-text)", borderColor: "var(--ws-border)", backgroundColor: "var(--ws-surface)" }}
             >
               <option value="recommended">Recommended</option>
               <option value="price-asc">Price: Low to high</option>
               <option value="price-desc">Price: High to low</option>
               <option value="rating">Top rated</option>
             </select>
-            <div className="flex gap-1 border border-gray-200 rounded-lg overflow-hidden">
+            <div className="flex gap-1 border rounded-lg overflow-hidden" style={{ borderColor: "var(--ws-border)" }}>
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 transition-colors ${viewMode === "grid" ? "bg-[#09090F] text-white" : "bg-white text-gray-400 hover:text-gray-600"}`}
+                className={`p-2 transition-colors ${viewMode === "grid" ? "bg-[#09090F] text-white" : "text-gray-400 hover:text-gray-600"}`}
+                style={viewMode !== "grid" ? { backgroundColor: "var(--ws-surface)" } : {}}
               >
                 <Grid3X3 size={15} />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 transition-colors ${viewMode === "list" ? "bg-[#09090F] text-white" : "bg-white text-gray-400 hover:text-gray-600"}`}
+                className={`p-2 transition-colors ${viewMode === "list" ? "bg-[#09090F] text-white" : "text-gray-400 hover:text-gray-600"}`}
+                style={viewMode !== "list" ? { backgroundColor: "var(--ws-surface)" } : {}}
               >
                 <List size={15} />
               </button>
@@ -270,11 +277,11 @@ function SpacesInner() {
         {/* Space cards */}
         {filtered.length === 0 ? (
           <div className="text-center py-24">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: "var(--ws-surface)" }}>
               <Search size={24} className="text-gray-300" />
             </div>
-            <h3 className="text-lg font-semibold text-[#09090F] mb-2">No spaces found</h3>
-            <p className="text-gray-500 text-sm mb-6">Try adjusting your filters or search term</p>
+            <h3 className="text-lg font-semibold mb-2" style={{ color: "var(--ws-text)" }}>No spaces found</h3>
+            <p className="text-sm mb-6" style={{ color: "var(--ws-text-muted)" }}>Try adjusting your filters or search term</p>
             <button
               onClick={() => { setSearch(""); setArea(""); setType(""); setSize(""); setSelectedAmenities([]); }}
               className="text-sm text-[#E8622A] hover:underline"
@@ -308,15 +315,17 @@ export default function SpacesClient() {
 
 function SpaceCardGrid({ space }: { space: Space }) {
   return (
-    <Link
-      href={`/spaces/${space.slug}`}
-      className="group bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+    <article
+      className="group rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col"
+      style={{ backgroundColor: "var(--ws-surface)" }}
     >
-      <div className="relative h-52 overflow-hidden">
+      {/* Image block — entire block is a link */}
+      <Link href={`/spaces/${space.slug}`} className="block relative h-52 overflow-hidden">
         <img
           src={space.image}
           alt={space.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 space-img"
+          style={{ viewTransitionName: `space-img-${space.slug}` }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         <div className="absolute top-3 left-3 flex gap-2">
@@ -328,64 +337,80 @@ function SpaceCardGrid({ space }: { space: Space }) {
           <span className="text-white text-xs font-semibold">{space.rating}</span>
           <span className="text-white/60 text-xs">({space.reviewCount})</span>
         </div>
-      </div>
-      <div className="p-5">
+      </Link>
+
+      {/* Text content — also a link */}
+      <Link href={`/spaces/${space.slug}`} className="block p-5 flex-1">
         <div className="flex items-center gap-1 text-[#E8622A] text-xs font-medium mb-1">
           <MapPin size={11} />{space.neighbourhood}, {space.postcode}
         </div>
-        <h3 className="font-semibold text-[#09090F] mb-1">{space.name}</h3>
-        <p className="text-gray-500 text-sm mb-3 line-clamp-2">{space.headline}</p>
-        <div className="flex flex-wrap gap-1.5 mb-4">
+        <h3 className="font-semibold mb-1" style={{ color: "var(--ws-text)" }}>{space.name}</h3>
+        <p className="text-sm mb-3 line-clamp-2" style={{ color: "var(--ws-text-muted)" }}>{space.headline}</p>
+        <div className="flex flex-wrap gap-1.5">
           {space.type.map((t) => (
             <span key={t} className="px-2 py-0.5 bg-[#F4F1EA] text-[#09090F] text-xs rounded-md font-medium capitalize">{t}</span>
           ))}
         </div>
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-          <div>
-            <span className="text-gray-400 text-xs">From </span>
-            <span className="font-bold text-[#09090F]">£{space.priceFrom.toLocaleString()}</span>
-            <span className="text-gray-400 text-xs">/{space.priceUnit}</span>
-          </div>
-          <span className="flex items-center gap-1 text-[#E8622A] text-xs font-semibold group-hover:gap-2 transition-all">
+      </Link>
+
+      {/* Footer — actions live here, separate from navigation link */}
+      <div className="px-5 pb-5 flex items-center justify-between border-t pt-3" style={{ borderColor: "var(--ws-border)" }}>
+        <div>
+          <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>From </span>
+          <span className="font-bold" style={{ color: "var(--ws-text)" }}>£{space.priceFrom.toLocaleString()}</span>
+          <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>/{space.priceUnit}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <ShareButton
+            data={{ title: space.name, text: space.headline, slug: space.slug }}
+            variant="ghost"
+            className="text-xs"
+          />
+          <FavouriteButton spaceId={space.id} />
+          <Link
+            href={`/spaces/${space.slug}`}
+            className="flex items-center gap-1 text-[#E8622A] text-xs font-semibold hover:gap-2 transition-all"
+          >
             View <ArrowRight size={12} />
-          </span>
+          </Link>
         </div>
       </div>
-    </Link>
+    </article>
   );
 }
 
 function SpaceCardList({ space }: { space: Space }) {
   return (
-    <Link
-      href={`/spaces/${space.slug}`}
-      className="group bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all flex flex-col sm:flex-row"
+    <article
+      className="group rounded-2xl overflow-hidden hover:shadow-lg transition-all flex flex-col sm:flex-row"
+      style={{ backgroundColor: "var(--ws-surface)" }}
     >
-      <div className="relative w-full sm:w-56 h-44 sm:h-auto overflow-hidden shrink-0">
+      <Link href={`/spaces/${space.slug}`} className="block relative w-full sm:w-56 h-44 sm:h-auto overflow-hidden shrink-0">
         <img
           src={space.image}
           alt={space.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 space-img"
+          style={{ viewTransitionName: `space-img-${space.slug}` }}
         />
         <div className="absolute top-3 left-3 flex gap-2">
           {space.isNew && <span className="px-2 py-1 bg-[#E8622A] text-white text-xs font-semibold rounded-md">New</span>}
         </div>
-      </div>
+      </Link>
       <div className="flex-1 p-5 flex flex-col justify-between">
-        <div>
+        <Link href={`/spaces/${space.slug}`} className="block">
           <div className="flex items-start justify-between gap-4 mb-2">
             <div>
               <div className="flex items-center gap-1 text-[#E8622A] text-xs font-medium mb-1">
                 <MapPin size={11} />{space.neighbourhood}, {space.postcode}
               </div>
-              <h3 className="font-semibold text-[#09090F] text-lg">{space.name}</h3>
+              <h3 className="font-semibold text-lg" style={{ color: "var(--ws-text)" }}>{space.name}</h3>
             </div>
             <div className="flex items-center gap-1 shrink-0">
               <Star size={12} className="text-[#C9A84C] fill-[#C9A84C]" />
-              <span className="text-sm font-semibold text-[#09090F]">{space.rating}</span>
+              <span className="text-sm font-semibold" style={{ color: "var(--ws-text)" }}>{space.rating}</span>
             </div>
           </div>
-          <p className="text-gray-500 text-sm mb-3">{space.headline}</p>
+          <p className="text-sm mb-3" style={{ color: "var(--ws-text-muted)" }}>{space.headline}</p>
           <div className="flex flex-wrap gap-1.5">
             {space.amenities.slice(0, 4).map((a) => (
               <span key={a} className="flex items-center gap-1 px-2 py-1 bg-[#F4F1EA] text-gray-500 text-xs rounded-md">
@@ -393,18 +418,28 @@ function SpaceCardList({ space }: { space: Space }) {
               </span>
             ))}
           </div>
-        </div>
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+        </Link>
+        <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: "var(--ws-border)" }}>
           <div>
-            <span className="text-gray-400 text-xs">From </span>
-            <span className="font-bold text-[#09090F] text-lg">£{space.priceFrom.toLocaleString()}</span>
-            <span className="text-gray-400 text-xs">/{space.priceUnit}</span>
+            <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>From </span>
+            <span className="font-bold text-lg" style={{ color: "var(--ws-text)" }}>£{space.priceFrom.toLocaleString()}</span>
+            <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>/{space.priceUnit}</span>
           </div>
-          <span className="flex items-center gap-2 px-4 py-2 bg-[#E8622A] text-white text-sm font-semibold rounded-lg group-hover:bg-[#d4561e] transition-colors">
-            View space <ArrowRight size={14} />
-          </span>
+          <div className="flex items-center gap-2">
+            <ShareButton
+              data={{ title: space.name, text: space.headline, slug: space.slug }}
+              variant="ghost"
+            />
+            <FavouriteButton spaceId={space.id} />
+            <Link
+              href={`/spaces/${space.slug}`}
+              className="flex items-center gap-2 px-4 py-2 bg-[#E8622A] text-white text-sm font-semibold rounded-lg hover:bg-[#d4561e] transition-colors"
+            >
+              View space <ArrowRight size={14} />
+            </Link>
+          </div>
         </div>
       </div>
-    </Link>
+    </article>
   );
 }

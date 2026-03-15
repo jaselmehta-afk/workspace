@@ -4,6 +4,8 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
 import PageTransition from "@/components/PageTransition";
+import { FavouritesProvider } from "@/context/FavouritesContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 export const metadata: Metadata = {
   title: "Workspace — Flexible, Inspiring Space To Grow Your Business",
@@ -16,10 +18,21 @@ export const metadata: Metadata = {
   },
 };
 
+// Inline script to set data-theme before first paint — prevents flash
+const themeScript = `
+  try {
+    var t = localStorage.getItem('ws_theme');
+    if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  } catch(e) {}
+`.trim();
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Blocking theme script — must be first to avoid FOUC */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -28,12 +41,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
       </head>
       <body className="antialiased" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-        <CustomCursor />
-        <Navigation />
-        <PageTransition>
-          <main>{children}</main>
-        </PageTransition>
-        <Footer />
+        <ThemeProvider>
+          <FavouritesProvider>
+            <CustomCursor />
+            <Navigation />
+            <PageTransition>
+              <main>{children}</main>
+            </PageTransition>
+            <Footer />
+          </FavouritesProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

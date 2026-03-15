@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Sparkles, ChevronDown } from "lucide-react";
+import { ArrowRight, Sparkles, ChevronDown, Mic, MicOff } from "lucide-react";
 import MagneticButton from "@/components/MagneticButton";
 
 const EXAMPLES = [
@@ -42,9 +42,54 @@ function parse(q: string) {
   return p;
 }
 
+/** Returns a subtle overlay tint that shifts with the time of day */
+function getTimeOfDayOverlay(): { gradient: string; accent: string; label: string } {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 9) {
+    // Dawn — warm amber blush
+    return {
+      gradient: "linear-gradient(to bottom, rgba(120,60,20,0.65) 0%, rgba(9,9,15,0.25) 50%, rgba(9,9,15,0.70) 100%)",
+      accent: "rgba(232,120,42,0.18)",
+      label: "Good morning",
+    };
+  }
+  if (h >= 9 && h < 17) {
+    // Daytime — neutral, architectural
+    return {
+      gradient: "linear-gradient(to bottom, rgba(9,9,15,0.72) 0%, rgba(9,9,15,0.22) 50%, rgba(9,9,15,0.68) 100%)",
+      accent: "rgba(123,158,135,0.10)",
+      label: "",
+    };
+  }
+  if (h >= 17 && h < 21) {
+    // Dusk — amber-rose
+    return {
+      gradient: "linear-gradient(to bottom, rgba(80,30,10,0.72) 0%, rgba(20,10,5,0.28) 50%, rgba(9,9,15,0.80) 100%)",
+      accent: "rgba(200,80,40,0.20)",
+      label: "Good evening",
+    };
+  }
+  // Night — deep indigo
+  return {
+    gradient: "linear-gradient(to bottom, rgba(10,8,30,0.82) 0%, rgba(9,9,15,0.30) 50%, rgba(9,9,15,0.85) 100%)",
+    accent: "rgba(60,40,120,0.20)",
+    label: "Working late?",
+  };
+}
+
+// Extend window for webkit speech
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
+  }
+}
+
 export default function HeroSection() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+
   const [query, setQuery] = useState("");
   const [ph, setPh] = useState("");
   const [ei, setEi] = useState(0);
@@ -52,6 +97,9 @@ export default function HeroSection() {
   const [focused, setFocused] = useState(false);
   const [status, setStatus] = useState<"idle" | "thinking">("idle");
   const [returning, setReturning] = useState<{ area: string; type: string } | null>(null);
+  const [listening, setListening] = useState(false);
+  const [voiceSupported, setVoiceSupported] = useState(false);
+  const [timeOverlay, setTimeOverlay] = useState<ReturnType<typeof getTimeOfDayOverlay> | null>(null);
 
   // Returning visitor personalisation
   useEffect(() => {
@@ -65,6 +113,12 @@ export default function HeroSection() {
         }
       }
     } catch {}
+
+    // Check voice support
+    setVoiceSupported(!!(window.SpeechRecognition || window.webkitSpeechRecognition));
+
+    // Time-of-day overlay (client-side only to avoid hydration mismatch)
+    setTimeOverlay(getTimeOfDayOverlay());
   }, []);
 
   // Typewriter
@@ -79,42 +133,98 @@ export default function HeroSection() {
     return () => clearTimeout(t);
   }, [ci, ei, focused, query]);
 
-  const go = (q = query) => {
+  const go = useCallback((q = query) => {
     if (!q.trim()) return;
     setStatus("thinking");
     const p = parse(q);
-    // Save search for personalisation
     try { localStorage.setItem("ws_last_search", JSON.stringify({ ...p, timestamp: Date.now() })); } catch {}
     setTimeout(() => { router.push(`/spaces?${new URLSearchParams(p)}`); }, 1200);
-  };
+  }, [query, router]);
+
+  const startVoice = useCallback(() => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return;
+
+    if (listening) {
+      recognitionRef.current?.stop();
+      setListening(false);
+      return;
+    }
+
+    const recognition = new SR();
+    recognitionRef.current = recognition;
+    recognition.lang = "en-GB";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+
+    recognition.onresult = (e: SpeechRecognitionEvent) => {
+      const transcript = Array.from(e.results)
+        .map(r => r[0].transcript)
+        .join("");
+      setQuery(transcript);
+      if (e.results[0].isFinal) {
+        setListening(false);
+        // Short pause then search
+        setTimeout(() => go(transcript), 400);
+      }
+    };
+
+    recognition.onerror = () => setListening(false);
+    recognition.onend = () => setListening(false);
+    recognition.start();
+    setListening(true);
+    inputRef.current?.focus();
+  }, [listening, go]);
 
   const scrollDown = () => window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
 
   const returningLabel = returning
-    ? [returning.type ? returning.type.charAt(0).toUpperCase() + returning.type.slice(1) : "", returning.area ? returning.area.charAt(0).toUpperCase() + returning.area.slice(1) + " London" : ""].filter(Boolean).join(" · ")
+    ? [
+        returning.type ? returning.type.charAt(0).toUpperCase() + returning.type.slice(1) : "",
+        returning.area ? returning.area.charAt(0).toUpperCase() + returning.area.slice(1) + " London" : "",
+      ].filter(Boolean).join(" · ")
     : "";
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-[#09090F]">
-      {/* Cinematic background with Ken Burns */}
+      {/* Cinematic background with Ken Burns + scroll parallax */}
       <div className="absolute inset-0 overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1920&q=85"
           alt=""
           aria-hidden="true"
-          className="w-full h-full object-cover animate-kenburns"
+          className="w-full h-full object-cover animate-kenburns hero-parallax-bg"
         />
-        {/* Sophisticated layered overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#09090F]/75 via-[#09090F]/25 to-[#09090F]/65" />
+        {/* Time-of-day gradient overlay — updates based on local hour */}
+        <div
+          className="absolute inset-0 transition-all duration-1000"
+          style={{ background: timeOverlay?.gradient ?? "linear-gradient(to bottom, rgba(9,9,15,0.72) 0%, rgba(9,9,15,0.22) 50%, rgba(9,9,15,0.68) 100%)" }}
+        />
+        {/* Directional overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#09090F]/60 via-transparent to-transparent" />
+        {/* Time accent blush */}
+        {timeOverlay?.accent && (
+          <div
+            className="absolute inset-0 transition-all duration-1000"
+            style={{ background: `radial-gradient(ellipse at 50% 0%, ${timeOverlay.accent} 0%, transparent 65%)` }}
+          />
+        )}
         {/* Subtle noise grain */}
         <div className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
             backgroundRepeat: "repeat", backgroundSize: "128px 128px" }} />
       </div>
 
-      {/* Content — vertically centred, left-weighted */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32 mt-16">
+      {/* Content — scroll-exits as you scroll down */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32 mt-16 hero-content-scroll">
+
+        {/* Time-of-day greeting */}
+        {timeOverlay?.label && (
+          <div className="mb-4 inline-flex items-center gap-2 text-xs text-white/30 animate-fade-up">
+            <span className="w-1 h-1 rounded-full bg-white/30 inline-block" />
+            {timeOverlay.label}
+          </div>
+        )}
 
         {/* Returning visitor banner */}
         {returning && (
@@ -130,7 +240,7 @@ export default function HeroSection() {
           </div>
         )}
 
-        {/* Headline — left aligned, editorial scale */}
+        {/* Headline */}
         <div className="max-w-4xl mb-10">
           <p className="text-white/30 text-[11px] font-medium tracking-[0.2em] uppercase mb-6">
             60+ buildings across London
@@ -159,7 +269,7 @@ export default function HeroSection() {
           </p>
         </div>
 
-        {/* Search — full width of content column */}
+        {/* Search */}
         <div className="max-w-2xl">
           <div className={`relative glass rounded-2xl transition-all duration-300 ${focused ? "glow-orange border-[#E8622A]/25" : ""}`}>
             <div className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
@@ -177,8 +287,26 @@ export default function HeroSection() {
               onBlur={() => setFocused(false)}
               placeholder={focused ? "Describe your ideal workspace…" : ph || "Describe your ideal workspace…"}
               disabled={status === "thinking"}
-              className="w-full bg-transparent text-white placeholder-white/25 text-base sm:text-lg py-[18px] pl-14 pr-40 focus:outline-none rounded-2xl disabled:opacity-60"
+              aria-label="Describe your ideal workspace"
+              className="w-full bg-transparent text-white placeholder-white/25 text-base sm:text-lg py-[18px] pl-14 pr-44 focus:outline-none rounded-2xl disabled:opacity-60"
             />
+
+            {/* Voice button */}
+            {voiceSupported && (
+              <button
+                onClick={startVoice}
+                aria-label={listening ? "Stop listening" : "Search by voice"}
+                disabled={status === "thinking"}
+                className={`absolute right-[7.5rem] top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200
+                  ${listening
+                    ? "bg-[#E8622A]/20 text-[#E8622A] animate-pulse"
+                    : "text-white/25 hover:text-white/60 hover:bg-white/[0.06]"
+                  } disabled:opacity-30`}
+              >
+                {listening ? <MicOff size={15} /> : <Mic size={15} />}
+              </button>
+            )}
+
             <MagneticButton
               onClick={() => go()}
               disabled={status === "thinking" || !query.trim()}
@@ -194,11 +322,19 @@ export default function HeroSection() {
             </MagneticButton>
           </div>
 
-          {status === "thinking" && (
+          {/* Voice listening indicator */}
+          {listening && (
+            <p className="text-[#E8622A]/80 text-sm mt-3 animate-fade-up pl-1 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#E8622A] animate-pulse inline-block" />
+              Listening… speak now
+            </p>
+          )}
+
+          {status === "thinking" && !listening && (
             <p className="text-[#E8622A]/70 text-sm mt-3 animate-fade-up pl-1">✦ Matching spaces…</p>
           )}
 
-          {/* Quick links — plain text */}
+          {/* Quick links */}
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-4">
             <span className="text-white/20 text-sm">Try:</span>
             {QUICK.map(({ label, q }) => (
