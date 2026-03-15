@@ -7,7 +7,11 @@ import { useSearchParams } from "next/navigation";
 import {
   Search, MapPin, X, Star, ArrowRight, Grid3X3, List, Map,
   Scale, TrendingUp, ArrowUpDown, ChevronDown, ChevronUp,
+  Mic, MicOff,
 } from "lucide-react";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SR = new () => any;
 import { spaces, Space, Area, amenityOptions } from "@/data/spaces";
 import FavouriteButton from "@/components/FavouriteButton";
 import ShareButton from "@/components/ShareButton";
@@ -57,6 +61,37 @@ function SpacesInner() {
   const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
   const [sortBy, setSortBy] = useState("recommended");
   const [mapActiveId, setMapActiveId] = useState<string | null>(null);
+  const [listening, setListening] = useState(false);
+  const [voiceSupported, setVoiceSupported] = useState(false);
+  const recognitionRef = useRef<InstanceType<SR> | null>(null);
+
+  useEffect(() => {
+    const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
+    setVoiceSupported(!!(w.SpeechRecognition || w.webkitSpeechRecognition));
+  }, []);
+
+  const startVoice = useCallback(() => {
+    const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
+    const SpeechRecognition = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    if (listening) { recognitionRef.current?.stop(); setListening(false); return; }
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+    recognition.lang = "en-GB";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    recognition.onresult = (e: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const transcript = Array.from(e.results).map((r: any) => r[0].transcript).join("");
+      setSearch(transcript);
+      if (e.results[0].isFinal) setListening(false);
+    };
+    recognition.onerror = () => setListening(false);
+    recognition.onend = () => setListening(false);
+    recognition.start();
+    setListening(true);
+  }, [listening]);
 
   useEffect(() => {
     setSearch(searchParams.get("location") || "");
@@ -142,6 +177,23 @@ function SpacesInner() {
               {search && (
                 <button onClick={() => setSearch("")} className="text-white/30 hover:text-white/60 transition-colors">
                   <X size={14} />
+                </button>
+              )}
+              {voiceSupported && (
+                <button
+                  onClick={startVoice}
+                  aria-label={listening ? "Stop listening" : "Search by voice"}
+                  className={`flex items-center justify-center w-8 h-8 rounded-xl transition-all duration-200 shrink-0 ${
+                    listening
+                      ? "bg-[#E8622A] text-white shadow-[0_0_16px_rgba(232,98,42,0.5)]"
+                      : "text-white/40 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  {listening ? (
+                    <MicOff size={14} />
+                  ) : (
+                    <Mic size={14} />
+                  )}
                 </button>
               )}
             </div>
