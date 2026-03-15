@@ -319,54 +319,49 @@ function SpaceCardGrid({ space }: { space: Space }) {
       className="group rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col"
       style={{ backgroundColor: "var(--ws-surface)" }}
     >
-      {/* Image block — entire block is a link */}
-      <Link href={`/spaces/${space.slug}`} className="block relative h-52 overflow-hidden">
-        <img
-          src={space.image}
-          alt={space.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 space-img"
-          style={{ viewTransitionName: `space-img-${space.slug}` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-        <div className="absolute top-3 left-3 flex gap-2">
-          {space.isNew && <span className="px-2 py-1 bg-[#E8622A] text-white text-xs font-semibold rounded-md">New</span>}
-          {space.grade && <span className="px-2 py-1 bg-[#C9A84C] text-white text-xs font-semibold rounded-md">Listed</span>}
+      {/* Image wrapper — Link covers the image, actions sit alongside it */}
+      <div className="relative h-52">
+        <Link href={`/spaces/${space.slug}`} className="block absolute inset-0 overflow-hidden">
+          <img
+            src={space.image}
+            alt={space.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 space-img"
+            style={{ viewTransitionName: `space-img-${space.slug}` }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          <div className="absolute top-3 left-3 flex gap-2">
+            {space.isNew && <span className="px-2 py-1 bg-[#E8622A] text-white text-xs font-semibold rounded-md">New</span>}
+            {space.grade && <span className="px-2 py-1 bg-[#C9A84C] text-white text-xs font-semibold rounded-md">Listed</span>}
+          </div>
+        </Link>
+        {/* Actions outside the anchor — valid HTML, no nesting */}
+        <div className="absolute top-3 right-3 z-10 flex gap-1.5">
+          <ShareButton data={{ title: space.name, text: space.headline, slug: space.slug }} />
+          <FavouriteButton spaceId={space.id} />
         </div>
-        <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-black/40 backdrop-blur-sm rounded-md">
-          <Star size={10} className="text-[#C9A84C] fill-[#C9A84C]" />
-          <span className="text-white text-xs font-semibold">{space.rating}</span>
-          <span className="text-white/60 text-xs">({space.reviewCount})</span>
-        </div>
-      </Link>
+      </div>
 
-      {/* Text content — also a link */}
-      <Link href={`/spaces/${space.slug}`} className="block p-5 flex-1">
-        <div className="flex items-center gap-1 text-[#E8622A] text-xs font-medium mb-1">
+      {/* Text content */}
+      <Link href={`/spaces/${space.slug}`} className="block px-5 pt-4 pb-3 flex-1">
+        <div className="flex items-center gap-1 text-[#E8622A] text-xs font-medium mb-1.5">
           <MapPin size={11} />{space.neighbourhood}, {space.postcode}
         </div>
-        <h3 className="font-semibold mb-1" style={{ color: "var(--ws-text)" }}>{space.name}</h3>
-        <p className="text-sm mb-3 line-clamp-2" style={{ color: "var(--ws-text-muted)" }}>{space.headline}</p>
-        <div className="flex flex-wrap gap-1.5">
-          {space.type.map((t) => (
-            <span key={t} className="px-2 py-0.5 bg-[#F4F1EA] text-[#09090F] text-xs rounded-md font-medium capitalize">{t}</span>
-          ))}
-        </div>
+        <h3 className="font-semibold mb-1 leading-snug" style={{ color: "var(--ws-text)" }}>{space.name}</h3>
+        <p className="text-sm line-clamp-1" style={{ color: "var(--ws-text-muted)" }}>{space.headline}</p>
       </Link>
 
-      {/* Footer — actions live here, separate from navigation link */}
-      <div className="px-5 pb-5 flex items-center justify-between border-t pt-3" style={{ borderColor: "var(--ws-border)" }}>
+      {/* Footer — price + rating + view */}
+      <div className="px-5 pb-4 flex items-center justify-between border-t pt-3" style={{ borderColor: "var(--ws-border)" }}>
         <div>
           <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>From </span>
           <span className="font-bold" style={{ color: "var(--ws-text)" }}>£{space.priceFrom.toLocaleString()}</span>
           <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>/{space.priceUnit}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <ShareButton
-            data={{ title: space.name, text: space.headline, slug: space.slug }}
-            variant="ghost"
-            className="text-xs"
-          />
-          <FavouriteButton spaceId={space.id} />
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
+            <Star size={10} className="text-[#C9A84C] fill-[#C9A84C]" />
+            <span className="text-xs font-medium" style={{ color: "var(--ws-text-muted)" }}>{space.rating}</span>
+          </div>
           <Link
             href={`/spaces/${space.slug}`}
             className="flex items-center gap-1 text-[#E8622A] text-xs font-semibold hover:gap-2 transition-all"
@@ -385,17 +380,28 @@ function SpaceCardList({ space }: { space: Space }) {
       className="group rounded-2xl overflow-hidden hover:shadow-lg transition-all flex flex-col sm:flex-row"
       style={{ backgroundColor: "var(--ws-surface)" }}
     >
-      <Link href={`/spaces/${space.slug}`} className="block relative w-full sm:w-56 h-44 sm:h-auto overflow-hidden shrink-0">
-        <img
-          src={space.image}
-          alt={space.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 space-img"
-          style={{ viewTransitionName: `space-img-${space.slug}` }}
-        />
-        <div className="absolute top-3 left-3 flex gap-2">
-          {space.isNew && <span className="px-2 py-1 bg-[#E8622A] text-white text-xs font-semibold rounded-md">New</span>}
+      {/* Image wrapper */}
+      <div className="relative w-full sm:w-56 h-44 sm:h-auto shrink-0">
+        <Link href={`/spaces/${space.slug}`} className="block absolute inset-0 overflow-hidden">
+          <img
+            src={space.image}
+            alt={space.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 space-img"
+            style={{ viewTransitionName: `space-img-${space.slug}` }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+          {space.isNew && (
+            <span className="absolute top-3 left-3 px-2 py-1 bg-[#E8622A] text-white text-xs font-semibold rounded-md">New</span>
+          )}
+        </Link>
+        {/* Actions outside anchor */}
+        <div className="absolute top-2.5 right-2.5 z-10 flex gap-1.5">
+          <ShareButton data={{ title: space.name, text: space.headline, slug: space.slug }} />
+          <FavouriteButton spaceId={space.id} />
         </div>
-      </Link>
+      </div>
+
+      {/* Content */}
       <div className="flex-1 p-5 flex flex-col justify-between">
         <Link href={`/spaces/${space.slug}`} className="block">
           <div className="flex items-start justify-between gap-4 mb-2">
@@ -403,41 +409,28 @@ function SpaceCardList({ space }: { space: Space }) {
               <div className="flex items-center gap-1 text-[#E8622A] text-xs font-medium mb-1">
                 <MapPin size={11} />{space.neighbourhood}, {space.postcode}
               </div>
-              <h3 className="font-semibold text-lg" style={{ color: "var(--ws-text)" }}>{space.name}</h3>
+              <h3 className="font-semibold text-lg leading-snug" style={{ color: "var(--ws-text)" }}>{space.name}</h3>
             </div>
-            <div className="flex items-center gap-1 shrink-0">
-              <Star size={12} className="text-[#C9A84C] fill-[#C9A84C]" />
-              <span className="text-sm font-semibold" style={{ color: "var(--ws-text)" }}>{space.rating}</span>
+            <div className="flex items-center gap-1 shrink-0 mt-0.5">
+              <Star size={11} className="text-[#C9A84C] fill-[#C9A84C]" />
+              <span className="text-sm font-medium" style={{ color: "var(--ws-text-muted)" }}>{space.rating}</span>
             </div>
           </div>
-          <p className="text-sm mb-3" style={{ color: "var(--ws-text-muted)" }}>{space.headline}</p>
-          <div className="flex flex-wrap gap-1.5">
-            {space.amenities.slice(0, 4).map((a) => (
-              <span key={a} className="flex items-center gap-1 px-2 py-1 bg-[#F4F1EA] text-gray-500 text-xs rounded-md">
-                {amenityIcons[a] || null}{a}
-              </span>
-            ))}
-          </div>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--ws-text-muted)" }}>{space.headline}</p>
         </Link>
+
         <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: "var(--ws-border)" }}>
           <div>
             <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>From </span>
             <span className="font-bold text-lg" style={{ color: "var(--ws-text)" }}>£{space.priceFrom.toLocaleString()}</span>
             <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>/{space.priceUnit}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <ShareButton
-              data={{ title: space.name, text: space.headline, slug: space.slug }}
-              variant="ghost"
-            />
-            <FavouriteButton spaceId={space.id} />
-            <Link
-              href={`/spaces/${space.slug}`}
-              className="flex items-center gap-2 px-4 py-2 bg-[#E8622A] text-white text-sm font-semibold rounded-lg hover:bg-[#d4561e] transition-colors"
-            >
-              View space <ArrowRight size={14} />
-            </Link>
-          </div>
+          <Link
+            href={`/spaces/${space.slug}`}
+            className="flex items-center gap-2 px-4 py-2 bg-[#E8622A] text-white text-sm font-semibold rounded-lg hover:bg-[#d4561e] transition-colors"
+          >
+            View space <ArrowRight size={14} />
+          </Link>
         </div>
       </div>
     </article>
