@@ -4,6 +4,7 @@ import TenantLogos from "@/components/home/TenantLogos";
 import SpaceTypesSection from "@/components/home/SpaceTypesSection";
 import FeaturedSpaces from "@/components/home/FeaturedSpaces";
 import PricingComparison from "@/components/home/PricingComparison";
+import OfficeCalculator from "@/components/home/OfficeCalculator";
 import StatsSection from "@/components/home/StatsSection";
 import WhyWorkspace from "@/components/home/WhyWorkspace";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
@@ -20,6 +21,7 @@ export default function Home() {
       <SpaceTypesSection />
       <FeaturedSpaces />
       <PricingComparison />
+      <OfficeCalculator />
       <StatsSection />
       <WhyWorkspace />
       <TestimonialsSection />

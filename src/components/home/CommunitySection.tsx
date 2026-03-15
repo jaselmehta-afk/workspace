@@ -82,7 +82,7 @@ export default function CommunitySection() {
                   className="bg-white rounded-xl p-5 flex gap-4 transition-shadow"
                 >
                   <div className="text-center min-w-[3rem]">
-                    <div className="text-xs text-gray-400 font-medium">
+                    <div className="text-xs text-[#09090F]/45 font-medium">
                       {event.date.split(" ")[1]}
                     </div>
                     <div className="text-2xl font-bold text-[#09090F]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
@@ -94,12 +94,12 @@ export default function CommunitySection() {
                       <span className="text-xs px-2 py-0.5 bg-[#E8622A]/10 text-[#E8622A] rounded-full font-medium">
                         {event.category}
                       </span>
-                      <span className="text-xs text-gray-400">{event.attendees} attending</span>
+                      <span className="text-xs text-[#09090F]/45">{event.attendees} attending</span>
                     </div>
                     <h4 className="font-semibold text-[#09090F] text-sm transition-colors">
                       {event.title}
                     </h4>
-                    <p className="text-xs text-gray-400 mt-1">{event.location}</p>
+                    <p className="text-xs text-[#09090F]/45 mt-1">{event.location}</p>
                   </div>
                 </div>
               ))}
@@ -133,7 +133,7 @@ export default function CommunitySection() {
                         <span className="text-xs px-2 py-0.5 bg-[#09090F]/5 text-[#09090F]/60 rounded-full font-medium">
                           {article.category}
                         </span>
-                        <span className="text-xs text-gray-400">{article.readTime}</span>
+                        <span className="text-xs text-[#09090F]/45">{article.readTime}</span>
                       </div>
                       <h4 className="font-semibold text-[#09090F] text-sm leading-snug transition-colors">
                         {article.title}

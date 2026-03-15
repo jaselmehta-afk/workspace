@@ -18,6 +18,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     cursor: none; /* hidden in favour of custom cursor on desktop */
+    line-height: 1.6;
   }
   @media (hover: none) {
     body { cursor: auto; }
@@ -25,6 +26,27 @@
   a, button { cursor: none; }
   @media (hover: none) {
     a, button { cursor: pointer; }
+  }
+
+  /* Keyboard focus — visible ring for accessibility */
+  :focus-visible {
+    outline: 2px solid #E8622A;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  /* Suppress focus ring for mouse/touch users */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Consistent heading rendering */
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  /* Smooth image rendering */
+  img {
+    display: block;
   }
 }
 

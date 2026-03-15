@@ -5,9 +5,9 @@ export default function TenantLogos() {
   ];
 
   return (
-    <div className="bg-white border-y border-gray-100 py-8 overflow-hidden">
+    <div className="bg-white border-y border-[#09090F]/[0.06] py-8 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
-        <p className="text-center text-xs font-semibold tracking-widest uppercase text-gray-400">
+        <p className="text-center text-xs font-semibold tracking-widest uppercase text-[#09090F]/35">
           Trusted by London&apos;s most ambitious businesses
         </p>
       </div>
@@ -17,7 +17,7 @@ export default function TenantLogos() {
             key={`${company}-${i}`}
             className="shrink-0 flex items-center justify-center px-4"
           >
-            <span className="text-gray-300 font-semibold text-sm tracking-wide whitespace-nowrap hover:text-gray-500 transition-colors cursor-default">
+            <span className="text-[#09090F]/25 font-semibold text-sm tracking-wide whitespace-nowrap hover:text-[#09090F]/55 transition-colors cursor-default">
               {company}
             </span>
           </div>

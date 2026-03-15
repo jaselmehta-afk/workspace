@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   MapPin, Star, Maximize2, ArrowRight, ChevronLeft,
-  Train, Bus, ArrowUpRight,
+  Train, Bus, ArrowUpRight, ExternalLink,
   Wifi, Coffee, Bike, Zap, Clock, Users, Sunset,
   PawPrint, Mic, CalendarDays, ConciergeBell,
-  Dumbbell, TreePine, Car, Phone, BatteryCharging, Play, X
+  Dumbbell, TreePine, Car, Phone, BatteryCharging, Play, X, Navigation2
 } from "lucide-react";
 import { Space } from "@/data/spaces";
 import MagneticButton from "@/components/MagneticButton";
@@ -188,7 +188,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                 <h2 className="text-xl text-[#09090F] mb-4" style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500 }}>
                   About this space
                 </h2>
-                <p className="text-[#09090F]/55 leading-relaxed">{space.description}</p>
+                <p className="text-[#09090F]/65 leading-relaxed">{space.description}</p>
               </div>
             </ScrollReveal>
 
@@ -214,23 +214,61 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
             {/* Getting here */}
             <ScrollReveal>
-              <div className="bg-white rounded-3xl p-8">
-                <h2 className="text-xl text-[#09090F] mb-6" style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500 }}>
-                  Getting here
-                </h2>
-                <div className="space-y-1">
-                  {space.transport.map(t => (
-                    <div key={t.name} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-[#F4F1EA] transition-colors">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${t.type === "tube" ? "bg-[#E32017]/10 text-[#E32017]" : t.type === "rail" ? "bg-emerald-50 text-emerald-700" : "bg-blue-50 text-blue-600"}`}>
-                        {t.type === "bus" ? <Bus size={16} /> : <Train size={16} />}
+              <div className="bg-white rounded-3xl overflow-hidden">
+                {/* OpenStreetMap embed */}
+                <div className="relative h-52 bg-[#E8E4DB]">
+                  <iframe
+                    title={`Map showing ${space.name}`}
+                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${space.lng - 0.012},${space.lat - 0.008},${space.lng + 0.012},${space.lat + 0.008}&layer=mapnik&marker=${space.lat},${space.lng}`}
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    aria-label={`Map of ${space.name} at ${space.neighbourhood}, ${space.postcode}`}
+                  />
+                  {/* Gradient overlay at bottom for fade into content */}
+                  <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+                </div>
+
+                <div className="p-6 pt-4">
+                  <div className="flex items-center justify-between mb-5">
+                    <h2 className="text-xl text-[#09090F]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500 }}>
+                      Getting here
+                    </h2>
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${space.lat},${space.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#E8622A] text-white text-xs font-semibold rounded-xl hover:bg-[#d4561e] transition-colors"
+                      aria-label="Get directions in Google Maps"
+                    >
+                      <Navigation2 size={11} />
+                      Directions
+                      <ExternalLink size={10} className="opacity-70" />
+                    </a>
+                  </div>
+
+                  {/* Transport pills */}
+                  <div className="flex flex-wrap gap-2">
+                    {space.transport.map(t => (
+                      <div
+                        key={t.name}
+                        className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium border ${
+                          t.type === "tube"
+                            ? "bg-[#E32017]/[0.06] text-[#C01C11] border-[#E32017]/[0.12]"
+                            : t.type === "rail"
+                            ? "bg-emerald-50 text-emerald-800 border-emerald-100"
+                            : "bg-blue-50 text-blue-800 border-blue-100"
+                        }`}
+                      >
+                        {t.type === "bus" ? <Bus size={13} /> : <Train size={13} />}
+                        <span>{t.name}</span>
+                        <span className="opacity-50 text-xs font-normal">{t.time}</span>
                       </div>
-                      <div className="flex-1">
-                        <div className="font-medium text-[#09090F] text-sm">{t.name}</div>
-                        <div className="text-xs text-[#09090F]/35 capitalize mt-0.5">{t.type}</div>
-                      </div>
-                      <div className="text-sm font-semibold text-[#09090F]/40">{t.time} walk</div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+
+                  <p className="text-xs text-[#09090F]/30 mt-4">
+                    {space.neighbourhood}, {space.postcode}
+                  </p>
                 </div>
               </div>
             </ScrollReveal>

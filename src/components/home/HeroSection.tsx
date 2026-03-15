@@ -154,7 +154,7 @@ export default function HeroSection() {
             </span>
           </h1>
 
-          <p className="text-white/45 text-lg sm:text-xl mt-6 max-w-md leading-relaxed">
+          <p className="text-white/65 text-lg sm:text-xl mt-6 max-w-md leading-relaxed">
             Describe what you need. We&apos;ll find the space.
           </p>
         </div>

@@ -83,7 +83,7 @@ export default function SpaceTypesSection() {
                   </div>
                   <div className="p-5">
                     <h3 className="font-semibold text-[#09090F] mb-1.5 group-hover:text-[#E8622A] transition-colors">{type.title}</h3>
-                    <p className="text-sm text-[#09090F]/45 leading-relaxed mb-4">{type.desc}</p>
+                    <p className="text-sm text-[#09090F]/60 leading-relaxed mb-4">{type.desc}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-[#E8622A]">{type.from}</span>
                       <ArrowRight size={14} className="text-gray-200 group-hover:text-[#E8622A] group-hover:translate-x-1 transition-all" />

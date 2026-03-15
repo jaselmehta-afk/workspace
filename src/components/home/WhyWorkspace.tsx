@@ -70,7 +70,7 @@ export default function WhyWorkspace() {
                   >
                     {reason.title}
                   </h3>
-                  <p className={`text-sm leading-relaxed ${i === 3 ? "text-white/60" : "text-gray-500"}`}>
+                  <p className={`text-sm leading-relaxed ${i === 3 ? "text-white/70" : "text-[#09090F]/60"}`}>
                     {reason.desc}
                   </p>
                 </div>

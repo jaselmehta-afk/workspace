@@ -100,7 +100,7 @@ export default function TestimonialsSection() {
               />
               <div>
                 <div className="font-semibold text-[#09090F] text-sm">{t.name}</div>
-                <div className="text-gray-500 text-xs">{t.role}, {t.company}</div>
+                <div className="text-[#09090F]/55 text-xs">{t.role}, {t.company}</div>
                 <div className="text-[#E8622A] text-xs mt-0.5">{t.location} · {t.teamSize}</div>
               </div>
             </div>
@@ -113,8 +113,10 @@ export default function TestimonialsSection() {
                 <button
                   key={i}
                   onClick={() => setActive(i)}
+                  aria-label={`Go to testimonial ${i + 1}`}
+                  aria-pressed={i === active}
                   className={`h-1.5 rounded-full transition-all ${
-                    i === active ? "w-8 bg-[#E8622A]" : "w-1.5 bg-gray-200"
+                    i === active ? "w-8 bg-[#E8622A]" : "w-1.5 bg-[#09090F]/20"
                   }`}
                 />
               ))}
@@ -122,13 +124,15 @@ export default function TestimonialsSection() {
             <div className="flex gap-2">
               <button
                 onClick={prev}
-                className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:border-[#E8622A] hover:text-[#E8622A] transition-colors"
+                aria-label="Previous testimonial"
+                className="w-10 h-10 rounded-full border border-[#09090F]/15 flex items-center justify-center hover:border-[#E8622A] hover:text-[#E8622A] transition-colors text-[#09090F]/50"
               >
                 <ChevronLeft size={18} />
               </button>
               <button
                 onClick={next}
-                className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:border-[#E8622A] hover:text-[#E8622A] transition-colors"
+                aria-label="Next testimonial"
+                className="w-10 h-10 rounded-full border border-[#09090F]/15 flex items-center justify-center hover:border-[#E8622A] hover:text-[#E8622A] transition-colors text-[#09090F]/50"
               >
                 <ChevronRight size={18} />
               </button>
