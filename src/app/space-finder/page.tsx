@@ -135,7 +135,7 @@ export default function SpaceFinderPage() {
                 <button
                   key={opt.value}
                   onClick={() => { setTeamSize(opt.value); setStep(2); }}
-                  className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all hover:border-[#E8622A] hover:shadow-md ${
+                  className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all hover:border-[#E8622A] hover:shadow-md ${
                     teamSize === opt.value ? "border-[#E8622A] bg-[#E8622A]/5" : "border-gray-200 bg-white"
                   }`}
                 >
@@ -164,7 +164,7 @@ export default function SpaceFinderPage() {
                 <button
                   key={opt.value}
                   onClick={() => setArea(opt.value)}
-                  className={`p-4 rounded-2xl border-2 text-left transition-all hover:border-[#E8622A] hover:shadow-md ${
+                  className={`p-4 rounded-xl border-2 text-left transition-all hover:border-[#E8622A] hover:shadow-md ${
                     area === opt.value ? "border-[#E8622A] bg-[#E8622A]/5" : "border-gray-200 bg-white"
                   }`}
                 >
@@ -203,7 +203,7 @@ export default function SpaceFinderPage() {
                 <button
                   key={opt.value}
                   onClick={() => togglePriority(opt.value)}
-                  className={`p-4 rounded-2xl border-2 text-left transition-all hover:border-[#E8622A] hover:shadow-md ${
+                  className={`p-4 rounded-xl border-2 text-left transition-all hover:border-[#E8622A] hover:shadow-md ${
                     priorities.includes(opt.value) ? "border-[#E8622A] bg-[#E8622A]/5" : "border-gray-200 bg-white"
                   }`}
                 >
@@ -252,7 +252,7 @@ export default function SpaceFinderPage() {
                 <Link
                   key={space.id}
                   href={`/spaces/${space.slug}`}
-                  className="block bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all group"
+                  className="block bg-white rounded-lg overflow-hidden hover:shadow-lg transition-all group"
                 >
                   <div className="flex flex-col sm:flex-row">
                     <div className="relative w-full sm:w-40 h-32 sm:h-auto overflow-hidden shrink-0">

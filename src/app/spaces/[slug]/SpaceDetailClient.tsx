@@ -386,7 +386,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
               {/* Enquiry form */}
               {showEnquiry && (
-                <div className="bg-white rounded-3xl p-6 border border-[#09090F]/[0.05] animate-scale-in">
+                <div className="bg-white rounded-lg p-6 border border-[#09090F]/[0.05] animate-scale-in">
                   <h3 className="font-semibold text-[#09090F] mb-5" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
                     Tell us about your needs
                   </h3>
@@ -402,16 +402,16 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                           id={`eq-${f.key}`}
                           type={f.type}
                           required={f.required}
-                          className="w-full px-3.5 py-2.5 border border-[#09090F]/[0.08] rounded-xl text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] bg-[#F4F1EA]/40 transition-colors"
+                          className="w-full px-3.5 py-2.5 border border-[#09090F]/[0.08] rounded-lg text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] bg-[#F4F1EA]/40 transition-colors"
                         />
                       </div>
                     ))}
-                    <select className="w-full px-3.5 py-2.5 border border-[#09090F]/[0.08] rounded-xl text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] bg-[#F4F1EA]/40">
+                    <select className="w-full px-3.5 py-2.5 border border-[#09090F]/[0.08] rounded-lg text-sm text-[#09090F] focus:outline-none focus:border-[#E8622A] bg-[#F4F1EA]/40">
                       <option value="">Team size</option>
                       {["1–5 people","6–15 people","16–50 people","51+ people"].map(o => <option key={o}>{o}</option>)}
                     </select>
                     <textarea rows={3} placeholder="Any requirements…"
-                      className="w-full px-3.5 py-2.5 border border-[#09090F]/[0.08] rounded-xl text-sm text-[#09090F] placeholder-[#09090F]/25 focus:outline-none focus:border-[#E8622A] bg-[#F4F1EA]/40 resize-none transition-colors" />
+                      className="w-full px-3.5 py-2.5 border border-[#09090F]/[0.08] rounded-lg text-sm text-[#09090F] placeholder-[#09090F]/25 focus:outline-none focus:border-[#E8622A] bg-[#F4F1EA]/40 resize-none transition-colors" />
                     <button type="submit"
                       className="w-full py-3 bg-[#09090F] text-white font-semibold rounded-xl hover:bg-black transition-colors text-sm">
                       Send enquiry
@@ -422,7 +422,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
               )}
 
               {/* Talk */}
-              <div className="bg-[#09090F] rounded-3xl p-6">
+              <div className="bg-[#09090F] rounded-lg p-6">
                 <p className="text-white/65 text-[11px] font-medium tracking-[0.15em] uppercase mb-3">Prefer to talk?</p>
                 <a href="tel:02071383307"
                   className="flex items-center gap-2 text-white font-semibold text-lg hover:text-[#E8622A] transition-colors">
@@ -466,7 +466,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
               key={activeImage}
               src={allImages[activeImage]}
               alt={`${space.name} — photo ${activeImage + 1}`}
-              className="max-w-full max-h-full object-contain rounded-2xl space-img"
+              className="max-w-full max-h-full object-contain rounded-lg space-img"
             />
             <button
               onClick={lightboxNext}
@@ -507,7 +507,7 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
             >
               <X size={16} /> Close tour
             </button>
-            <div className="aspect-video rounded-3xl overflow-hidden bg-[#09090F] border border-white/10">
+            <div className="aspect-video rounded-lg overflow-hidden bg-[#09090F] border border-white/10">
               {/* Simulated virtual tour — in production this would be a real 360° embed */}
               <div className="relative w-full h-full">
                 <img

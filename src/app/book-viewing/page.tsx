@@ -90,7 +90,7 @@ function BookingFlow() {
           We&apos;ll confirm your {data.viewingType === "virtual" ? "virtual" : "in-person"} viewing of{" "}
           <strong className="text-white/80">{space.name}</strong> via email within the hour.
         </p>
-        <div className="mt-6 inline-flex flex-col items-center gap-1 px-6 py-4 bg-white/[0.05] rounded-2xl border border-white/[0.08] text-sm">
+        <div className="mt-6 inline-flex flex-col items-center gap-1 px-6 py-4 bg-white/[0.05] rounded-lg border border-white/[0.08] text-sm">
           <span className="text-white/65 text-xs tracking-wider uppercase mb-1">Your appointment</span>
           <span className="text-white font-medium">{data.date && new Date(data.date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}</span>
           <span className="text-white/50">{data.time} · {data.viewingType === "virtual" ? "Video call" : space.neighbourhood}</span>
@@ -153,7 +153,7 @@ function BookingFlow() {
                   <button
                     key={s.slug}
                     onClick={() => { setData(d => ({ ...d, spaceSlug: s.slug })); setTimeout(next, 220); }}
-                    className={`flex items-center gap-4 p-4 rounded-2xl border text-left transition-all duration-150 ${
+                    className={`flex items-center gap-4 p-4 rounded-xl border text-left transition-all duration-150 ${
                       data.spaceSlug === s.slug
                         ? "border-[#E8622A] bg-[#E8622A]/8"
                         : "border-white/[0.08] bg-white/[0.03] hover:border-white/20"
@@ -188,7 +188,7 @@ function BookingFlow() {
                   <button
                     key={value}
                     onClick={() => { setData(d => ({ ...d, viewingType: value as BookingData["viewingType"] })); setTimeout(next, 220); }}
-                    className={`flex flex-col items-start p-6 rounded-2xl border text-left transition-all duration-150 ${
+                    className={`flex flex-col items-start p-6 rounded-xl border text-left transition-all duration-150 ${
                       data.viewingType === value
                         ? "border-[#E8622A] bg-[#E8622A]/8"
                         : "border-white/[0.08] bg-white/[0.03] hover:border-white/20"
@@ -220,7 +220,7 @@ function BookingFlow() {
                   <button
                     key={value}
                     onClick={() => { setData(d => ({ ...d, teamSize: value as BookingData["teamSize"] })); setTimeout(next, 220); }}
-                    className={`flex flex-col p-5 rounded-2xl border text-left transition-all duration-150 ${
+                    className={`flex flex-col p-5 rounded-xl border text-left transition-all duration-150 ${
                       data.teamSize === value
                         ? "border-[#E8622A] bg-[#E8622A]/8"
                         : "border-white/[0.08] bg-white/[0.03] hover:border-white/20"
@@ -243,7 +243,7 @@ function BookingFlow() {
                   <button
                     key={d.value}
                     onClick={() => { setData(dd => ({ ...dd, date: d.value })); setTimeout(next, 220); }}
-                    className={`flex flex-col items-center py-3 px-1 rounded-2xl border text-center transition-all duration-150 ${
+                    className={`flex flex-col items-center py-3 px-1 rounded-xl border text-center transition-all duration-150 ${
                       data.date === d.value
                         ? "border-[#E8622A] bg-[#E8622A]/8"
                         : "border-white/[0.08] bg-white/[0.03] hover:border-white/20"
@@ -267,7 +267,7 @@ function BookingFlow() {
                   <button
                     key={t}
                     onClick={() => { setData(d => ({ ...d, time: t })); setTimeout(next, 220); }}
-                    className={`py-3 rounded-2xl border text-sm font-medium transition-all duration-150 ${
+                    className={`py-3 rounded-xl border text-sm font-medium transition-all duration-150 ${
                       data.time === t
                         ? "border-[#E8622A] bg-[#E8622A]/8 text-[#E8622A]"
                         : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-white/20 hover:text-white"
@@ -304,13 +304,13 @@ function BookingFlow() {
                       placeholder={f.placeholder}
                       value={data[f.key as keyof BookingData] as string}
                       onChange={e => setData(d => ({ ...d, [f.key]: e.target.value }))}
-                      className="w-full px-5 py-4 bg-white/[0.04] border border-white/[0.1] rounded-2xl text-white placeholder-white/20 text-base focus:outline-none focus:border-[#E8622A] transition-colors"
+                      className="w-full px-5 py-4 bg-white/[0.04] border border-white/[0.1] rounded-lg text-white placeholder-white/20 text-base focus:outline-none focus:border-[#E8622A] transition-colors"
                     />
                   </div>
                 ))}
 
                 {/* Booking summary */}
-                <div className="mt-6 p-4 bg-white/[0.04] rounded-2xl border border-white/[0.07] space-y-2 text-sm">
+                <div className="mt-6 p-4 bg-white/[0.04] rounded-lg border border-white/[0.07] space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-white/60">Space</span>
                     <span className="text-white font-medium">{space.name}</span>
@@ -329,7 +329,7 @@ function BookingFlow() {
 
                 <button
                   type="submit"
-                  className="w-full py-4 bg-[#E8622A] text-white font-semibold rounded-2xl hover:bg-[#d4561e] transition-colors text-base mt-2 flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-[#E8622A] text-white font-semibold rounded-xl hover:bg-[#d4561e] transition-colors text-base mt-2 flex items-center justify-center gap-2"
                 >
                   Confirm booking <ArrowRight size={18} />
                 </button>

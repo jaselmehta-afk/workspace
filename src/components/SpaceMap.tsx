@@ -91,7 +91,7 @@ export default function SpaceMap({ spaces, activeId, onMarkerClick }: Props) {
           `<div style="
             font-family:'Bricolage Grotesque',Inter,sans-serif;
             background:#ffffff;
-            border-radius:16px;
+            border-radius:8px;
             padding:14px 16px;
             min-width:180px;
             border:1px solid rgba(0,0,0,0.08);
