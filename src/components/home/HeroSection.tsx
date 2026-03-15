@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Sparkles, ChevronDown, Mic, MicOff } from "lucide-react";
 import MagneticButton from "@/components/MagneticButton";
 
+const VERBS = ["grow.", "think.", "build.", "thrive."];
+
 const EXAMPLES = [
   "A creative studio for 12 people in East London…",
   "Quiet private office near London Bridge with bike storage…",
@@ -42,11 +44,9 @@ function parse(q: string) {
   return p;
 }
 
-/** Returns a subtle overlay tint that shifts with the time of day */
 function getTimeOfDayOverlay(): { gradient: string; accent: string; label: string } {
   const h = new Date().getHours();
   if (h >= 5 && h < 9) {
-    // Dawn — warm amber blush
     return {
       gradient: "linear-gradient(to bottom, rgba(120,60,20,0.65) 0%, rgba(9,9,15,0.25) 50%, rgba(9,9,15,0.70) 100%)",
       accent: "rgba(232,120,42,0.18)",
@@ -54,7 +54,6 @@ function getTimeOfDayOverlay(): { gradient: string; accent: string; label: strin
     };
   }
   if (h >= 9 && h < 17) {
-    // Daytime — neutral, architectural
     return {
       gradient: "linear-gradient(to bottom, rgba(9,9,15,0.72) 0%, rgba(9,9,15,0.22) 50%, rgba(9,9,15,0.68) 100%)",
       accent: "rgba(123,158,135,0.10)",
@@ -62,14 +61,12 @@ function getTimeOfDayOverlay(): { gradient: string; accent: string; label: strin
     };
   }
   if (h >= 17 && h < 21) {
-    // Dusk — amber-rose
     return {
       gradient: "linear-gradient(to bottom, rgba(80,30,10,0.72) 0%, rgba(20,10,5,0.28) 50%, rgba(9,9,15,0.80) 100%)",
       accent: "rgba(200,80,40,0.20)",
       label: "Good evening",
     };
   }
-  // Night — deep indigo
   return {
     gradient: "linear-gradient(to bottom, rgba(10,8,30,0.82) 0%, rgba(9,9,15,0.30) 50%, rgba(9,9,15,0.85) 100%)",
     accent: "rgba(60,40,120,0.20)",
@@ -79,7 +76,6 @@ function getTimeOfDayOverlay(): { gradient: string; accent: string; label: strin
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SR = new () => any;
-
 
 export default function HeroSection() {
   const router = useRouter();
@@ -98,6 +94,10 @@ export default function HeroSection() {
   const [voiceSupported, setVoiceSupported] = useState(false);
   const [timeOverlay, setTimeOverlay] = useState<ReturnType<typeof getTimeOfDayOverlay> | null>(null);
 
+  // Cycling verb state
+  const [verbIdx, setVerbIdx] = useState(0);
+  const [verbPhase, setVerbPhase] = useState<"in" | "out">("in");
+
   // Returning visitor personalisation
   useEffect(() => {
     try {
@@ -111,13 +111,22 @@ export default function HeroSection() {
       }
     } catch {}
 
-    // Check voice support
     const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
     setVoiceSupported(!!(w.SpeechRecognition || w.webkitSpeechRecognition));
-
-    // Time-of-day overlay (client-side only to avoid hydration mismatch)
     setTimeOverlay(getTimeOfDayOverlay());
   }, []);
+
+  // Verb cycling: show for 2.8s, swap
+  useEffect(() => {
+    const showFor = setTimeout(() => {
+      setVerbPhase("out");
+      setTimeout(() => {
+        setVerbIdx(i => (i + 1) % VERBS.length);
+        setVerbPhase("in");
+      }, 320);
+    }, 2800);
+    return () => clearTimeout(showFor);
+  }, [verbIdx]);
 
   // Typewriter
   useEffect(() => {
@@ -163,7 +172,6 @@ export default function HeroSection() {
       setQuery(transcript);
       if (e.results[0].isFinal) {
         setListening(false);
-        // Short pause then search
         setTimeout(() => go(transcript), 400);
       }
     };
@@ -186,21 +194,25 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-[#09090F]">
-      {/* Cinematic background with Ken Burns + scroll parallax */}
+
+      {/* ── Background layers ── */}
       <div className="absolute inset-0 overflow-hidden">
+        {/* Hero image with Ken Burns + scroll parallax */}
         <img
           src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1920&q=85"
           alt=""
           aria-hidden="true"
           className="w-full h-full object-cover animate-kenburns hero-parallax-bg"
         />
-        {/* Time-of-day gradient overlay — updates based on local hour */}
+
+        {/* Time-of-day gradient */}
         <div
           className="absolute inset-0 transition-all duration-1000"
           style={{ background: timeOverlay?.gradient ?? "linear-gradient(to bottom, rgba(9,9,15,0.72) 0%, rgba(9,9,15,0.22) 50%, rgba(9,9,15,0.68) 100%)" }}
         />
-        {/* Directional overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#09090F]/60 via-transparent to-transparent" />
+        {/* Directional vignette */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#09090F]/65 via-transparent to-[#09090F]/20" />
+
         {/* Time accent blush */}
         {timeOverlay?.accent && (
           <div
@@ -208,26 +220,51 @@ export default function HeroSection() {
             style={{ background: `radial-gradient(ellipse at 50% 0%, ${timeOverlay.accent} 0%, transparent 65%)` }}
           />
         )}
+
+        {/* Architectural dot-grid — gives depth and a blueprint feel */}
+        <div
+          className="absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1px)",
+            backgroundSize: "52px 52px",
+          }}
+        />
+
         {/* Subtle noise grain */}
-        <div className="absolute inset-0 opacity-[0.04]"
-          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
-            backgroundRepeat: "repeat", backgroundSize: "128px 128px" }} />
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
+            backgroundRepeat: "repeat", backgroundSize: "128px 128px",
+          }}
+        />
       </div>
 
-      {/* Content — scroll-exits as you scroll down */}
+      {/* ── Content — scroll-exits as you scroll down ── */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32 mt-16 hero-content-scroll flex flex-col items-center text-center">
+
+        {/* Announcement chip */}
+        <a
+          href="/spaces?filter=new"
+          className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 glass rounded-full text-xs text-white/50 hover:text-white transition-all duration-300 hover:border-white/20 group animate-fade-up"
+          style={{ animationDelay: "0s" }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87] animate-pulse shrink-0" />
+          <span>3 new spaces open this month</span>
+          <ArrowRight size={10} className="opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+        </a>
 
         {/* Time-of-day greeting */}
         {timeOverlay?.label && (
-          <div className="mb-4 inline-flex items-center gap-2 text-xs text-white/30 animate-fade-up">
-            <span className="w-1 h-1 rounded-full bg-white/30 inline-block" />
+          <div className="mb-3 inline-flex items-center gap-2 text-[10px] text-white/25 tracking-[0.18em] uppercase animate-fade-up" style={{ animationDelay: "0.1s" }}>
+            <span className="w-1 h-1 rounded-full bg-white/20 inline-block" />
             {timeOverlay.label}
           </div>
         )}
 
         {/* Returning visitor banner */}
         {returning && (
-          <div className="mb-8 inline-flex items-center gap-2 text-xs text-white/50 animate-fade-up">
+          <div className="mb-6 inline-flex items-center gap-2 text-xs text-white/50 animate-fade-up" style={{ animationDelay: "0.1s" }}>
             <span className="w-1.5 h-1.5 rounded-full bg-[#7B9E87] inline-block" />
             Welcome back — still searching for {returningLabel}?{" "}
             <button
@@ -239,37 +276,60 @@ export default function HeroSection() {
           </div>
         )}
 
-        {/* Headline */}
-        <div className="max-w-4xl mb-10">
-          <p className="text-white/30 text-[11px] font-medium tracking-[0.2em] uppercase mb-6">
-            60+ buildings across London
+        {/* ── Headline ── */}
+        <div className="max-w-5xl mb-10 overflow-hidden">
+          <p
+            className="text-white/25 text-[10px] font-medium tracking-[0.25em] uppercase mb-8 word-up"
+            style={{ animationDelay: "0.05s" }}
+          >
+            60+ buildings · London
           </p>
+
           <h1
-            className="text-white leading-[0.92] tracking-[-0.04em]"
+            className="text-white leading-[0.9] tracking-[-0.04em]"
             style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
           >
-            <span className="block text-[clamp(64px,10vw,130px)] font-light">Space to</span>
+            {/* Line 1 */}
             <span
-              className="block text-[clamp(72px,11.5vw,148px)] font-bold"
-              style={{
-                background: "linear-gradient(110deg, #E8622A 0%, #f5935a 45%, #E8622A 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
+              className="block text-[clamp(60px,9.5vw,120px)] font-light word-up"
+              style={{ animationDelay: "0.12s" }}
             >
-              grow.
+              Space to
+            </span>
+
+            {/* Line 2 — cycling verb */}
+            <span
+              className="block text-[clamp(70px,11vw,144px)] font-bold"
+              style={{ animationDelay: "0.24s" }}
+            >
+              <span
+                className={`inline-block ${verbPhase === "in" ? "verb-in" : "verb-out"}`}
+                style={{
+                  background: "linear-gradient(115deg, #E8622A 0%, #f5935a 40%, #E8622A 80%)",
+                  backgroundSize: "200% auto",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                {VERBS[verbIdx]}
+              </span>
             </span>
           </h1>
 
-          <p className="text-white/65 text-lg sm:text-xl mt-6 leading-relaxed">
+          <p
+            className="text-white/50 text-lg sm:text-xl mt-7 leading-relaxed word-up"
+            style={{ animationDelay: "0.38s" }}
+          >
             Describe what you need. We&apos;ll find the space.
           </p>
         </div>
 
-        {/* Search */}
-        <div className="w-full max-w-2xl">
+        {/* ── Search ── */}
+        <div
+          className="w-full max-w-2xl word-up"
+          style={{ animationDelay: "0.5s" }}
+        >
           <div className={`relative glass rounded-2xl transition-all duration-300 ${focused ? "glow-orange border-[#E8622A]/25" : ""}`}>
             <div className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
               {status === "thinking"
@@ -290,7 +350,6 @@ export default function HeroSection() {
               className="w-full bg-transparent text-white placeholder-white/25 text-base sm:text-lg py-[18px] pl-14 pr-44 focus:outline-none rounded-2xl disabled:opacity-60"
             />
 
-            {/* Voice button */}
             {voiceSupported && (
               <button
                 onClick={startVoice}
@@ -321,7 +380,6 @@ export default function HeroSection() {
             </MagneticButton>
           </div>
 
-          {/* Voice listening indicator */}
           {listening && (
             <p className="text-[#E8622A]/80 text-sm mt-3 animate-fade-up pl-1 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#E8622A] animate-pulse inline-block" />
@@ -348,30 +406,52 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Inline stats */}
-        <div className="flex flex-wrap justify-center items-center gap-8 mt-12 text-white/25">
+        {/* ── Stats — frosted-glass pill badges ── */}
+        <div
+          className="flex flex-wrap justify-center gap-3 mt-12 word-up"
+          style={{ animationDelay: "0.62s" }}
+        >
           {[
-            { n: "60+", label: "buildings" },
+            { n: "60+",    label: "buildings" },
             { n: "4,000+", label: "businesses" },
-            { n: "£550", label: "from/desk/mo" },
-          ].map(({ n, label }, i) => (
-            <div key={label} className="flex items-baseline gap-2">
-              {i > 0 && <div className="w-px h-4 bg-white/10 mr-6" />}
-              <span className="text-white text-xl font-semibold" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>{n}</span>
-              <span className="text-xs tracking-wide">{label}</span>
+            { n: "£550",   label: "from / desk / mo" },
+            { n: "35yrs",  label: "in London" },
+          ].map(({ n, label }) => (
+            <div
+              key={label}
+              className="flex items-center gap-3 px-5 py-2.5 rounded-2xl border"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                borderColor: "rgba(255,255,255,0.08)",
+                backdropFilter: "blur(12px)",
+              }}
+            >
+              <span
+                className="text-white font-bold text-base"
+                style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+              >
+                {n}
+              </span>
+              <span className="w-px h-4 bg-white/10 shrink-0" />
+              <span className="text-white/35 text-xs tracking-wide">{label}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Scroll arrow */}
+      {/* ── Animated scroll indicator ── */}
       <button
         onClick={scrollDown}
         aria-label="Scroll to explore"
-        className="absolute bottom-8 right-8 flex flex-col items-center gap-1.5 text-white/20 hover:text-white/50 transition-colors duration-300 z-10"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-white/20 hover:text-white/50 transition-colors duration-300 z-10 group"
       >
-        <span className="text-[9px] tracking-[0.2em] uppercase font-medium rotate-90 mb-1">Scroll</span>
-        <ChevronDown size={18} className="animate-bounce" style={{ animationDuration: "2s" }} />
+        <span className="text-[9px] tracking-[0.3em] uppercase font-medium group-hover:text-white/40 transition-colors">
+          Explore
+        </span>
+        <div className="relative w-px h-12 overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+          <div className="absolute inset-0 w-full bg-white animate-scroll-line" />
+        </div>
+        <ChevronDown size={14} className="opacity-50" />
       </button>
     </section>
   );

@@ -238,4 +238,36 @@
   .animate-float         { animation: float 3s ease-in-out infinite; }
   .animate-slide-in-right { animation: slideInRight 0.4s cubic-bezier(0.22,1,0.36,1) forwards; }
   .animate-scale-in      { animation: scaleIn 0.35s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+  /* ─── Hero entrance — staggered word reveal ─── */
+  @keyframes word-up {
+    from { opacity: 0; transform: translateY(48px) skewY(2deg); }
+    to   { opacity: 1; transform: translateY(0) skewY(0deg); }
+  }
+  .word-up {
+    animation: word-up 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* ─── Scroll line — animated vertical line indicator ─── */
+  @keyframes scroll-line {
+    0%   { transform: translateY(-100%); opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translateY(200%); opacity: 0; }
+  }
+  .animate-scroll-line {
+    animation: scroll-line 2s ease-in-out infinite;
+  }
+
+  /* ─── Verb swap — cycle animation ─── */
+  @keyframes verb-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes verb-out {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-20px); }
+  }
+  .verb-in  { animation: verb-in  0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .verb-out { animation: verb-out 0.28s ease-in forwards; }
 }

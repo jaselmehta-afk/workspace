@@ -44,11 +44,17 @@ const navLinks = [
 function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2.5 group">
+      {/* Three ascending bars — growth mark */}
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect width="32" height="32" rx="7" fill="#E8622A"/>
-        <path d="M7 10L11.5 22L16 14L20.5 22L25 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <rect width="32" height="32" rx="8" fill="#E8622A"/>
+        {/* Left bar — shortest */}
+        <rect x="5" y="18" width="6" height="10" rx="2" fill="white"/>
+        {/* Middle bar */}
+        <rect x="13" y="11" width="6" height="17" rx="2" fill="white"/>
+        {/* Right bar — tallest */}
+        <rect x="21" y="5" width="6" height="23" rx="2" fill="white"/>
       </svg>
-      <span className="text-white font-medium text-[17px] tracking-[-0.02em] leading-none"
+      <span className="text-white font-semibold text-[17px] tracking-[-0.03em] leading-none"
         style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
         Workspace
       </span>
