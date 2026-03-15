@@ -1,29 +1,40 @@
 import Link from "next/link";
-import { X, Check, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 
-const traditional = [
-  { item: "12-month minimum lease", cost: "Lock-in risk" },
-  { item: "Fit-out & furnishing", cost: "£50k–£200k upfront" },
-  { item: "Business rates", cost: "~£18/sq ft/yr" },
-  { item: "Legal & agent fees", cost: "~£15,000" },
-  { item: "IT & infrastructure", cost: "£5k–£25k" },
-  { item: "Service charge & rates", cost: "Unpredictable" },
-];
-
-const workspace = [
-  { item: "Monthly rolling contract", note: "Leave with 30 days notice" },
-  { item: "Move-in ready — day one", note: "Fully furnished & fitted" },
-  { item: "All-inclusive pricing", note: "Rates, utilities, WiFi" },
-  { item: "Zero agency fees", note: "Deal direct, always" },
-  { item: "IT-ready from day one", note: "Gigabit fibre included" },
-  { item: "Fixed monthly cost", note: "No surprises" },
+const rows = [
+  {
+    pain:    { label: "12-month minimum lease",   badge: "Lock-in risk" },
+    gain:    { label: "Monthly rolling contract", badge: "30 days notice" },
+  },
+  {
+    pain:    { label: "£50k–£200k fit-out costs",  badge: "Upfront capital" },
+    gain:    { label: "Fully furnished, day one",  badge: "£0 upfront" },
+  },
+  {
+    pain:    { label: "Business rates + utilities", badge: "~£18/sqft/yr extra" },
+    gain:    { label: "All-inclusive pricing",      badge: "Rates & WiFi in" },
+  },
+  {
+    pain:    { label: "Legal & agent fees",   badge: "~£15,000" },
+    gain:    { label: "Zero agency fees",     badge: "Deal direct" },
+  },
+  {
+    pain:    { label: "IT setup & infrastructure", badge: "£5k–£25k" },
+    gain:    { label: "Gigabit fibre, day one",    badge: "Included" },
+  },
+  {
+    pain:    { label: "Unpredictable service charges", badge: "Varies" },
+    gain:    { label: "One fixed monthly invoice",     badge: "No surprises" },
+  },
 ];
 
 export default function PricingComparison() {
   return (
     <section className="bg-[#09090F] py-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-5xl mx-auto">
+
+        {/* Header */}
         <ScrollReveal>
           <div className="text-center mb-16">
             <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[#E8622A] mb-4">The honest comparison</p>
@@ -38,83 +49,118 @@ export default function PricingComparison() {
           </div>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-0 relative">
-          {/* Divider line — desktop */}
-          <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-white/[0.06] -translate-x-px" />
-
-          {/* Traditional */}
-          <ScrollReveal delay={0.1}>
-            <div className="lg:pr-12 xl:pr-20">
-              <div className="mb-6">
-                <p className="text-white/25 text-xs tracking-[0.15em] uppercase font-medium mb-2">The traditional way</p>
-                <p className="text-white/50 text-2xl font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
-                  £2,800–£4,200
-                  <span className="text-white/25 text-base font-normal ml-2">/desk/month in Zone 1</span>
-                </p>
-              </div>
-              <div className="space-y-3">
-                {traditional.map(({ item, cost }) => (
-                  <div key={item} className="flex items-start gap-4 py-3 border-b border-white/[0.05]">
-                    <div className="w-6 h-6 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center shrink-0 mt-0.5">
-                      <X size={12} className="text-white/30" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-white/50 text-sm">{item}</div>
-                      <div className="text-white/25 text-xs mt-0.5">{cost}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        {/* Column headers */}
+        <ScrollReveal delay={0.08}>
+          <div className="grid grid-cols-[1fr_32px_1fr] mb-4 px-1">
+            <div>
+              <p className="text-[10px] tracking-[0.2em] uppercase font-medium text-white/25 mb-1">The traditional way</p>
+              <p className="text-white/40 text-xl font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+                ~£4,200<span className="text-sm text-white/20 ml-1">/desk/mo</span>
+              </p>
             </div>
-          </ScrollReveal>
-
-          {/* Workspace */}
-          <ScrollReveal delay={0.2}>
-            <div className="lg:pl-12 xl:pl-20">
-              <div className="mb-6">
-                <p className="text-[#E8622A] text-xs tracking-[0.15em] uppercase font-medium mb-2">The Workspace way</p>
-                <p className="text-white text-2xl font-semibold" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
-                  From £550
-                  <span className="text-white/40 text-base font-normal ml-2">/desk/month, all-in</span>
-                </p>
-              </div>
-              <div className="space-y-3">
-                {workspace.map(({ item, note }) => (
-                  <div key={item} className="flex items-start gap-4 py-3 border-b border-white/[0.05]">
-                    <div className="w-6 h-6 rounded-full bg-[#E8622A]/15 border border-[#E8622A]/30 flex items-center justify-center shrink-0 mt-0.5">
-                      <Check size={12} className="text-[#E8622A]" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-white text-sm">{item}</div>
-                      <div className="text-white/40 text-xs mt-0.5">{note}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div />
+            <div className="text-right">
+              <p className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#E8622A] mb-1">The Workspace way</p>
+              <p className="text-white text-xl font-semibold" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+                From £550<span className="text-sm text-white/40 font-normal ml-1">/desk/mo all-in</span>
+              </p>
             </div>
-          </ScrollReveal>
+          </div>
+        </ScrollReveal>
+
+        {/* Divider */}
+        <div className="h-px bg-white/[0.06] mb-1" />
+
+        {/* Rows */}
+        <div>
+          {rows.map(({ pain, gain }, i) => (
+            <ScrollReveal key={pain.label} delay={0.04 + i * 0.05}>
+              <div className="grid grid-cols-[1fr_32px_1fr] items-center py-4 border-b border-white/[0.04] group hover:bg-white/[0.015] -mx-3 px-3 rounded-lg transition-colors duration-200">
+
+                {/* Left — the pain */}
+                <div className="flex items-center justify-between gap-3 pr-4">
+                  <span className="text-white/40 text-sm group-hover:text-white/55 transition-colors">
+                    {pain.label}
+                  </span>
+                  <span className="shrink-0 text-[10px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap"
+                    style={{
+                      background: "rgba(255,80,60,0.08)",
+                      color: "rgba(255,120,100,0.55)",
+                      border: "1px solid rgba(255,80,60,0.12)",
+                    }}>
+                    {pain.badge}
+                  </span>
+                </div>
+
+                {/* Centre arrow */}
+                <div className="flex items-center justify-center text-white/15 group-hover:text-white/30 transition-colors">
+                  <ArrowRight size={13} />
+                </div>
+
+                {/* Right — the gain */}
+                <div className="flex items-center justify-between gap-3 pl-4">
+                  <span className="text-white text-sm font-medium">
+                    {gain.label}
+                  </span>
+                  <span className="shrink-0 text-[10px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap"
+                    style={{
+                      background: "rgba(123,158,135,0.12)",
+                      color: "#7B9E87",
+                      border: "1px solid rgba(123,158,135,0.2)",
+                    }}>
+                    {gain.badge}
+                  </span>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
         </div>
 
-        {/* Bottom CTA */}
-        <ScrollReveal delay={0.3}>
-          <div className="mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 pt-12 border-t border-white/[0.06]">
-            <div>
-              <p
-                className="text-3xl sm:text-4xl text-white font-light"
-                style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+        {/* Savings bar */}
+        <ScrollReveal delay={0.35}>
+          <div className="mt-10 rounded-2xl p-6 sm:p-8"
+            style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+              <div>
+                <p className="text-white/45 text-xs tracking-widest uppercase font-medium mb-2">Typical saving</p>
+                <p className="text-white text-3xl sm:text-4xl font-light" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+                  Up to <span className="font-bold text-[#E8622A]">65% less</span> than a traditional lease.
+                </p>
+                <p className="text-white/30 text-xs mt-2">10-person team, Zone 1, 12-month comparison.</p>
+              </div>
+              <Link
+                href="/spaces"
+                className="shrink-0 flex items-center gap-2 px-7 py-3.5 bg-[#E8622A] text-white font-semibold rounded-full hover:bg-[#d4561e] transition-all hover:scale-105 text-sm whitespace-nowrap"
               >
-                Save up to{" "}
-                <span className="font-bold text-[#E8622A]">65%</span>
-                {" "}vs a traditional lease.
-              </p>
-              <p className="text-white/35 text-sm mt-2">Based on a 10-person team in Zone 1, 12-month comparison.</p>
+                See available spaces <ArrowRight size={15} />
+              </Link>
             </div>
-            <Link
-              href="/spaces"
-              className="shrink-0 flex items-center gap-2 px-8 py-4 bg-[#E8622A] text-white font-semibold rounded-2xl hover:bg-[#d4561e] transition-colors text-base whitespace-nowrap"
-            >
-              See available spaces <ArrowRight size={16} />
-            </Link>
+
+            {/* Visual cost bar */}
+            <div className="mt-7 space-y-3">
+              {[
+                { label: "Traditional lease", value: 4200, max: 4200, muted: true },
+                { label: "Workspace",         value: 550,  max: 4200, muted: false },
+              ].map(({ label, value, max, muted }) => (
+                <div key={label} className="flex items-center gap-4">
+                  <span className={`text-xs w-32 shrink-0 ${muted ? "text-white/30" : "text-white/70"}`}>{label}</span>
+                  <div className="flex-1 h-2 bg-white/[0.05] rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{
+                        width: `${(value / max) * 100}%`,
+                        background: muted
+                          ? "rgba(255,255,255,0.12)"
+                          : "linear-gradient(90deg, #7B9E87, #E8622A)",
+                      }}
+                    />
+                  </div>
+                  <span className={`text-xs w-20 text-right shrink-0 font-medium ${muted ? "text-white/25" : "text-white/80"}`}>
+                    £{value.toLocaleString()}/mo
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </ScrollReveal>
       </div>
