@@ -58,6 +58,8 @@ const PROOF_MESSAGES = [
   "Last space at this location taken in 4 days",
 ];
 
+const GALLERY_INTERVAL = 5000;
+
 export default function SpaceDetailClient({ space, similar }: { space: Space; similar: Space[] }) {
   const [activeImage, setActiveImage] = useState(0);
   const [showEnquiry, setShowEnquiry] = useState(false);
@@ -67,6 +69,10 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
   const [proofVisible, setProofVisible] = useState(false);
   const { add, remove, isComparing } = useCompare();
   const comparing = isComparing(space.id);
+
+  // Gallery auto-advance + progress
+  const [galleryProgress, setGalleryProgress] = useState(0);
+  const [galleryPaused, setGalleryPaused] = useState(false);
 
   // Social proof ticker — appears after 4s, cycles every 5s
   useEffect(() => {
@@ -87,6 +93,23 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
   }, [proofVisible]);
 
   const allImages = [space.image, ...space.gallery.slice(1)];
+
+  // Gallery auto-advance
+  useEffect(() => {
+    if (galleryPaused || allImages.length <= 1) return;
+    const progressTimer = setInterval(() => {
+      setGalleryProgress(p => (p < 100 ? p + 100 / (GALLERY_INTERVAL / 50) : p));
+    }, 50);
+    const advanceTimer = setTimeout(() => {
+      setActiveImage(i => (i + 1) % allImages.length);
+      setGalleryProgress(0);
+    }, GALLERY_INTERVAL);
+    return () => {
+      clearInterval(progressTimer);
+      clearTimeout(advanceTimer);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeImage, galleryPaused, allImages.length]);
 
   const lightboxPrev = useCallback(() => setActiveImage(i => (i - 1 + allImages.length) % allImages.length), [allImages.length]);
   const lightboxNext = useCallback(() => setActiveImage(i => (i + 1) % allImages.length), [allImages.length]);
@@ -143,13 +166,48 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
             {/* Gallery */}
             <ScrollReveal>
-              <div className="relative rounded-lg overflow-hidden">
+              <div
+                className="relative rounded-lg overflow-hidden"
+                onMouseEnter={() => setGalleryPaused(true)}
+                onMouseLeave={() => setGalleryPaused(false)}
+              >
                 <img
                   src={allImages[activeImage] || space.image}
                   alt={`${space.name} — view ${activeImage + 1}`}
-                  className="w-full h-[420px] sm:h-[520px] object-cover"
+                  className="w-full h-[420px] sm:h-[520px] object-cover transition-opacity duration-300"
                   style={{ viewTransitionName: `space-img-${space.slug}` }}
                 />
+
+                {/* Progress bars — absolute top of image */}
+                {allImages.length > 1 && (
+                  <div className="absolute top-0 inset-x-0 flex gap-1 p-3 z-20">
+                    {allImages.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => { setActiveImage(i); setGalleryProgress(0); }}
+                        aria-label={`Photo ${i + 1}`}
+                        className="flex-1 h-0.5 relative overflow-hidden cursor-pointer"
+                        style={{ background: "rgba(255,255,255,0.25)" }}
+                      >
+                        <div
+                          className="absolute inset-y-0 left-0 bg-white"
+                          style={{
+                            width:
+                              i < activeImage
+                                ? "100%"
+                                : i === activeImage
+                                ? `${galleryProgress}%`
+                                : "0%",
+                            transition:
+                              i === activeImage && !galleryPaused
+                                ? "width 50ms linear"
+                                : "none",
+                          }}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {/* Rating + share + favourite — top right on image */}
                 <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
@@ -181,14 +239,16 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
             </ScrollReveal>
 
             {allImages.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto pb-1">
+              <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
                 {allImages.map((img, i) => (
                   <button
                     key={i}
-                    onClick={() => setActiveImage(i)}
+                    onClick={() => { setActiveImage(i); setGalleryProgress(0); }}
                     aria-label={`Photo ${i + 1}`}
                     aria-pressed={i === activeImage}
-                    className={`shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${i === activeImage ? "border-[#E8622A]" : "border-transparent opacity-50 hover:opacity-75"}`}
+                    className={`shrink-0 w-20 h-14 rounded-lg overflow-hidden transition-all ${
+                      i === activeImage ? "opacity-100 ring-2 ring-[#E8622A] ring-offset-1 ring-offset-[#F4F1EA]" : "opacity-45 hover:opacity-70"
+                    }`}
                   >
                     <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>

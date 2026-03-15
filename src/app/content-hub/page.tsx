@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Clock, BookOpen, Mic, Video, Lightbulb, Users, TrendingUp } from "lucide-react";
+import { ArrowRight, Clock, BookOpen, Mic, Video, Lightbulb, Users, TrendingUp, Play } from "lucide-react";
 
 const categories = [
   { value: "all", label: "All", icon: BookOpen },
@@ -17,7 +17,7 @@ const articles = [
   {
     id: "1",
     title: "How Depop built a global marketplace from a Shoreditch studio",
-    excerpt: "When Depop first took an office at Central House in 2016, they had 20 employees and a big idea. Eight years later, they'd sold to Etsy for $1.6 billion. We sat down with their founding team to hear the story.",
+    excerpt: "When Depop first took an office at Central House in 2016, they had 20 employees and a big idea. Eight years later, they'd sold to Etsy for $1.6 billion.",
     category: "story",
     readTime: "8 min read",
     date: "10 Mar 2026",
@@ -28,7 +28,7 @@ const articles = [
   {
     id: "2",
     title: "The case for flexible leases: why London's smartest businesses are rethinking real estate",
-    excerpt: "A traditional 10-year lease made sense in 2005. Today, the world's fastest-growing companies are choosing flexibility over permanence — and for good reason.",
+    excerpt: "A traditional 10-year lease made sense in 2005. Today, the world's fastest-growing companies are choosing flexibility over permanence.",
     category: "insight",
     readTime: "6 min read",
     date: "5 Mar 2026",
@@ -39,7 +39,7 @@ const articles = [
   {
     id: "3",
     title: "Episode 48: The future of work with Dr. Grace Chen, Head of Future of Work at McKinsey",
-    excerpt: "In this week's episode, we explore why the companies winning the talent war are the ones who've mastered the art of intentional office design.",
+    excerpt: "Why the companies winning the talent war are the ones who've mastered the art of intentional office design.",
     category: "podcast",
     readTime: "42 min listen",
     date: "1 Mar 2026",
@@ -50,7 +50,7 @@ const articles = [
   {
     id: "4",
     title: "Inside Marshmallow's transformation from startup to unicorn",
-    excerpt: "The insurance startup that disrupted car insurance for immigrants went from 5 people in a hot-desk to 350 people across three floors. This is their office story.",
+    excerpt: "The insurance startup went from 5 people in a hot-desk to 350 people across three floors. This is their office story.",
     category: "story",
     readTime: "7 min read",
     date: "25 Feb 2026",
@@ -61,7 +61,7 @@ const articles = [
   {
     id: "5",
     title: "10 ways to design an office that makes your team never want to leave",
-    excerpt: "The best offices aren't just beautiful — they're functional, human, and filled with intention. Here's what our most enviable members have in common.",
+    excerpt: "The best offices aren't just beautiful — they're functional, human, and filled with intention.",
     category: "insight",
     readTime: "5 min read",
     date: "20 Feb 2026",
@@ -72,7 +72,7 @@ const articles = [
   {
     id: "6",
     title: "Video tour: The Light Bulb, Wandsworth",
-    excerpt: "Take an exclusive tour of one of our most beloved buildings — The Light Bulb in Wandsworth — and meet some of the businesses that call it home.",
+    excerpt: "Take an exclusive tour of one of our most beloved buildings and meet some of the businesses that call it home.",
     category: "video",
     readTime: "4 min watch",
     date: "15 Feb 2026",
@@ -82,12 +82,63 @@ const articles = [
   },
 ];
 
+// Visual treatment config per category
+const cardTheme: Record<string, {
+  bg: string;
+  label: string;
+  labelBg: string;
+  titleColor: string;
+  bodyColor: string;
+  borderColor: string;
+}> = {
+  story: {
+    bg: "bg-white",
+    label: "Member story",
+    labelBg: "bg-[#E8622A]/10 text-[#E8622A]",
+    titleColor: "text-[#09090F]",
+    bodyColor: "text-gray-400",
+    borderColor: "border-gray-100",
+  },
+  insight: {
+    bg: "bg-[#F4F1EA]",
+    label: "Insight",
+    labelBg: "bg-[#09090F]/8 text-[#09090F]/60",
+    titleColor: "text-[#09090F]",
+    bodyColor: "text-[#09090F]/45",
+    borderColor: "border-[#09090F]/[0.06]",
+  },
+  podcast: {
+    bg: "bg-[#09090F]",
+    label: "Podcast",
+    labelBg: "bg-white/10 text-white/70",
+    titleColor: "text-white",
+    bodyColor: "text-white/40",
+    borderColor: "border-white/[0.08]",
+  },
+  video: {
+    bg: "bg-white",
+    label: "Video",
+    labelBg: "bg-[#E8622A]/10 text-[#E8622A]",
+    titleColor: "text-[#09090F]",
+    bodyColor: "text-gray-400",
+    borderColor: "border-gray-100",
+  },
+  news: {
+    bg: "bg-white",
+    label: "News",
+    labelBg: "bg-[#C9A84C]/15 text-[#C9A84C]",
+    titleColor: "text-[#09090F]",
+    bodyColor: "text-gray-400",
+    borderColor: "border-gray-100",
+  },
+};
+
 const categoryIconMap: Record<string, React.ReactNode> = {
-  story: <Users size={13} />,
-  insight: <Lightbulb size={13} />,
-  podcast: <Mic size={13} />,
-  video: <Video size={13} />,
-  news: <TrendingUp size={13} />,
+  story: <Users size={12} />,
+  insight: <Lightbulb size={12} />,
+  podcast: <Mic size={12} />,
+  video: <Video size={12} />,
+  news: <TrendingUp size={12} />,
 };
 
 export default function ContentHubPage() {
@@ -138,7 +189,7 @@ export default function ContentHubPage() {
 
         {/* Featured article */}
         {activeCategory === "all" && featured && (
-          <div className="bg-white rounded-3xl overflow-hidden mb-8 hover:shadow-xl transition-all group cursor-pointer">
+          <Link href="#" className="block bg-white rounded-2xl overflow-hidden mb-8 hover:shadow-xl transition-all group cursor-pointer">
             <div className="grid grid-cols-1 lg:grid-cols-2">
               <div className="h-64 lg:h-auto overflow-hidden">
                 <img
@@ -173,47 +224,105 @@ export default function ContentHubPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         )}
 
-        {/* Article grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {rest.map((article) => (
-            <article key={article.id} className="bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all group cursor-pointer">
-              <div className="h-44 overflow-hidden">
-                <img
-                  src={article.image}
-                  alt={article.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="flex items-center gap-1 px-2 py-0.5 bg-[#F4F1EA] text-gray-500 text-xs rounded-full font-medium capitalize">
-                    {categoryIconMap[article.category]}
-                    {article.category}
-                  </span>
-                  <span className="flex items-center gap-1 text-xs text-gray-400">
-                    <Clock size={11} />{article.readTime}
-                  </span>
-                </div>
-                <h3
-                  className="font-semibold text-[#09090F] leading-snug mb-2 group-hover:text-[#E8622A] transition-colors"
-                  style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
-                >
-                  {article.title}
-                </h3>
-                <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-4">{article.excerpt}</p>
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                  <div className="flex items-center gap-2">
-                    <img src={article.author.avatar} alt="" className="w-6 h-6 rounded-full object-cover" />
-                    <span className="text-xs text-gray-400">{article.date}</span>
+        {/* Article grid — equal height, category-specific treatment */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-start">
+          {rest.map((article) => {
+            const theme = cardTheme[article.category] ?? cardTheme.story;
+            const isVideo = article.category === "video";
+            const isPodcast = article.category === "podcast";
+            const isInsight = article.category === "insight";
+
+            return (
+              <Link
+                key={article.id}
+                href="#"
+                className={`flex flex-col rounded-2xl overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer h-full ${theme.bg}`}
+              >
+                {/* Image — all categories have an image except insight which gets text treatment */}
+                {isInsight ? (
+                  /* Insight: text-only header block */
+                  <div className="h-44 flex items-end p-6 bg-[#E8E4DA] relative overflow-hidden">
+                    <div
+                      className="absolute top-5 right-5 text-[80px] font-bold leading-none select-none pointer-events-none"
+                      style={{
+                        fontFamily: "'Bricolage Grotesque', sans-serif",
+                        color: "rgba(9,9,15,0.06)",
+                      }}
+                    >
+                      →
+                    </div>
+                    <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${theme.labelBg}`}>
+                      {categoryIconMap[article.category]}
+                      {theme.label}
+                    </span>
                   </div>
-                  <ArrowRight size={14} className="text-gray-300 group-hover:text-[#E8622A] transition-colors" />
+                ) : (
+                  <div className="relative h-44 overflow-hidden shrink-0">
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {isVideo && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+                          <Play size={16} className="text-[#09090F] ml-0.5" fill="currentColor" />
+                        </div>
+                      </div>
+                    )}
+                    {isPodcast && (
+                      /* Dark overlay on podcast cards */
+                      <div className="absolute inset-0 bg-[#09090F]/50" />
+                    )}
+                  </div>
+                )}
+
+                {/* Content */}
+                <div className="flex flex-col flex-1 p-5">
+                  {/* Label + read time */}
+                  <div className="flex items-center gap-2 mb-3">
+                    {!isInsight && (
+                      <span className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${theme.labelBg}`}>
+                        {categoryIconMap[article.category]}
+                        {theme.label}
+                      </span>
+                    )}
+                    <span className={`flex items-center gap-1 text-xs ${isPodcast ? "text-white/35" : "text-gray-400"}`}>
+                      <Clock size={10} />{article.readTime}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3
+                    className={`font-semibold leading-snug mb-2 ${theme.titleColor} group-hover:text-[#E8622A] transition-colors`}
+                    style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+                  >
+                    {article.title}
+                  </h3>
+
+                  {/* Excerpt */}
+                  <p className={`text-xs leading-relaxed line-clamp-2 mb-4 flex-1 ${theme.bodyColor}`}>
+                    {article.excerpt}
+                  </p>
+
+                  {/* Footer — always at bottom */}
+                  <div className={`flex items-center justify-between pt-3 border-t mt-auto ${theme.borderColor}`}>
+                    <div className="flex items-center gap-2">
+                      <img src={article.author.avatar} alt="" className="w-6 h-6 rounded-full object-cover" />
+                      <span className={`text-xs ${isPodcast ? "text-white/35" : "text-gray-400"}`}>{article.date}</span>
+                    </div>
+                    <ArrowRight
+                      size={14}
+                      className={`${isPodcast ? "text-white/20" : "text-gray-300"} group-hover:text-[#E8622A] transition-colors`}
+                    />
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Load more */}
