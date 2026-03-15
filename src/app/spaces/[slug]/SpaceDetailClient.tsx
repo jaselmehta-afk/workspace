@@ -2,6 +2,12 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const SpaceMapSingle = dynamic(() => import("@/components/SpaceMap"), {
+  ssr: false,
+  loading: () => <div className="w-full h-full" style={{ background: "#09090F" }} />,
+});
 import {
   MapPin, Star, Maximize2, ArrowRight, ChevronLeft, ChevronRight,
   Train, Bus, ArrowUpRight, ExternalLink,
@@ -109,35 +115,24 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
             <span className="text-white/70" aria-current="page">{space.name}</span>
           </nav>
 
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-            <div>
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className="inline-flex items-center gap-1.5 text-[#E8622A] text-sm font-medium">
-                  <MapPin size={13} />{space.neighbourhood}, {space.postcode}
-                </span>
-                {space.type.map(t => (
-                  <span key={t} className="px-2.5 py-0.5 bg-white/[0.07] text-white/50 text-xs rounded-full font-medium border border-white/[0.07] capitalize">{t}</span>
-                ))}
-                {space.isNew && <span className="px-2.5 py-0.5 bg-[#E8622A] text-white text-xs rounded-full font-semibold">New</span>}
-                {space.grade && <span className="px-2.5 py-0.5 bg-white/[0.07] text-white/50 text-xs rounded-full font-medium border border-white/[0.07]">{space.grade}</span>}
-              </div>
-              <h1
-                className="text-3xl sm:text-4xl lg:text-5xl text-white leading-tight tracking-[-0.03em]"
-                style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
-              >
-                {space.name}
-              </h1>
-              <p className="text-white/40 mt-2 text-base">{space.headline}</p>
+          <div>
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="inline-flex items-center gap-1.5 text-[#E8622A] text-sm font-medium">
+                <MapPin size={13} />{space.neighbourhood}, {space.postcode}
+              </span>
+              {space.type.map(t => (
+                <span key={t} className="px-2.5 py-0.5 bg-white/[0.07] text-white/60 text-xs rounded-full font-medium border border-white/[0.07] capitalize">{t}</span>
+              ))}
+              {space.isNew && <span className="px-2.5 py-0.5 bg-[#E8622A] text-white text-xs rounded-full font-semibold">New</span>}
+              {space.grade && <span className="px-2.5 py-0.5 bg-white/[0.07] text-white/60 text-xs rounded-full font-medium border border-white/[0.07]">{space.grade}</span>}
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.05] rounded-xl border border-white/[0.07]">
-                <Star size={13} className="text-[#E8622A] fill-[#E8622A]" />
-                <span className="text-white font-semibold text-sm">{space.rating}</span>
-                <span className="text-white/35 text-xs">({space.reviewCount})</span>
-              </div>
-              <ShareButton data={{ title: space.name, text: space.headline, slug: space.slug }} />
-              <FavouriteButton spaceId={space.id} />
-            </div>
+            <h1
+              className="text-3xl sm:text-4xl lg:text-5xl text-white leading-tight tracking-[-0.03em]"
+              style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 300 }}
+            >
+              {space.name}
+            </h1>
+            <p className="text-white/60 mt-2 text-base">{space.headline}</p>
           </div>
         </div>
       </div>
@@ -152,8 +147,21 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                 <img
                   src={allImages[activeImage] || space.image}
                   alt={`${space.name} — view ${activeImage + 1}`}
-                  className="w-full h-[420px] sm:h-[500px] object-cover"
+                  className="w-full h-[420px] sm:h-[520px] object-cover"
+                  style={{ viewTransitionName: `space-img-${space.slug}` }}
                 />
+
+                {/* Rating + share + favourite — top right on image */}
+                <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+                  <div className="flex items-center gap-1.5 glass rounded-full px-3 py-1.5">
+                    <Star size={12} className="text-[#C9A84C] fill-[#C9A84C]" />
+                    <span className="text-white font-semibold text-sm">{space.rating}</span>
+                    <span className="text-white/55 text-xs">({space.reviewCount})</span>
+                  </div>
+                  <ShareButton data={{ title: space.name, text: space.headline, slug: space.slug }} />
+                  <FavouriteButton spaceId={space.id} />
+                </div>
+
                 <button
                   onClick={() => setShowVirtualTour(true)}
                   className="absolute bottom-4 left-4 flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-xl text-[#09090F] text-xs font-semibold hover:bg-white transition-colors shadow-lg"
@@ -237,23 +245,19 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
 
             {/* Getting here */}
             <ScrollReveal>
-              <div className="bg-white rounded-3xl overflow-hidden">
-                {/* OpenStreetMap embed */}
-                <div className="relative h-52 bg-[#E8E4DB]">
-                  <iframe
-                    title={`Map showing ${space.name}`}
-                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${space.lng - 0.012},${space.lat - 0.008},${space.lng + 0.012},${space.lat + 0.008}&layer=mapnik&marker=${space.lat},${space.lng}`}
-                    className="w-full h-full border-0"
-                    loading="lazy"
-                    aria-label={`Map of ${space.name} at ${space.neighbourhood}, ${space.postcode}`}
+              <div className="bg-[#09090F] rounded-3xl overflow-hidden">
+                {/* Dark Leaflet map — consistent with the map view on the listing page */}
+                <div className="h-56">
+                  <SpaceMapSingle
+                    spaces={[space]}
+                    activeId={null}
+                    onMarkerClick={() => {}}
                   />
-                  {/* Gradient overlay at bottom for fade into content */}
-                  <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none" />
                 </div>
 
-                <div className="p-6 pt-4">
-                  <div className="flex items-center justify-between mb-5">
-                    <h2 className="text-xl text-[#09090F]" style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500 }}>
+                <div className="p-6 pt-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl text-white" style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 400 }}>
                       Getting here
                     </h2>
                     <a
@@ -274,22 +278,22 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                     {space.transport.map(t => (
                       <div
                         key={t.name}
-                        className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium border ${
+                        className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium ${
                           t.type === "tube"
-                            ? "bg-[#E32017]/[0.06] text-[#C01C11] border-[#E32017]/[0.12]"
+                            ? "bg-[#E32017]/20 text-red-300 border border-[#E32017]/30"
                             : t.type === "rail"
-                            ? "bg-emerald-50 text-emerald-800 border-emerald-100"
-                            : "bg-blue-50 text-blue-800 border-blue-100"
+                            ? "bg-emerald-900/40 text-emerald-300 border border-emerald-700/40"
+                            : "bg-blue-900/40 text-blue-300 border border-blue-700/40"
                         }`}
                       >
                         {t.type === "bus" ? <Bus size={13} /> : <Train size={13} />}
                         <span>{t.name}</span>
-                        <span className="opacity-50 text-xs font-normal">{t.time}</span>
+                        <span className="opacity-60 text-xs font-normal">{t.time}</span>
                       </div>
                     ))}
                   </div>
 
-                  <p className="text-xs text-[#09090F]/30 mt-4">
+                  <p className="text-xs text-white/40 mt-4">
                     {space.neighbourhood}, {space.postcode}
                   </p>
                 </div>
