@@ -50,7 +50,7 @@ export default function CommunitySection() {
 
         <div className="flex items-end justify-between mb-14">
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.28em] uppercase text-[#09090F]/30 mb-4">
+            <p className="text-[10px] font-semibold tracking-[0.28em] uppercase text-[#09090F]/40 mb-4">
               Community &amp; content
             </p>
             <h2
@@ -59,7 +59,7 @@ export default function CommunitySection() {
             >
               More than a desk.
               <br />
-              <span className="text-[#09090F]/30">A community.</span>
+              <span className="text-[#09090F]/40">A community.</span>
             </h2>
           </div>
         </div>
@@ -78,13 +78,14 @@ export default function CommunitySection() {
             </div>
             <div className="space-y-2">
               {events.map((event) => (
-                <div
+                <Link
                   key={event.title}
-                  className="bg-white rounded-xl p-4 flex items-center gap-4 hover:shadow-sm transition-shadow cursor-pointer"
+                  href="/community/events"
+                  className="group bg-white rounded-xl p-4 flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                 >
                   {/* Date block */}
                   <div className="w-12 shrink-0 text-center">
-                    <div className="text-[10px] font-semibold tracking-[0.1em] uppercase text-[#09090F]/30">
+                    <div className="text-[10px] font-semibold tracking-[0.1em] uppercase text-[#09090F]/45">
                       {event.month}
                     </div>
                     <div
@@ -96,18 +97,18 @@ export default function CommunitySection() {
                   </div>
 
                   {/* Divider */}
-                  <div className="w-px h-8 bg-[#09090F]/8 shrink-0" />
+                  <div className="w-px h-8 bg-[#09090F]/10 shrink-0" />
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-semibold text-[#09090F] leading-snug truncate">
+                    <h4 className="text-sm font-semibold text-[#09090F] leading-snug truncate group-hover:text-[#E8622A] transition-colors">
                       {event.title}
                     </h4>
-                    <p className="text-[11px] text-[#09090F]/40 mt-0.5 truncate">{event.meta}</p>
+                    <p className="text-[11px] text-[#09090F]/50 mt-0.5 truncate">{event.meta}</p>
                   </div>
 
-                  <ArrowRight size={13} className="text-gray-300 shrink-0" />
-                </div>
+                  <ArrowRight size={13} className="text-[#09090F]/25 group-hover:text-[#E8622A] group-hover:translate-x-0.5 transition-all shrink-0" />
+                </Link>
               ))}
             </div>
           </div>
@@ -126,28 +127,29 @@ export default function CommunitySection() {
               {articles.map((article) => {
                 const Icon = article.icon;
                 return (
-                  <div
+                  <Link
                     key={article.title}
-                    className="bg-white rounded-xl p-4 flex items-center gap-4 hover:shadow-sm transition-shadow cursor-pointer"
+                    href="/content-hub"
+                    className="group bg-white rounded-xl p-4 flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                   >
                     {/* Icon block — same size as date block */}
-                    <div className="w-12 h-12 shrink-0 rounded-lg bg-[#F4F1EA] flex items-center justify-center">
-                      <Icon size={16} className="text-[#09090F]/40" />
+                    <div className="w-12 h-12 shrink-0 rounded-lg bg-[#F4F1EA] flex items-center justify-center group-hover:bg-[#E8622A]/10 transition-colors">
+                      <Icon size={16} className="text-[#09090F]/50 group-hover:text-[#E8622A] transition-colors" />
                     </div>
 
                     {/* Divider */}
-                    <div className="w-px h-8 bg-[#09090F]/8 shrink-0" />
+                    <div className="w-px h-8 bg-[#09090F]/10 shrink-0" />
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-[#09090F] leading-snug line-clamp-2">
+                      <h4 className="text-sm font-semibold text-[#09090F] leading-snug line-clamp-2 group-hover:text-[#E8622A] transition-colors">
                         {article.title}
                       </h4>
-                      <p className="text-[11px] text-[#09090F]/40 mt-0.5">{article.meta}</p>
+                      <p className="text-[11px] text-[#09090F]/50 mt-0.5">{article.meta}</p>
                     </div>
 
-                    <ArrowRight size={13} className="text-gray-300 shrink-0" />
-                  </div>
+                    <ArrowRight size={13} className="text-[#09090F]/25 group-hover:text-[#E8622A] group-hover:translate-x-0.5 transition-all shrink-0" />
+                  </Link>
                 );
               })}
             </div>

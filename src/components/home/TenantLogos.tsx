@@ -16,7 +16,7 @@ export default function TenantLogos() {
 
   return (
     <div className="bg-white border-y border-[#09090F]/[0.06] py-10 overflow-hidden">
-      <p className="text-center text-[10px] font-semibold tracking-[0.25em] uppercase text-[#09090F]/35 mb-7">
+      <p className="text-center text-[10px] font-semibold tracking-[0.25em] uppercase text-[#09090F]/45 mb-7">
         Trusted by London&apos;s most ambitious businesses
       </p>
       <div className="relative">
@@ -27,7 +27,7 @@ export default function TenantLogos() {
           {items.map((company, i) => (
             <span
               key={`${company.name}-${i}`}
-              className="inline-flex items-center gap-10 px-10 text-[15px] text-[#09090F]/30 hover:text-[#09090F]/70 transition-colors cursor-default"
+              className="inline-flex items-center gap-10 px-10 text-[15px] text-[#09090F]/40 hover:text-[#09090F]/75 transition-colors cursor-default"
               style={company.style}
             >
               {company.name}
@@ -47,7 +47,7 @@ export default function TenantLogos() {
         ].map(({ stat, label }) => (
           <div key={stat} className="flex items-center gap-2 text-center">
             <span className="text-sm font-bold text-[#09090F]/80" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>{stat}</span>
-            <span className="text-xs text-[#09090F]/35">{label}</span>
+            <span className="text-xs text-[#09090F]/50">{label}</span>
           </div>
         ))}
       </div>

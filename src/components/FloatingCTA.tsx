@@ -26,13 +26,13 @@ export default function FloatingCTA() {
     >
       <Link
         href="/book-viewing"
-        className="group flex items-center gap-2.5 px-5 py-3.5 rounded-2xl text-white text-sm font-semibold shadow-2xl transition-all duration-200 hover:scale-105"
-        style={{ background: "#09090F", border: "1px solid rgba(255,255,255,0.1)" }}
+        className="group flex items-center gap-2.5 px-5 py-3.5 rounded-2xl text-white text-sm font-semibold shadow-2xl transition-all duration-200 hover:scale-105 hover:bg-[#d4561e]"
+        style={{ background: "#E8622A" }}
       >
-        <CalendarDays size={15} className="text-[#E8622A]" />
+        <CalendarDays size={15} className="text-white/80" />
         Book a viewing
         <span
-          className="ml-1 w-1.5 h-1.5 rounded-full bg-[#7B9E87] animate-pulse"
+          className="ml-1 w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse"
           aria-hidden="true"
         />
       </Link>

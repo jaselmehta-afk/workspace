@@ -181,7 +181,7 @@ export default function Navigation() {
                                 <span className="text-sm font-medium text-white/90 group-hover:text-[#E8622A] transition-colors">
                                   {child.label}
                                 </span>
-                                <span className="text-xs text-white/40 mt-0.5">{child.desc}</span>
+                                <span className="text-xs text-white/50 mt-0.5">{child.desc}</span>
                               </Link>
                             ))}
                           </div>
@@ -199,7 +199,7 @@ export default function Navigation() {
               <button
                 onClick={toggleTheme}
                 aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                className="flex items-center justify-center w-8 h-8 rounded-full text-white/35 hover:text-white/80 transition-colors"
+                className="flex items-center justify-center w-8 h-8 rounded-full text-white/55 hover:text-white/90 transition-colors"
               >
                 {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
               </button>
@@ -208,7 +208,7 @@ export default function Navigation() {
               <button
                 onClick={() => setSavedOpen(o => !o)}
                 aria-label={`Saved spaces (${ids.length})`}
-                className="relative flex items-center justify-center w-8 h-8 rounded-full text-white/35 hover:text-white/80 transition-colors"
+                className="relative flex items-center justify-center w-8 h-8 rounded-full text-white/55 hover:text-white/90 transition-colors"
               >
                 <Heart size={14} fill={ids.length > 0 ? "#E8622A" : "none"} className={ids.length > 0 ? "text-[#E8622A]" : ""} />
                 {ids.length > 0 && (

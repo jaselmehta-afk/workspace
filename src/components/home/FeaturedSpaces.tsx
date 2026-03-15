@@ -182,7 +182,7 @@ export default function FeaturedSpaces() {
                         <span className="text-white/55 text-xs">From <span className="text-white font-medium">£{main.priceFrom.toLocaleString()}/{main.priceUnit}</span></span>
                         <div className="flex gap-1">
                           {main.type.map(t => (
-                            <span key={t} className="px-2 py-0.5 bg-white/[0.07] text-white/40 text-[10px] rounded-full capitalize">{t}</span>
+                            <span key={t} className="px-2 py-0.5 bg-white/[0.12] text-white/65 text-[10px] rounded-full capitalize">{t}</span>
                           ))}
                         </div>
                       </div>

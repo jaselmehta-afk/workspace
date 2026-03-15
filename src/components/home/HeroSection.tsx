@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Sparkles, Mic, MicOff, ChevronDown } from "lucide-react";
+import { ArrowRight, Sparkles, Mic, MicOff, ChevronDown, Clock } from "lucide-react";
 import MagneticButton from "@/components/MagneticButton";
 import { spaces } from "@/data/spaces";
 
@@ -94,6 +94,7 @@ export default function HeroSection() {
   const [verbIdx, setVerbIdx] = useState(0);
   const [verbPhase, setVerbPhase] = useState<"in" | "out">("in");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
   // Cursor-reactive warm blob
   useEffect(() => {
@@ -114,6 +115,10 @@ export default function HeroSection() {
     const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
     setVoiceSupported(!!(w.SpeechRecognition || w.webkitSpeechRecognition));
     setTimeOverlay(getTimeOfDayOverlay());
+    try {
+      const stored = JSON.parse(localStorage.getItem("ws_recent_queries") || "[]");
+      setRecentSearches(stored);
+    } catch {}
   }, []);
 
   // Verb cycling
@@ -143,6 +148,12 @@ export default function HeroSection() {
     setShowSuggestions(false);
     const p = parse(q);
     try { localStorage.setItem("ws_last_search", JSON.stringify({ ...p, timestamp: Date.now() })); } catch {}
+    try {
+      const stored = JSON.parse(localStorage.getItem("ws_recent_queries") || "[]") as string[];
+      const updated = [q, ...stored.filter((s: string) => s !== q)].slice(0, 5);
+      localStorage.setItem("ws_recent_queries", JSON.stringify(updated));
+      setRecentSearches(updated);
+    } catch {}
     setTimeout(() => { router.push(`/spaces?${new URLSearchParams(p)}`); }, 1200);
   }, [query, router]);
 
@@ -170,17 +181,16 @@ export default function HeroSection() {
     inputRef.current?.focus();
   }, [listening, go]);
 
-  // Autocomplete suggestions
-  const suggestions = useMemo(() => {
-    if (!query || query.length < 2) return [];
+  // Autocomplete suggestions with total match count
+  const searchResults = useMemo(() => {
+    if (!query || query.length < 2) return { hits: [] as typeof spaces, total: 0 };
     const q = query.toLowerCase();
-    return spaces
-      .filter(s =>
-        s.name.toLowerCase().includes(q) ||
-        s.neighbourhood.toLowerCase().includes(q) ||
-        s.postcode.toLowerCase().includes(q)
-      )
-      .slice(0, 5);
+    const all = spaces.filter(s =>
+      s.name.toLowerCase().includes(q) ||
+      s.neighbourhood.toLowerCase().includes(q) ||
+      s.postcode.toLowerCase().includes(q)
+    );
+    return { hits: all.slice(0, 4), total: all.length };
   }, [query]);
 
   const scrollDown = () => window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
@@ -325,11 +335,32 @@ export default function HeroSection() {
               )}
             </MagneticButton>
 
-            {/* Autocomplete dropdown */}
-            {showSuggestions && suggestions.length > 0 && (
+            {/* Recent searches — shown when focused with no query */}
+            {showSuggestions && !query && recentSearches.length > 0 && (
               <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl overflow-hidden shadow-2xl z-50"
                 style={{ background: "rgba(9,9,15,0.97)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(24px)" }}>
-                {suggestions.map(space => (
+                <div className="px-4 py-2.5 border-b border-white/[0.06]">
+                  <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-white/35">Recent searches</span>
+                </div>
+                {recentSearches.map((recent) => (
+                  <button
+                    key={recent}
+                    onMouseDown={() => { setQuery(recent); go(recent); }}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.05] transition-colors text-left group"
+                  >
+                    <Clock size={13} className="text-white/30 shrink-0" />
+                    <span className="text-white/75 text-sm flex-1 truncate">{recent}</span>
+                    <ArrowRight size={12} className="text-white/25 group-hover:text-[#E8622A] transition-colors shrink-0" />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Autocomplete dropdown — space suggestions + match count */}
+            {showSuggestions && query && searchResults.hits.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl overflow-hidden shadow-2xl z-50"
+                style={{ background: "rgba(9,9,15,0.97)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(24px)" }}>
+                {searchResults.hits.map(space => (
                   <button
                     key={space.id}
                     onMouseDown={() => { setQuery(space.name); go(space.name); }}
@@ -351,6 +382,17 @@ export default function HeroSection() {
                     </Link>
                   </button>
                 ))}
+                <div className="border-t border-white/[0.06] px-4 py-2.5 flex items-center justify-between">
+                  <span className="text-xs text-white/40">
+                    {searchResults.total} space{searchResults.total !== 1 ? "s" : ""} match
+                  </span>
+                  <button
+                    onMouseDown={() => go()}
+                    className="text-xs text-[#E8622A] font-semibold hover:text-[#f5935a] transition-colors"
+                  >
+                    View all →
+                  </button>
+                </div>
               </div>
             )}
           </div>
