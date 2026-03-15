@@ -1,17 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
-  MapPin, Star, Maximize2, ArrowRight, ChevronLeft,
+  MapPin, Star, Maximize2, ArrowRight, ChevronLeft, ChevronRight,
   Train, Bus, ArrowUpRight, ExternalLink,
   Wifi, Coffee, Bike, Zap, Clock, Users, Sunset,
   PawPrint, Mic, CalendarDays, ConciergeBell,
-  Dumbbell, TreePine, Car, Phone, BatteryCharging, Play, X, Navigation2
+  Dumbbell, TreePine, Car, Phone, BatteryCharging, Play, X, Navigation2, Scale
 } from "lucide-react";
 import { Space } from "@/data/spaces";
 import MagneticButton from "@/components/MagneticButton";
 import ScrollReveal from "@/components/ScrollReveal";
+import FavouriteButton from "@/components/FavouriteButton";
+import ShareButton from "@/components/ShareButton";
+import { useCompare } from "@/context/CompareContext";
 
 const amenityIconMap: Record<string, React.ReactNode> = {
   "High-speed Wi-Fi":       <Wifi size={18} />,
@@ -53,8 +56,11 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
   const [activeImage, setActiveImage] = useState(0);
   const [showEnquiry, setShowEnquiry] = useState(false);
   const [showVirtualTour, setShowVirtualTour] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [proofIndex, setProofIndex] = useState(0);
   const [proofVisible, setProofVisible] = useState(false);
+  const { add, remove, isComparing } = useCompare();
+  const comparing = isComparing(space.id);
 
   // Social proof ticker — appears after 4s, cycles every 5s
   useEffect(() => {
@@ -75,6 +81,20 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
   }, [proofVisible]);
 
   const allImages = [space.image, ...space.gallery.slice(1)];
+
+  const lightboxPrev = useCallback(() => setActiveImage(i => (i - 1 + allImages.length) % allImages.length), [allImages.length]);
+  const lightboxNext = useCallback(() => setActiveImage(i => (i + 1) % allImages.length), [allImages.length]);
+
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") lightboxPrev();
+      else if (e.key === "ArrowRight") lightboxNext();
+      else if (e.key === "Escape") setLightboxOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxOpen, lightboxPrev, lightboxNext]);
 
   return (
     <div className="min-h-screen bg-[#F4F1EA]">
@@ -109,12 +129,14 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
               </h1>
               <p className="text-white/40 mt-2 text-base">{space.headline}</p>
             </div>
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.05] rounded-xl border border-white/[0.07]">
                 <Star size={13} className="text-[#E8622A] fill-[#E8622A]" />
                 <span className="text-white font-semibold text-sm">{space.rating}</span>
                 <span className="text-white/35 text-xs">({space.reviewCount})</span>
               </div>
+              <ShareButton data={{ title: space.name, text: space.headline, slug: space.slug }} />
+              <FavouriteButton spaceId={space.id} />
             </div>
           </div>
         </div>
@@ -140,11 +162,12 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                   Virtual tour
                 </button>
                 <button
+                  onClick={() => setLightboxOpen(true)}
                   className="absolute bottom-4 right-4 flex items-center gap-2 px-3 py-2 bg-black/60 backdrop-blur-sm rounded-xl text-white text-xs font-medium hover:bg-black/80 transition-colors"
                   aria-label="View all photos"
                 >
                   <Maximize2 size={12} />
-                  All photos
+                  All photos ({allImages.length})
                 </button>
               </div>
             </ScrollReveal>
@@ -330,10 +353,21 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                 </Link>
                 <MagneticButton
                   onClick={() => setShowEnquiry(!showEnquiry)}
-                  className="w-full py-3.5 bg-[#F4F1EA] text-[#09090F] font-semibold rounded-2xl hover:bg-[#ebe8e1] transition-colors text-sm"
+                  className="w-full py-3.5 bg-[#F4F1EA] text-[#09090F] font-semibold rounded-2xl hover:bg-[#ebe8e1] transition-colors text-sm mb-3"
                 >
                   {showEnquiry ? "Hide enquiry" : "Send an enquiry"}
                 </MagneticButton>
+                <button
+                  onClick={() => comparing ? remove(space.id) : add(space.id)}
+                  className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-medium border transition-colors ${
+                    comparing
+                      ? "border-[#E8622A] text-[#E8622A] bg-[#E8622A]/[0.06]"
+                      : "border-[#09090F]/[0.08] text-[#09090F]/50 hover:border-[#E8622A] hover:text-[#E8622A]"
+                  }`}
+                >
+                  <Scale size={14} />
+                  {comparing ? "Remove from comparison" : "Add to comparison"}
+                </button>
 
                 {/* Social proof ticker */}
                 <div className="mt-4 h-8 overflow-hidden">
@@ -397,6 +431,64 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
           </div>
         </div>
       </div>
+
+      {/* Lightbox */}
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-[#09090F]/98 backdrop-blur-xl flex flex-col"
+          onClick={() => setLightboxOpen(false)}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 shrink-0" onClick={e => e.stopPropagation()}>
+            <span className="text-white/40 text-sm">{activeImage + 1} / {allImages.length}</span>
+            <button
+              onClick={() => setLightboxOpen(false)}
+              className="flex items-center gap-2 text-white/50 hover:text-white transition-colors text-sm"
+            >
+              <X size={16} /> Close
+            </button>
+          </div>
+
+          {/* Main image */}
+          <div className="flex-1 flex items-center justify-center px-16 relative" onClick={e => e.stopPropagation()}>
+            <button
+              onClick={lightboxPrev}
+              className="absolute left-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+              aria-label="Previous photo"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <img
+              key={activeImage}
+              src={allImages[activeImage]}
+              alt={`${space.name} — photo ${activeImage + 1}`}
+              className="max-w-full max-h-full object-contain rounded-2xl space-img"
+            />
+            <button
+              onClick={lightboxNext}
+              className="absolute right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+              aria-label="Next photo"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+
+          {/* Thumbnail strip */}
+          <div className="shrink-0 px-6 py-4 flex gap-2 overflow-x-auto justify-center" onClick={e => e.stopPropagation()}>
+            {allImages.map((img, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveImage(i)}
+                className={`shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${
+                  i === activeImage ? "border-[#E8622A]" : "border-transparent opacity-40 hover:opacity-70"
+                }`}
+              >
+                <img src={img} alt="" className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Virtual tour modal */}
       {showVirtualTour && (

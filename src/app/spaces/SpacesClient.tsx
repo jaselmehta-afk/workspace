@@ -1,12 +1,21 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback, Suspense } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { Search, MapPin, SlidersHorizontal, X, Star, ArrowRight, Grid3X3, List, Wifi, Coffee, Bike, Zap, Dog, Mic } from "lucide-react";
+import { Search, MapPin, SlidersHorizontal, X, Star, ArrowRight, Grid3X3, List, Map, Wifi, Coffee, Bike, Zap, Dog, Mic, Scale } from "lucide-react";
 import { spaces, Space, Area, amenityOptions } from "@/data/spaces";
 import FavouriteButton from "@/components/FavouriteButton";
 import ShareButton from "@/components/ShareButton";
+import { useCompare } from "@/context/CompareContext";
+
+const SpaceMap = dynamic(() => import("@/components/SpaceMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full rounded-2xl animate-pulse" style={{ backgroundColor: "var(--ws-surface)" }} />
+  ),
+});
 
 const areaOptions: { value: Area | ""; label: string }[] = [
   { value: "", label: "All London" },
@@ -49,8 +58,9 @@ function SpacesInner() {
   const [size, setSize] = useState(searchParams.get("size") || "");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
   const [sortBy, setSortBy] = useState("recommended");
+  const [mapActiveId, setMapActiveId] = useState<string | null>(null);
   const [returningArea, setReturningArea] = useState("");
 
   useEffect(() => {
@@ -244,37 +254,38 @@ function SpacesInner() {
             Showing <span className="font-semibold" style={{ color: "var(--ws-text)" }}>{filtered.length}</span> of {spaces.length} spaces
           </p>
           <div className="flex items-center gap-3">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="text-sm border rounded-lg px-3 py-2 focus:outline-none focus:border-[#E8622A]"
-              style={{ color: "var(--ws-text)", borderColor: "var(--ws-border)", backgroundColor: "var(--ws-surface)" }}
-            >
-              <option value="recommended">Recommended</option>
-              <option value="price-asc">Price: Low to high</option>
-              <option value="price-desc">Price: High to low</option>
-              <option value="rating">Top rated</option>
-            </select>
+            {viewMode !== "map" && (
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="text-sm border rounded-lg px-3 py-2 focus:outline-none focus:border-[#E8622A]"
+                style={{ color: "var(--ws-text)", borderColor: "var(--ws-border)", backgroundColor: "var(--ws-surface)" }}
+              >
+                <option value="recommended">Recommended</option>
+                <option value="price-asc">Price: Low to high</option>
+                <option value="price-desc">Price: High to low</option>
+                <option value="rating">Top rated</option>
+              </select>
+            )}
             <div className="flex gap-1 border rounded-lg overflow-hidden" style={{ borderColor: "var(--ws-border)" }}>
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`p-2 transition-colors ${viewMode === "grid" ? "bg-[#09090F] text-white" : "text-gray-400 hover:text-gray-600"}`}
-                style={viewMode !== "grid" ? { backgroundColor: "var(--ws-surface)" } : {}}
-              >
-                <Grid3X3 size={15} />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-2 transition-colors ${viewMode === "list" ? "bg-[#09090F] text-white" : "text-gray-400 hover:text-gray-600"}`}
-                style={viewMode !== "list" ? { backgroundColor: "var(--ws-surface)" } : {}}
-              >
-                <List size={15} />
-              </button>
+              {(["grid", "list", "map"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewMode(mode)}
+                  aria-label={`${mode} view`}
+                  className={`p-2 transition-colors ${viewMode === mode ? "bg-[#09090F] text-white" : "text-gray-400 hover:text-gray-600"}`}
+                  style={viewMode !== mode ? { backgroundColor: "var(--ws-surface)" } : {}}
+                >
+                  {mode === "grid" && <Grid3X3 size={15} />}
+                  {mode === "list" && <List size={15} />}
+                  {mode === "map"  && <Map size={15} />}
+                </button>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Space cards */}
+        {/* Space cards / map */}
         {filtered.length === 0 ? (
           <div className="text-center py-24">
             <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: "var(--ws-surface)" }}>
@@ -288,6 +299,29 @@ function SpacesInner() {
             >
               Clear all filters
             </button>
+          </div>
+        ) : viewMode === "map" ? (
+          /* ── Map + side-list split ── */
+          <div className="flex gap-4" style={{ height: "calc(100vh - 280px)", minHeight: 500 }}>
+            {/* Scrollable card column */}
+            <div className="w-80 shrink-0 overflow-y-auto space-y-3 pr-1">
+              {filtered.map(space => (
+                <SpaceCardMapSidebar
+                  key={space.id}
+                  space={space}
+                  active={mapActiveId === space.id}
+                  onHover={setMapActiveId}
+                />
+              ))}
+            </div>
+            {/* Sticky map */}
+            <div className="flex-1 rounded-2xl overflow-hidden sticky top-24">
+              <SpaceMap
+                spaces={filtered}
+                activeId={mapActiveId}
+                onMarkerClick={setMapActiveId}
+              />
+            </div>
           </div>
         ) : (
           <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" : "space-y-4"}>
@@ -314,27 +348,54 @@ export default function SpacesClient() {
 }
 
 function SpaceCardGrid({ space }: { space: Space }) {
+  const { add, remove, isComparing } = useCompare();
+  const comparing = isComparing(space.id);
+  const gallery = space.gallery.length > 1 ? space.gallery : [space.image];
+  const [imgIdx, setImgIdx] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
+
+  const startCycle = useCallback(() => {
+    if (gallery.length <= 1) return;
+    timerRef.current = setInterval(() => {
+      setImgIdx(i => (i + 1) % gallery.length);
+    }, 900);
+  }, [gallery]);
+
+  const stopCycle = useCallback(() => {
+    clearInterval(timerRef.current);
+    setImgIdx(0);
+  }, []);
+
   return (
     <article
       className="group rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col"
       style={{ backgroundColor: "var(--ws-surface)" }}
     >
-      {/* Image wrapper — Link covers the image, actions sit alongside it */}
-      <div className="relative h-52">
+      {/* Image wrapper */}
+      <div className="relative h-52" onMouseEnter={startCycle} onMouseLeave={stopCycle}>
         <Link href={`/spaces/${space.slug}`} className="block absolute inset-0 overflow-hidden">
           <img
-            src={space.image}
+            key={imgIdx}
+            src={gallery[imgIdx]}
             alt={space.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 space-img"
-            style={{ viewTransitionName: `space-img-${space.slug}` }}
+            style={{ viewTransitionName: imgIdx === 0 ? `space-img-${space.slug}` : undefined }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
           <div className="absolute top-3 left-3 flex gap-2">
             {space.isNew && <span className="px-2 py-1 bg-[#E8622A] text-white text-xs font-semibold rounded-md">New</span>}
             {space.grade && <span className="px-2 py-1 bg-[#C9A84C] text-white text-xs font-semibold rounded-md">Listed</span>}
           </div>
+          {/* Gallery dots */}
+          {gallery.length > 1 && (
+            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              {gallery.map((_, i) => (
+                <span key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${i === imgIdx ? "bg-white" : "bg-white/40"}`} />
+              ))}
+            </div>
+          )}
         </Link>
-        {/* Actions outside the anchor — valid HTML, no nesting */}
+        {/* Actions */}
         <div className="absolute top-3 right-3 z-10 flex gap-1.5">
           <ShareButton data={{ title: space.name, text: space.headline, slug: space.slug }} />
           <FavouriteButton spaceId={space.id} />
@@ -350,18 +411,26 @@ function SpaceCardGrid({ space }: { space: Space }) {
         <p className="text-sm line-clamp-1" style={{ color: "var(--ws-text-muted)" }}>{space.headline}</p>
       </Link>
 
-      {/* Footer — price + rating + view */}
+      {/* Footer */}
       <div className="px-5 pb-4 flex items-center justify-between border-t pt-3" style={{ borderColor: "var(--ws-border)" }}>
         <div>
           <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>From </span>
           <span className="font-bold" style={{ color: "var(--ws-text)" }}>£{space.priceFrom.toLocaleString()}</span>
           <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>/{space.priceUnit}</span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1">
             <Star size={10} className="text-[#C9A84C] fill-[#C9A84C]" />
             <span className="text-xs font-medium" style={{ color: "var(--ws-text-muted)" }}>{space.rating}</span>
           </div>
+          <button
+            onClick={() => comparing ? remove(space.id) : add(space.id)}
+            aria-label={comparing ? "Remove from comparison" : "Add to comparison"}
+            title={comparing ? "Remove from comparison" : "Compare this space"}
+            className={`transition-colors ${comparing ? "text-[#E8622A]" : "text-gray-300 hover:text-[#E8622A]"}`}
+          >
+            <Scale size={13} />
+          </button>
           <Link
             href={`/spaces/${space.slug}`}
             className="flex items-center gap-1 text-[#E8622A] text-xs font-semibold hover:gap-2 transition-all"
@@ -375,6 +444,9 @@ function SpaceCardGrid({ space }: { space: Space }) {
 }
 
 function SpaceCardList({ space }: { space: Space }) {
+  const { add, remove, isComparing } = useCompare();
+  const comparing = isComparing(space.id);
+
   return (
     <article
       className="group rounded-2xl overflow-hidden hover:shadow-lg transition-all flex flex-col sm:flex-row"
@@ -425,12 +497,62 @@ function SpaceCardList({ space }: { space: Space }) {
             <span className="font-bold text-lg" style={{ color: "var(--ws-text)" }}>£{space.priceFrom.toLocaleString()}</span>
             <span className="text-xs" style={{ color: "var(--ws-text-muted)" }}>/{space.priceUnit}</span>
           </div>
-          <Link
-            href={`/spaces/${space.slug}`}
-            className="flex items-center gap-2 px-4 py-2 bg-[#E8622A] text-white text-sm font-semibold rounded-lg hover:bg-[#d4561e] transition-colors"
-          >
-            View space <ArrowRight size={14} />
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => comparing ? remove(space.id) : add(space.id)}
+              aria-label={comparing ? "Remove from comparison" : "Add to comparison"}
+              title={comparing ? "Remove from comparison" : "Compare this space"}
+              className={`transition-colors ${comparing ? "text-[#E8622A]" : "text-gray-300 hover:text-[#E8622A]"}`}
+            >
+              <Scale size={15} />
+            </button>
+            <Link
+              href={`/spaces/${space.slug}`}
+              className="flex items-center gap-2 px-4 py-2 bg-[#E8622A] text-white text-sm font-semibold rounded-lg hover:bg-[#d4561e] transition-colors"
+            >
+              View space <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function SpaceCardMapSidebar({ space, active, onHover }: { space: Space; active: boolean; onHover: (id: string | null) => void }) {
+  return (
+    <article
+      onMouseEnter={() => onHover(space.id)}
+      onMouseLeave={() => onHover(null)}
+      className={`group flex gap-3 rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 p-3 ${
+        active ? "shadow-lg ring-2 ring-[#E8622A]" : "hover:shadow-md"
+      }`}
+      style={{ backgroundColor: "var(--ws-surface)" }}
+    >
+      {/* Thumbnail */}
+      <Link href={`/spaces/${space.slug}`} className="shrink-0 w-20 h-20 rounded-xl overflow-hidden block">
+        <img src={space.image} alt={space.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+      </Link>
+
+      {/* Info */}
+      <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+        <div>
+          <div className="flex items-center gap-1 text-[#E8622A] text-[10px] font-medium mb-0.5">
+            <MapPin size={9} />{space.neighbourhood}
+          </div>
+          <Link href={`/spaces/${space.slug}`} className="block">
+            <h3 className="text-sm font-semibold leading-snug truncate" style={{ color: "var(--ws-text)" }}>{space.name}</h3>
           </Link>
+        </div>
+        <div className="flex items-center justify-between mt-1">
+          <div>
+            <span className="text-xs font-bold" style={{ color: "var(--ws-text)" }}>£{space.priceFrom.toLocaleString()}</span>
+            <span className="text-[10px]" style={{ color: "var(--ws-text-muted)" }}>/{space.priceUnit}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Star size={9} className="text-[#C9A84C] fill-[#C9A84C]" />
+            <span className="text-[10px] font-medium" style={{ color: "var(--ws-text-muted)" }}>{space.rating}</span>
+          </div>
         </div>
       </div>
     </article>

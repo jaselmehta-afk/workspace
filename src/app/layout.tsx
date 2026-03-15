@@ -6,6 +6,8 @@ import CustomCursor from "@/components/CustomCursor";
 import PageTransition from "@/components/PageTransition";
 import { FavouritesProvider } from "@/context/FavouritesContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { CompareProvider } from "@/context/CompareContext";
+import CompareBar from "@/components/CompareBar";
 
 export const metadata: Metadata = {
   title: "Workspace — Flexible, Inspiring Space To Grow Your Business",
@@ -43,12 +45,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="antialiased" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
         <ThemeProvider>
           <FavouritesProvider>
+          <CompareProvider>
             <CustomCursor />
             <Navigation />
             <PageTransition>
               <main>{children}</main>
             </PageTransition>
             <Footer />
+            <CompareBar />
+          </CompareProvider>
           </FavouritesProvider>
         </ThemeProvider>
       </body>
