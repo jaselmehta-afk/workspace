@@ -481,33 +481,38 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
                 </div>
               )}
 
-              {/* Talk */}
-              <div className="rounded-lg border border-[#09090F]/[0.07] bg-white overflow-hidden">
-                <div className="px-5 py-4 flex items-start gap-4">
-                  {/* Avatar stack — implies a real team */}
-                  <div className="flex -space-x-2 shrink-0 mt-0.5">
-                    {["https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=64&q=80",
-                      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&q=80"].map((src, i) => (
-                      <img key={i} src={src} alt="" className="w-7 h-7 rounded-full object-cover border-2 border-white" />
-                    ))}
+              {/* Talk to the team */}
+              <div className="rounded-lg bg-[#09090F] overflow-hidden">
+                <div className="px-5 pt-5 pb-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    {/* Avatar stack */}
+                    <div className="flex -space-x-2 shrink-0">
+                      {["https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=64&q=80",
+                        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&q=80"].map((src, i) => (
+                        <img key={i} src={src} alt="" className="w-8 h-8 rounded-full object-cover border-2 border-[#09090F]" />
+                      ))}
+                    </div>
+                    <div>
+                      <p className="text-white text-sm font-semibold leading-tight" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+                        Prefer to talk?
+                      </p>
+                      <p className="text-white/45 text-[11px]">Mon–Fri, 9am–6pm</p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-[#09090F]/40 mb-0.5">
-                      Talk to the team
-                    </p>
-                    <p className="text-xs text-[#09090F]/55 leading-snug">
-                      We&apos;re here Mon–Fri, 9am–6pm
-                    </p>
-                  </div>
+                  <p className="text-white/55 text-xs leading-relaxed">
+                    Our team knows every building personally. Call us and we&apos;ll match you to the right space in minutes.
+                  </p>
                 </div>
-                <div className="border-t border-[#09090F]/[0.05] px-5 py-3">
+                <div className="border-t border-white/[0.08] px-5 py-3">
                   <a
                     href="tel:02071383307"
-                    className="group flex items-center gap-2 text-[#09090F] font-semibold text-base hover:text-[#E8622A] transition-colors"
+                    className="group flex items-center gap-2.5 text-white font-semibold text-sm hover:text-[#E8622A] transition-colors duration-150"
                   >
-                    <Phone size={14} className="text-[#E8622A] shrink-0" />
+                    <div className="w-7 h-7 rounded-lg bg-[#E8622A]/15 flex items-center justify-center shrink-0 group-hover:bg-[#E8622A]/25 transition-colors">
+                      <Phone size={13} className="text-[#E8622A]" />
+                    </div>
                     020 7138 3307
-                    <ArrowRight size={13} className="ml-auto text-[#09090F]/20 group-hover:text-[#E8622A] group-hover:translate-x-1 transition-all duration-150" />
+                    <ArrowRight size={13} className="ml-auto text-white/25 group-hover:text-[#E8622A] group-hover:translate-x-1 transition-all duration-150" />
                   </a>
                 </div>
               </div>

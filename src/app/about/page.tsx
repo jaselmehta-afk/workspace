@@ -107,24 +107,24 @@ export default function AboutPage() {
               35+ years in London
             </h2>
           </div>
-          <div className="space-y-0">
-            {timeline.map((item, i) => (
-              <div key={item.year} className="flex items-start gap-0">
-                {/* Year label */}
-                <div className="w-16 shrink-0 text-right pr-4 pt-1.5">
-                  <span className="font-bold text-[#E8622A] text-sm">{item.year}</span>
+          {/* Vertical line runs the full height, dots sit on top of it */}
+          <div className="relative">
+            <div className="absolute top-2 bottom-2 w-px bg-[#09090F]/10" style={{ left: "calc(4rem + 0.625rem)" }} />
+
+            {timeline.map((item) => (
+              <div key={item.year} className="relative flex items-start mb-6 last:mb-0">
+                {/* Year */}
+                <div className="w-16 shrink-0 text-right pr-4 pt-0.5">
+                  <span className="font-bold text-[#E8622A] text-sm tabular-nums">{item.year}</span>
                 </div>
 
-                {/* Dot + vertical connector */}
-                <div className="shrink-0 flex flex-col items-center w-6">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#E8622A] ring-4 ring-[#F4F1EA] shrink-0 mt-1.5" />
-                  {i < timeline.length - 1 && (
-                    <div className="w-px flex-1 bg-[#09090F]/10 mt-1 min-h-[2.5rem]" />
-                  )}
+                {/* Dot */}
+                <div className="shrink-0 w-5 flex justify-center pt-1 z-10">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#E8622A] ring-4 ring-[#F4F1EA]" />
                 </div>
 
-                {/* Content card */}
-                <div className="flex-1 pl-5 pb-7">
+                {/* Content */}
+                <div className="flex-1 pl-4">
                   <div className="bg-white rounded-xl px-5 py-4 shadow-sm">
                     <p className="text-sm text-[#09090F]/65 leading-relaxed">{item.event}</p>
                   </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MapPin, Users, Clock, ArrowRight } from "lucide-react";
+import { MapPin, Clock, ArrowRight } from "lucide-react";
 
 const events = [
   {
@@ -76,12 +76,12 @@ const events = [
   },
 ];
 
-// Solid backgrounds — always legible whether over image or white card
+// Solid backgrounds — always legible on any card background
 const categoryStyles: Record<string, { bg: string; text: string }> = {
-  Networking: { bg: "bg-[#E8622A]",    text: "text-white" },
-  Community:  { bg: "bg-[#7B9E87]",    text: "text-white" },
-  Workshop:   { bg: "bg-[#C9A84C]",    text: "text-white" },
-  Panel:      { bg: "bg-[#4A6FA5]",    text: "text-white" },
+  Networking: { bg: "bg-[#E8622A]",  text: "text-white" },
+  Community:  { bg: "bg-[#7B9E87]",  text: "text-white" },
+  Workshop:   { bg: "bg-[#C9A84C]",  text: "text-white" },
+  Panel:      { bg: "bg-[#4A6FA5]",  text: "text-white" },
 };
 
 export default function EventsPage() {
@@ -125,7 +125,6 @@ export default function EventsPage() {
             const day = date.getDate();
             const month = date.toLocaleString("en-GB", { month: "short" }).toUpperCase();
             const spotsLeft = event.capacity - event.attending;
-            const pctFull = Math.round((event.attending / event.capacity) * 100);
             const catStyle = categoryStyles[event.category] ?? { bg: "bg-[#09090F]", text: "text-white" };
 
             return (
@@ -138,9 +137,9 @@ export default function EventsPage() {
                     alt={event.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
-                  {/* Category badge — top left, solid background */}
+                  {/* Category badge — top left, always solid */}
                   <div className="absolute top-3 left-3">
                     <span className={`px-2.5 py-1 text-[10px] font-semibold tracking-wide uppercase rounded-md ${catStyle.bg} ${catStyle.text}`}>
                       {event.category}
@@ -152,6 +151,20 @@ export default function EventsPage() {
                     <div className="text-xl font-bold text-[#09090F] leading-none">{day}</div>
                     <div className="text-[9px] font-semibold tracking-wider text-[#09090F]/45 uppercase mt-0.5">{month}</div>
                   </div>
+
+                  {/* Spots left — bottom left, over image */}
+                  {spotsLeft > 0 && spotsLeft <= 15 && (
+                    <div className="absolute bottom-3 left-3">
+                      <span className="px-2 py-1 text-[10px] font-semibold text-white bg-black/50 backdrop-blur-sm rounded-md">
+                        {spotsLeft} spots left
+                      </span>
+                    </div>
+                  )}
+                  {spotsLeft === 0 && (
+                    <div className="absolute bottom-3 left-3">
+                      <span className="px-2 py-1 text-[10px] font-semibold text-white bg-red-500/80 rounded-md">Sold out</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Content */}
@@ -162,39 +175,24 @@ export default function EventsPage() {
                   >
                     {event.title}
                   </h3>
-                  <p className="text-xs text-[#09090F]/50 mb-3 line-clamp-2 leading-relaxed flex-1">{event.description}</p>
+                  <p className="text-xs text-[#09090F]/50 mb-4 line-clamp-2 leading-relaxed flex-1">{event.description}</p>
 
-                  {/* Metadata — compact, two rows */}
-                  <div className="space-y-1.5 mb-3">
+                  {/* Metadata */}
+                  <div className="flex flex-col gap-1 mb-4">
                     <div className="flex items-center gap-1.5 text-[11px] text-[#09090F]/45">
                       <Clock size={11} className="shrink-0" />
                       <span>{event.time}</span>
-                      <span className="mx-1 opacity-40">·</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[11px] text-[#09090F]/45">
                       <MapPin size={11} className="shrink-0" />
                       <span className="truncate">{event.location}</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-[#09090F]/45">
-                      <Users size={11} className="shrink-0" />
-                      <span>{event.attending} attending</span>
-                      {spotsLeft > 0
-                        ? <span className="text-[#7B9E87] font-medium">· {spotsLeft} spots left</span>
-                        : <span className="text-red-400 font-medium">· Sold out</span>
-                      }
-                    </div>
                   </div>
 
-                  {/* Progress bar */}
-                  <div className="w-full bg-[#09090F]/[0.06] rounded-full h-1 mb-4">
-                    <div
-                      className={`h-1 rounded-full transition-all ${pctFull >= 90 ? "bg-[#E8622A]" : "bg-[#7B9E87]"}`}
-                      style={{ width: `${pctFull}%` }}
-                    />
-                  </div>
-
-                  {/* Price + register — inline, balanced */}
-                  <div className="flex items-center justify-between gap-3">
+                  {/* Price left · Register right — register is small text link, not loud button */}
+                  <div className="flex items-center justify-between pt-3 border-t border-[#09090F]/[0.06]">
                     <div className="flex items-baseline gap-1">
-                      <span className={`font-semibold text-sm ${event.free ? "text-[#7B9E87]" : "text-[#09090F]"}`}>
+                      <span className={`font-semibold text-base ${event.free ? "text-[#7B9E87]" : "text-[#09090F]"}`}>
                         {event.price}
                       </span>
                       {event.free && (
@@ -203,14 +201,14 @@ export default function EventsPage() {
                     </div>
                     <button
                       disabled={spotsLeft === 0}
-                      className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-150 shrink-0 ${
+                      className={`group/btn inline-flex items-center gap-1 text-xs font-semibold transition-all duration-150 ${
                         spotsLeft > 0
-                          ? "bg-[#E8622A]/10 text-[#E8622A] hover:bg-[#E8622A] hover:text-white"
-                          : "bg-[#09090F]/[0.05] text-[#09090F]/30 cursor-not-allowed"
+                          ? "text-[#E8622A] hover:gap-2"
+                          : "text-[#09090F]/25 cursor-not-allowed"
                       }`}
                     >
                       {spotsLeft > 0 ? (
-                        <>Register <ArrowRight size={12} /></>
+                        <>Register <ArrowRight size={12} className="group-hover/btn:translate-x-0.5 transition-transform duration-150" /></>
                       ) : "Sold out"}
                     </button>
                   </div>

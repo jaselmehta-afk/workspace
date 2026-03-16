@@ -55,21 +55,21 @@ export default function ComparisonSection() {
               } hover:bg-[#F4F1EA]/70`}
             >
               {/* Label */}
-              <div className="px-6 py-4 flex items-center">
+              <div className="px-5 py-3 flex items-center">
                 <span className="text-[10px] font-semibold tracking-[0.15em] uppercase text-[#09090F]/35">
                   {row.label}
                 </span>
               </div>
 
               {/* Traditional */}
-              <div className="px-6 py-4 flex items-center gap-2.5 border-l border-[#09090F]/[0.04]">
-                <span className="text-[#09090F]/25 text-sm leading-none shrink-0">✕</span>
+              <div className="px-5 py-3 flex items-center gap-2 border-l border-[#09090F]/[0.04]">
+                <span className="text-[#09090F]/25 text-xs leading-none shrink-0">✕</span>
                 <span className="text-sm text-[#09090F]/45">{row.old}</span>
               </div>
 
               {/* Workspace */}
-              <div className="px-6 py-4 flex items-center gap-2.5 border-l border-[#09090F]/[0.04]">
-                <span className="text-[#7B9E87] text-sm leading-none shrink-0">✓</span>
+              <div className="px-5 py-3 flex items-center gap-2 border-l border-[#09090F]/[0.04]">
+                <span className="text-[#7B9E87] text-xs leading-none shrink-0">✓</span>
                 <span className="text-sm font-medium text-[#09090F]">{row.ws}</span>
               </div>
             </div>
