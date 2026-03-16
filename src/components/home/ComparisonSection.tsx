@@ -13,7 +13,7 @@ const rows = [
 export default function ComparisonSection() {
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F4F1EA]">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-4xl mx-auto">
 
         <div className="mb-12">
           <p className="text-[10px] font-semibold tracking-[0.28em] uppercase text-[#09090F]/30 mb-4">
@@ -29,51 +29,54 @@ export default function ComparisonSection() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-          {/* Old way — dark card, muted */}
-          <div className="rounded-2xl bg-[#09090F] p-8">
-            <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-white/45 mb-8">
-              Traditional lease
-            </p>
-            <ul className="space-y-5">
-              {rows.map(row => (
-                <li key={row.label} className="flex items-start gap-3">
-                  <span className="text-white/35 text-base leading-none mt-px shrink-0">✕</span>
-                  <div>
-                    <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-white/40 mb-1">
-                      {row.label}
-                    </div>
-                    <div className="text-white/60 text-sm">{row.old}</div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+        {/* Comparison table */}
+        <div className="rounded-2xl overflow-hidden border border-[#09090F]/[0.06] shadow-sm">
+          {/* Header */}
+          <div className="grid grid-cols-[1.2fr,1fr,1fr] bg-[#09090F]">
+            <div className="px-6 py-4" />
+            <div className="px-6 py-4">
+              <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-white/40">
+                Traditional lease
+              </span>
+            </div>
+            <div className="px-6 py-4">
+              <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#E8622A]">
+                Workspace
+              </span>
+            </div>
           </div>
 
-          {/* Workspace — white card, confident */}
-          <div className="rounded-2xl bg-white p-8">
-            <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[#E8622A] mb-8">
-              Workspace
-            </p>
-            <ul className="space-y-5">
-              {rows.map(row => (
-                <li key={row.label} className="flex items-start gap-3">
-                  <span className="text-[#7B9E87] text-base leading-none mt-px shrink-0">✓</span>
-                  <div>
-                    <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#09090F]/30 mb-1">
-                      {row.label}
-                    </div>
-                    <div className="text-[#09090F] text-sm font-medium">{row.ws}</div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Rows */}
+          {rows.map((row, i) => (
+            <div
+              key={row.label}
+              className={`grid grid-cols-[1.2fr,1fr,1fr] group transition-colors ${
+                i % 2 === 0 ? "bg-white" : "bg-[#FAFAF8]"
+              } hover:bg-[#F4F1EA]/70`}
+            >
+              {/* Label */}
+              <div className="px-6 py-4 flex items-center">
+                <span className="text-[10px] font-semibold tracking-[0.15em] uppercase text-[#09090F]/35">
+                  {row.label}
+                </span>
+              </div>
 
+              {/* Traditional */}
+              <div className="px-6 py-4 flex items-center gap-2.5 border-l border-[#09090F]/[0.04]">
+                <span className="text-[#09090F]/25 text-sm leading-none shrink-0">✕</span>
+                <span className="text-sm text-[#09090F]/45">{row.old}</span>
+              </div>
+
+              {/* Workspace */}
+              <div className="px-6 py-4 flex items-center gap-2.5 border-l border-[#09090F]/[0.04]">
+                <span className="text-[#7B9E87] text-sm leading-none shrink-0">✓</span>
+                <span className="text-sm font-medium text-[#09090F]">{row.ws}</span>
+              </div>
+            </div>
+          ))}
         </div>
 
-        <div className="mt-10 flex items-center gap-6">
+        <div className="mt-8 flex items-center gap-6">
           <Link
             href="/spaces"
             className="group inline-flex items-center gap-2 text-[#09090F] text-sm font-semibold hover:text-[#E8622A] transition-colors"

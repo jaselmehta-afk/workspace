@@ -107,23 +107,30 @@ export default function AboutPage() {
               35+ years in London
             </h2>
           </div>
-          <div className="relative">
-            <div className="absolute left-16 top-0 bottom-0 w-px bg-gray-200" />
-            <div className="space-y-8">
-              {timeline.map((item) => (
-                <div key={item.year} className="flex gap-8 items-start">
-                  <div className="w-16 shrink-0 text-right">
-                    <span className="font-bold text-[#E8622A] text-sm">{item.year}</span>
-                  </div>
-                  <div className="relative">
-                    <div className="w-3 h-3 bg-[#E8622A] rounded-full absolute -left-[1.625rem] top-1" />
-                    <div className="bg-white rounded-xl p-4 shadow-sm">
-                      <p className="text-sm text-gray-600 leading-relaxed">{item.event}</p>
-                    </div>
+          <div className="space-y-0">
+            {timeline.map((item, i) => (
+              <div key={item.year} className="flex items-start gap-0">
+                {/* Year label */}
+                <div className="w-16 shrink-0 text-right pr-4 pt-1.5">
+                  <span className="font-bold text-[#E8622A] text-sm">{item.year}</span>
+                </div>
+
+                {/* Dot + vertical connector */}
+                <div className="shrink-0 flex flex-col items-center w-6">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#E8622A] ring-4 ring-[#F4F1EA] shrink-0 mt-1.5" />
+                  {i < timeline.length - 1 && (
+                    <div className="w-px flex-1 bg-[#09090F]/10 mt-1 min-h-[2.5rem]" />
+                  )}
+                </div>
+
+                {/* Content card */}
+                <div className="flex-1 pl-5 pb-7">
+                  <div className="bg-white rounded-xl px-5 py-4 shadow-sm">
+                    <p className="text-sm text-[#09090F]/65 leading-relaxed">{item.event}</p>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

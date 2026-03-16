@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, MapPin, Users, Clock, ArrowRight, Filter } from "lucide-react";
+import { MapPin, Users, Clock, ArrowRight } from "lucide-react";
 
 const events = [
   {
     id: "1",
     title: "Startup Pitch Night",
-    description: "Ten founders. Five minutes each. One panel of investors. Whether you&apos;re pitching or watching, it&apos;s an unmissable evening of ambition and candour.",
+    description: "Ten founders. Five minutes each. One panel of investors. Whether you're pitching or watching, it's an unmissable evening of ambition and candour.",
     date: "2026-03-18",
     time: "6:00pm – 9:00pm",
     location: "Central House, Shoreditch",
@@ -76,11 +76,12 @@ const events = [
   },
 ];
 
-const categoryColors: Record<string, string> = {
-  Networking: "bg-[#E8622A]/10 text-[#E8622A]",
-  Community: "bg-[#7B9E87]/10 text-[#7B9E87]",
-  Workshop: "bg-[#C9A84C]/10 text-[#C9A84C]",
-  Panel: "bg-blue-100 text-blue-600",
+// Solid backgrounds — always legible whether over image or white card
+const categoryStyles: Record<string, { bg: string; text: string }> = {
+  Networking: { bg: "bg-[#E8622A]",    text: "text-white" },
+  Community:  { bg: "bg-[#7B9E87]",    text: "text-white" },
+  Workshop:   { bg: "bg-[#C9A84C]",    text: "text-white" },
+  Panel:      { bg: "bg-[#4A6FA5]",    text: "text-white" },
 };
 
 export default function EventsPage() {
@@ -107,8 +108,10 @@ export default function EventsPage() {
             <button
               key={cat}
               onClick={() => setFilter(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors ${
-                filter === cat ? "bg-[#E8622A] text-white" : "bg-white text-gray-600 hover:bg-gray-100"
+              className={`px-4 py-1.5 rounded-full text-sm font-medium capitalize transition-colors ${
+                filter === cat
+                  ? "bg-[#09090F] text-white"
+                  : "bg-white text-[#09090F]/60 hover:bg-[#09090F]/[0.05] hover:text-[#09090F]"
               }`}
             >
               {cat === "all" ? "All events" : cat}
@@ -116,75 +119,101 @@ export default function EventsPage() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map((event) => {
             const date = new Date(event.date);
             const day = date.getDate();
-            const month = date.toLocaleString("en-GB", { month: "short" });
+            const month = date.toLocaleString("en-GB", { month: "short" }).toUpperCase();
             const spotsLeft = event.capacity - event.attending;
+            const pctFull = Math.round((event.attending / event.capacity) * 100);
+            const catStyle = categoryStyles[event.category] ?? { bg: "bg-[#09090F]", text: "text-white" };
 
             return (
-              <div key={event.id} className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer">
-                <div className="relative h-48 overflow-hidden">
+              <div key={event.id} className="bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer flex flex-col">
+
+                {/* Image */}
+                <div className="relative h-44 overflow-hidden shrink-0">
                   <img
                     src={event.image}
                     alt={event.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                  <div className="absolute top-4 left-4">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-md ${categoryColors[event.category] || "bg-gray-100 text-gray-600"}`}>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+
+                  {/* Category badge — top left, solid background */}
+                  <div className="absolute top-3 left-3">
+                    <span className={`px-2.5 py-1 text-[10px] font-semibold tracking-wide uppercase rounded-md ${catStyle.bg} ${catStyle.text}`}>
                       {event.category}
                     </span>
                   </div>
-                  <div className="absolute top-4 right-4 bg-white rounded-xl px-3 py-2 text-center shadow">
+
+                  {/* Date badge — top right */}
+                  <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-xl px-3 py-2 text-center shadow-sm min-w-[48px]">
                     <div className="text-xl font-bold text-[#09090F] leading-none">{day}</div>
-                    <div className="text-xs text-gray-400 uppercase">{month}</div>
-                  </div>
-                  <div className="absolute bottom-4 left-4">
-                    <span className={`px-3 py-1 rounded-lg text-white text-sm font-bold ${event.free ? "bg-[#7B9E87]" : "bg-[#E8622A]"}`}>
-                      {event.price}
-                    </span>
+                    <div className="text-[9px] font-semibold tracking-wider text-[#09090F]/45 uppercase mt-0.5">{month}</div>
                   </div>
                 </div>
 
-                <div className="p-5">
-                  <h3 className="font-semibold text-[#09090F] text-lg mb-2 group-hover:text-[#E8622A] transition-colors" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>
+                {/* Content */}
+                <div className="p-5 flex flex-col flex-1">
+                  <h3
+                    className="font-semibold text-[#09090F] text-base mb-1.5 group-hover:text-[#E8622A] transition-colors leading-snug"
+                    style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
+                  >
                     {event.title}
                   </h3>
-                  <p className="text-sm text-gray-500 mb-4 line-clamp-2">{event.description}</p>
+                  <p className="text-xs text-[#09090F]/50 mb-3 line-clamp-2 leading-relaxed flex-1">{event.description}</p>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center gap-2 text-xs text-gray-400">
-                      <Clock size={12} />{event.time}
+                  {/* Metadata — compact, two rows */}
+                  <div className="space-y-1.5 mb-3">
+                    <div className="flex items-center gap-1.5 text-[11px] text-[#09090F]/45">
+                      <Clock size={11} className="shrink-0" />
+                      <span>{event.time}</span>
+                      <span className="mx-1 opacity-40">·</span>
+                      <MapPin size={11} className="shrink-0" />
+                      <span className="truncate">{event.location}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-gray-400">
-                      <MapPin size={12} />{event.location}
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-gray-400">
-                      <Users size={12} />{event.attending} attending · {spotsLeft > 0 ? `${spotsLeft} spots left` : "Sold out"}
+                    <div className="flex items-center gap-1.5 text-[11px] text-[#09090F]/45">
+                      <Users size={11} className="shrink-0" />
+                      <span>{event.attending} attending</span>
+                      {spotsLeft > 0
+                        ? <span className="text-[#7B9E87] font-medium">· {spotsLeft} spots left</span>
+                        : <span className="text-red-400 font-medium">· Sold out</span>
+                      }
                     </div>
                   </div>
 
-                  <div className="w-full bg-gray-100 rounded-full h-1.5 mb-4">
+                  {/* Progress bar */}
+                  <div className="w-full bg-[#09090F]/[0.06] rounded-full h-1 mb-4">
                     <div
-                      className="bg-[#E8622A] h-1.5 rounded-full transition-all"
-                      style={{ width: `${(event.attending / event.capacity) * 100}%` }}
+                      className={`h-1 rounded-full transition-all ${pctFull >= 90 ? "bg-[#E8622A]" : "bg-[#7B9E87]"}`}
+                      style={{ width: `${pctFull}%` }}
                     />
                   </div>
 
-                  <button
-                    disabled={spotsLeft === 0}
-                    className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
-                      spotsLeft > 0
-                        ? "bg-[#E8622A] text-white hover:bg-[#d4561e]"
-                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    }`}
-                  >
-                    {spotsLeft > 0 ? (
-                      <>Register now <ArrowRight size={14} /></>
-                    ) : "Sold out — join waitlist"}
-                  </button>
+                  {/* Price + register — inline, balanced */}
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-baseline gap-1">
+                      <span className={`font-semibold text-sm ${event.free ? "text-[#7B9E87]" : "text-[#09090F]"}`}>
+                        {event.price}
+                      </span>
+                      {event.free && (
+                        <span className="text-[11px] text-[#09090F]/35">entry</span>
+                      )}
+                    </div>
+                    <button
+                      disabled={spotsLeft === 0}
+                      className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-150 shrink-0 ${
+                        spotsLeft > 0
+                          ? "bg-[#E8622A]/10 text-[#E8622A] hover:bg-[#E8622A] hover:text-white"
+                          : "bg-[#09090F]/[0.05] text-[#09090F]/30 cursor-not-allowed"
+                      }`}
+                    >
+                      {spotsLeft > 0 ? (
+                        <>Register <ArrowRight size={12} /></>
+                      ) : "Sold out"}
+                    </button>
+                  </div>
                 </div>
               </div>
             );

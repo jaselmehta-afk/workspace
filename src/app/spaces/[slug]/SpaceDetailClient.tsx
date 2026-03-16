@@ -482,14 +482,34 @@ export default function SpaceDetailClient({ space, similar }: { space: Space; si
               )}
 
               {/* Talk */}
-              <div className="bg-[#09090F] rounded-lg p-6">
-                <p className="text-white/65 text-[11px] font-medium tracking-[0.15em] uppercase mb-3">Prefer to talk?</p>
-                <a href="tel:02071383307"
-                  className="flex items-center gap-2 text-white font-semibold text-lg hover:text-[#E8622A] transition-colors">
-                  <ArrowUpRight size={16} className="text-[#E8622A] shrink-0" />
-                  020 7138 3307
-                </a>
-                <p className="text-white/50 text-xs mt-1">Mon–Fri, 9am–6pm</p>
+              <div className="rounded-lg border border-[#09090F]/[0.07] bg-white overflow-hidden">
+                <div className="px-5 py-4 flex items-start gap-4">
+                  {/* Avatar stack — implies a real team */}
+                  <div className="flex -space-x-2 shrink-0 mt-0.5">
+                    {["https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=64&q=80",
+                      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&q=80"].map((src, i) => (
+                      <img key={i} src={src} alt="" className="w-7 h-7 rounded-full object-cover border-2 border-white" />
+                    ))}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-[#09090F]/40 mb-0.5">
+                      Talk to the team
+                    </p>
+                    <p className="text-xs text-[#09090F]/55 leading-snug">
+                      We&apos;re here Mon–Fri, 9am–6pm
+                    </p>
+                  </div>
+                </div>
+                <div className="border-t border-[#09090F]/[0.05] px-5 py-3">
+                  <a
+                    href="tel:02071383307"
+                    className="group flex items-center gap-2 text-[#09090F] font-semibold text-base hover:text-[#E8622A] transition-colors"
+                  >
+                    <Phone size={14} className="text-[#E8622A] shrink-0" />
+                    020 7138 3307
+                    <ArrowRight size={13} className="ml-auto text-[#09090F]/20 group-hover:text-[#E8622A] group-hover:translate-x-1 transition-all duration-150" />
+                  </a>
+                </div>
               </div>
             </div>
           </div>

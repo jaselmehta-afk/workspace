@@ -72,8 +72,8 @@ export default function CommunitySection() {
               <h3 className="text-xs font-semibold tracking-[0.15em] uppercase text-[#09090F]/40">
                 Upcoming events
               </h3>
-              <Link href="/community/events" className="text-xs text-[#E8622A] hover:underline flex items-center gap-1 font-medium">
-                All events <ArrowRight size={11} />
+              <Link href="/community/events" className="group text-xs text-[#E8622A] flex items-center gap-1 font-medium hover:gap-1.5 transition-all duration-150">
+                All events <ArrowRight size={11} className="group-hover:translate-x-1 transition-transform duration-150" />
               </Link>
             </div>
             <div className="space-y-2">
@@ -107,7 +107,7 @@ export default function CommunitySection() {
                     <p className="text-[11px] text-[#09090F]/50 mt-0.5 truncate">{event.meta}</p>
                   </div>
 
-                  <ArrowRight size={13} className="text-[#09090F]/25 group-hover:text-[#E8622A] group-hover:translate-x-0.5 transition-all shrink-0" />
+                  <ArrowRight size={13} className="text-[#09090F]/25 group-hover:text-[#E8622A] group-hover:translate-x-1.5 transition-all duration-150 shrink-0" />
                 </Link>
               ))}
             </div>
@@ -119,8 +119,8 @@ export default function CommunitySection() {
               <h3 className="text-xs font-semibold tracking-[0.15em] uppercase text-[#09090F]/40">
                 From the content hub
               </h3>
-              <Link href="/content-hub" className="text-xs text-[#E8622A] hover:underline flex items-center gap-1 font-medium">
-                All articles <ArrowRight size={11} />
+              <Link href="/content-hub" className="group text-xs text-[#E8622A] flex items-center gap-1 font-medium hover:gap-1.5 transition-all duration-150">
+                All articles <ArrowRight size={11} className="group-hover:translate-x-1 transition-transform duration-150" />
               </Link>
             </div>
             <div className="space-y-2">
@@ -148,7 +148,7 @@ export default function CommunitySection() {
                       <p className="text-[11px] text-[#09090F]/50 mt-0.5">{article.meta}</p>
                     </div>
 
-                    <ArrowRight size={13} className="text-[#09090F]/25 group-hover:text-[#E8622A] group-hover:translate-x-0.5 transition-all shrink-0" />
+                    <ArrowRight size={13} className="text-[#09090F]/25 group-hover:text-[#E8622A] group-hover:translate-x-1.5 transition-all duration-150 shrink-0" />
                   </Link>
                 );
               })}

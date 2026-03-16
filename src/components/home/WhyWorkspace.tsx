@@ -23,7 +23,7 @@ const reasons = [
     icon: Users2,
     title: "A thriving community",
     desc: "Join 4,000+ businesses, connect at events, collaborate in communal spaces, and tap into a network of London's best.",
-    color: "#09090F",
+    color: "#7B9E87",
   },
 ];
 
@@ -52,16 +52,19 @@ export default function WhyWorkspace() {
               <div
                 key={reason.title}
                 className={`rounded-2xl p-8 flex gap-6 ${
-                  i === 3 ? "bg-[#09090F] text-white" : "bg-white"
+                  i === 3
+                    ? "text-white"
+                    : "bg-white"
                 }`}
+                style={i === 3 ? { background: "linear-gradient(135deg, #7B9E87 0%, #4e7a5e 100%)" } : {}}
               >
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 mt-1"
                   style={{
-                    backgroundColor: i === 3 ? "rgba(255,255,255,0.1)" : `${reason.color}15`,
+                    backgroundColor: i === 3 ? "rgba(255,255,255,0.18)" : `${reason.color}15`,
                   }}
                 >
-                  <Icon size={22} style={{ color: i === 3 ? "#E8622A" : reason.color }} />
+                  <Icon size={22} style={{ color: i === 3 ? "white" : reason.color }} />
                 </div>
                 <div>
                   <h3
@@ -70,7 +73,7 @@ export default function WhyWorkspace() {
                   >
                     {reason.title}
                   </h3>
-                  <p className={`text-sm leading-relaxed ${i === 3 ? "text-white/70" : "text-[#09090F]/60"}`}>
+                  <p className={`text-sm leading-relaxed ${i === 3 ? "text-white/80" : "text-[#09090F]/60"}`}>
                     {reason.desc}
                   </p>
                 </div>
