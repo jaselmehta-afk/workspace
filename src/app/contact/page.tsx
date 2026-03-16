@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Phone, Mail, MapPin, Clock, MessageSquare, Building2, Briefcase, Star } from "lucide-react";
 
 const enquiryTypes = [
@@ -105,9 +106,9 @@ export default function ContactPage() {
                 </div>
                 <h2 className="text-2xl text-[#09090F] mb-3" style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}>Message received!</h2>
                 <p className="text-gray-500 mb-6">Our team will be in touch within 24 hours. In the meantime, feel free to browse our available spaces.</p>
-                <a href="/spaces" className="inline-flex items-center gap-2 px-6 py-3 bg-[#E8622A] text-white font-semibold rounded-xl hover:bg-[#d4561e] transition-colors">
+                <Link href="/spaces" className="inline-flex items-center gap-2 px-6 py-3 bg-[#E8622A] text-white font-semibold rounded-xl hover:bg-[#d4561e] transition-colors">
                   Browse spaces
-                </a>
+                </Link>
               </div>
             ) : (
               <div className="bg-white rounded-2xl p-8">

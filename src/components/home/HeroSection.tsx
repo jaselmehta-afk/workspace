@@ -89,12 +89,21 @@ export default function HeroSection() {
   const [focused, setFocused] = useState(false);
   const [status, setStatus] = useState<"idle" | "thinking">("idle");
   const [listening, setListening] = useState(false);
-  const [voiceSupported, setVoiceSupported] = useState(false);
-  const [timeOverlay, setTimeOverlay] = useState<ReturnType<typeof getTimeOfDayOverlay> | null>(null);
+  const [voiceSupported, setVoiceSupported] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
+    return !!(w.SpeechRecognition || w.webkitSpeechRecognition);
+  });
+  const [timeOverlay, setTimeOverlay] = useState<ReturnType<typeof getTimeOfDayOverlay> | null>(() =>
+    typeof window !== "undefined" ? getTimeOfDayOverlay() : null
+  );
   const [verbIdx, setVerbIdx] = useState(0);
   const [verbPhase, setVerbPhase] = useState<"in" | "out">("in");
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try { return JSON.parse(localStorage.getItem("ws_recent_queries") || "[]"); } catch { return []; }
+  });
 
   // Cursor-reactive warm blob
   useEffect(() => {
@@ -111,15 +120,6 @@ export default function HeroSection() {
     return () => window.removeEventListener("mousemove", onMove);
   }, []);
 
-  useEffect(() => {
-    const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
-    setVoiceSupported(!!(w.SpeechRecognition || w.webkitSpeechRecognition));
-    setTimeOverlay(getTimeOfDayOverlay());
-    try {
-      const stored = JSON.parse(localStorage.getItem("ws_recent_queries") || "[]");
-      setRecentSearches(stored);
-    } catch {}
-  }, []);
 
   // Verb cycling
   useEffect(() => {
@@ -240,7 +240,7 @@ export default function HeroSection() {
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 hero-content-scroll pb-16 pt-24">
 
         {/* Combined status chip */}
-        <a
+        <Link
           href="/spaces?filter=new"
           className="inline-flex items-center gap-2.5 mb-10 px-4 py-2 glass rounded-full text-sm text-white/70 hover:text-white transition-all duration-300 hover:border-white/20 group animate-fade-up"
         >
@@ -249,7 +249,7 @@ export default function HeroSection() {
           <span className="w-px h-3 bg-white/20 shrink-0" />
           3 new spaces this month
           <ArrowRight size={11} className="opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
-        </a>
+        </Link>
 
         {/* Time greeting — inline, very subtle */}
         {timeOverlay?.label && (

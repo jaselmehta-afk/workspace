@@ -75,9 +75,7 @@ export default function Navigation() {
   const { ids, toggle: toggleFav } = useFavourites();
   const savedSpaces = spaces.filter(s => ids.includes(s.id));
 
-  // Hide on focused flow pages that have their own header
-  if (pathname === "/book-viewing") return null;
-
+  // All hooks must come before any conditional returns
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -105,6 +103,9 @@ export default function Navigation() {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [savedOpen]);
+
+  // Hide on focused flow pages that have their own header
+  if (pathname === "/book-viewing") return null;
 
   const showMenu = (label: string) => {
     if (hideTimer.current) clearTimeout(hideTimer.current);

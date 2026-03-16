@@ -15,14 +15,13 @@ const FavouritesContext = createContext<FavouritesCtx>({
 });
 
 export function FavouritesProvider({ children }: { children: React.ReactNode }) {
-  const [ids, setIds] = useState<string[]>([]);
-
-  useEffect(() => {
+  const [ids, setIds] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
     try {
       const saved = localStorage.getItem("ws_favourites");
-      if (saved) setIds(JSON.parse(saved));
-    } catch {}
-  }, []);
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
 
   const toggle = useCallback((id: string) => {
     setIds(prev => {

@@ -12,16 +12,16 @@ interface ThemeCtx {
 const ThemeContext = createContext<ThemeCtx>({ theme: "light", toggle: () => {} });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
-
-  useEffect(() => {
-    // Read persisted or system preference
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "light";
     const saved = localStorage.getItem("ws_theme") as Theme | null;
-    const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    const initial = saved ?? preferred;
-    setTheme(initial);
-    document.documentElement.setAttribute("data-theme", initial);
-  }, []);
+    return saved ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  });
+
+  // Apply theme attribute to <html> whenever theme changes
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   const toggle = useCallback(() => {
     setTheme(prev => {

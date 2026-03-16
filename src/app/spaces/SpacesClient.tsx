@@ -62,7 +62,11 @@ function SpacesInner() {
   const [sortBy, setSortBy] = useState("recommended");
   const [mapActiveId, setMapActiveId] = useState<string | null>(null);
   const [listening, setListening] = useState(false);
-  const [voiceSupported, setVoiceSupported] = useState(false);
+  const [voiceSupported, setVoiceSupported] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
+    return !!(w.SpeechRecognition || w.webkitSpeechRecognition);
+  });
   const recognitionRef = useRef<InstanceType<SR> | null>(null);
 
   // ── Cursor ghost image ──────────────────────────────────────────
@@ -92,11 +96,6 @@ function SpacesInner() {
     };
   }, []);
 
-  useEffect(() => {
-    const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
-    setVoiceSupported(!!(w.SpeechRecognition || w.webkitSpeechRecognition));
-  }, []);
-
   const startVoice = useCallback(() => {
     const w = window as Window & { SpeechRecognition?: SR; webkitSpeechRecognition?: SR };
     const SpeechRecognition = w.SpeechRecognition || w.webkitSpeechRecognition;
@@ -121,9 +120,14 @@ function SpacesInner() {
   }, [listening]);
 
   useEffect(() => {
+    // Sync filter state when URL changes (back/forward navigation)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearch(searchParams.get("location") || "");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setArea((searchParams.get("area") as Area) || "");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setType(searchParams.get("type") || "");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSize(searchParams.get("size") || "");
   }, [searchParams]);
 

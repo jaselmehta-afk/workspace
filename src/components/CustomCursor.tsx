@@ -19,9 +19,16 @@ export default function CustomCursor() {
   const dotRef  = useRef<HTMLDivElement>(null);
   const rafRef  = useRef<number>(0);
 
+  // Mount guard — runs once to detect pointer device support
   useEffect(() => {
-    if (window.matchMedia("(hover: none)").matches) return;
-    setIsMounted(true);
+    if (!window.matchMedia("(hover: none)").matches) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsMounted(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
 
     const onMove = (e: MouseEvent) => {
       posRef.current = { x: e.clientX, y: e.clientY };
@@ -71,7 +78,7 @@ export default function CustomCursor() {
       document.removeEventListener("mousedown", onClick);
       cancelAnimationFrame(rafRef.current);
     };
-  }, []); // stable — no deps needed
+  }, [isMounted]); // re-runs once when isMounted transitions to true
 
   if (!isMounted) return null;
 
@@ -89,7 +96,7 @@ export default function CustomCursor() {
           height: 8,
           borderRadius: "50%",
           background: "white",
-          transform: `translate(${posRef.current.x - 4}px, ${posRef.current.y - 4}px)`,
+          transform: `translate(-204px, -204px)`,
           opacity: isHidden ? 0 : 1,
           transition: "opacity 0.2s",
           willChange: "transform",

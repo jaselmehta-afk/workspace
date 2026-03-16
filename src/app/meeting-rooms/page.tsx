@@ -80,6 +80,7 @@ function MeetingRoomsInner() {
   // Keep in sync if URL changes (e.g. back/forward nav)
   useEffect(() => {
     const t = searchParams.get("type") || "all";
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedType(t);
   }, [searchParams]);
 
